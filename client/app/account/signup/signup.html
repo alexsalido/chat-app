@@ -1,0 +1,44 @@
+<md-dialog aria-label="Sign Up" ng-cloak="ng-cloak" style="width: 50%;">
+	<form name="signupForm" ng-submit="register(signupForm)" novalidate>
+		<md-toolbar>
+			<div class="md-toolbar-tools">
+				<h2>Sign Up</h2>
+				<span flex="flex"></span>
+				<md-button ng-click="cancel()" class="md-icon-button">
+					<md-icon md-svg-src="assets/images/ic_close_white_24px.svg" aria-label="Close dialog"></md-icon>
+				</md-button>
+			</div>
+		</md-toolbar>
+		<md-content layout-padding ng-repeat="(key, value) in formFields">
+			<div layout layout-sm="column">
+				<md-input-container flex>
+					<label>{{value.label}}</label>
+					<input name="{{key}}" type="{{value.type}}" ng-model="user[key]" ng-minlength="{{value.minLength}}" ng-maxlength="{{value.maxLength}}"/>
+					<div ng-messages="signupForm[key].$error">
+						<div ng-if="value.minLength" ng-message="minlength">Insufficient characters.</div>
+						<div ng-if="value.maxLength" ng-message="maxlength">Too many characters.</div>
+						<div ng-if="value.type == 'email'" ng-message="email">Invalid email.</div>
+						<div ng-message="mongoose">{{errors[key]}}</div>
+					</div>
+				</md-input-container>
+				<md-input-container flex ng-if="value.confirmation">
+					<label>{{value.label}} confirmation</label>
+					<input name="{{key + '-confirmation'}}" type="{{value.type}}" ng-model="user[key + '-confirmation']" ng-minlength="{{value.minLength}}" ng-maxlength="{{value.maxLength}}" compare-to="user[key]" required/>
+					<div ng-messages="signupForm[key + '-confirmation'].$error" ng-show="submitted">
+						<div ng-message="required" ng-show="signupForm[key + '-confirmation'].$error.required">This is required.</div>
+						<div ng-if="value.minLength" ng-message="minlength">Insufficient characters.</div>
+						<div ng-if="value.maxLength" ng-message="maxlength">Too many characters.</div>
+						<div ng-if="value.type == 'email'" ng-message="email">Invalid email.</div>
+						<div ng-message="compareTo">Confirmation doesn't match.</div>
+					</div>
+				</md-input-container>
+			</div>
+		</md-content>
+		<md-actions layout="row">
+			<md-button href="#" target="_blank" md-autofus="md-autofus">Terms</md-button>
+			<span flex="flex"></span>
+			<md-button ng-click="cancel()">Cancel</md-button>
+			<md-button type="submit">Sign Up</md-button>
+		</md-actions>
+	</form>
+</md-dialog>
