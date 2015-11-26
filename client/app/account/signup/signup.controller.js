@@ -3,11 +3,11 @@
 angular.module('chatApp')
 	.controller('SignupCtrl', function ($scope, Auth, $location, $window, $mdDialog) {
 		$scope.user = {
-			firstname: 'Alejandro',
-			lastname: 'Salido',
-			email: 'alexsalidoa@gmail.com',
-			username: 'alexsalido',
-			password: '123456',
+			// firstname: 'Alejandro',
+			// lastname: 'Salido',
+			// email: 'alexsalidoa@gmail.com',
+			// username: 'alexsalido',
+			// password: '123456',
 		};
 		$scope.errors = {};
 
@@ -15,20 +15,21 @@ angular.module('chatApp')
 		$scope.formFields = {
 			firstname: {
 				label: 'First Name',
-				type: 'text'
-				//pattern: /^[A-Z\-']+$/i
+				type: 'text',
+				pattern: /^[A-Z\-']+$/i
 			},
 			lastname: {
 				label: 'Last Name',
 				type: 'text',
+				pattern: /^[A-Z\-']+$/i
 
 			},
 			username: {
 				label: 'Username',
 				type: 'text',
 				maxLength: 12,
-				minLength: 4
-				//pattern: /^[A-Z0-9]+[\.|_]?[A-Z0-9]*$/i
+				minLength: 4,
+				pattern: /^[A-Z0-9]+[\.|_]?[A-Z0-9]*$/i
 			},
 			email: {
 				label: 'Email',
@@ -40,15 +41,13 @@ angular.module('chatApp')
 				type: 'password',
 				confirmation: true,
 				maxLength: 12,
-				minLength: 6
-				//pattern: /^[A-Z0-9]+$/i
+				minLength: 6,
+				pattern: /^[A-Z0-9]+$/i
 			}
 		}
 
 		$scope.register = function (form) {
 			$scope.submitted = true;
-
-			console.log("here");
 
 			if (form.$valid) {
 				Auth.createUser({
@@ -59,8 +58,9 @@ angular.module('chatApp')
 						password: $scope.user.password
 					})
 					.then(function () {
-						// Account created, redirect to home
-						$location.path('/');
+						// Account created show login
+						// $location.path('/');
+						$scope.showLogin();
 					})
 					.catch(function (err) {
 						err = err.data;
@@ -72,7 +72,25 @@ angular.module('chatApp')
 							$scope.errors[field] = error.message;
 						});
 					});
+			} else {
+				// Update validity of form fields
+				angular.forEach(form.$error, function (errors, type) {
+					for (var i = 0; i < errors.length; i++) {
+						form[errors[i].$name].$setValidity(type, false);
+						errors[i].$touched = true;
+					}
+				});
 			}
+		};
+
+		$scope.showLogin = function (ev) {
+			$mdDialog.show({
+				controller: 'LoginCtrl',
+				templateUrl: 'app/account/login/login.html',
+				parent: angular.element(document.body),
+				targetEvent: ev,
+				clickOutsideToClose: true,
+			});
 		};
 
 		$scope.loginOauth = function (provider) {
@@ -81,6 +99,5 @@ angular.module('chatApp')
 
 		$scope.cancel = function () {
 			$mdDialog.cancel();
-			$scope.user = {};
-		}
+		};
 	});

@@ -1,4 +1,54 @@
-<div ng-include="'components/navbar/navbar.html'"></div>
+<md-dialog aria-label="Sign Up" ng-cloak="ng-cloak" style="width: 30%;">
+	<form name="loginForm" ng-submit="login(loginForm)" novalidate>
+		<md-toolbar>
+			<div class="md-toolbar-tools">
+				<h2>Login</h2>
+				<span flex="flex"></span>
+				<md-button ng-click="cancel()" class="md-icon-button">
+					<md-icon md-svg-src="assets/svg/close.svg" aria-label="Close dialog"></md-icon>
+				</md-button>
+			</div>
+		</md-toolbar>
+		<md-content layout-padding ng-repeat="(key, value) in formFields">
+			<div layout layout-sm="column">
+				<md-input-container flex>
+					<label>{{value.label}}</label>
+					<input name="{{key}}" type="{{value.type}}" ng-model="user[key]" ng-minlength="{{value.minLength}}" ng-maxlength="{{value.maxLength}}" mongoose-error required/>
+					<div ng-messages="loginForm[key].$error">
+						<div ng-message="required">This is required.</div>
+						<div ng-if="value.minLength" ng-message="minlength">Insufficient characters.</div>
+						<div ng-if="value.maxLength" ng-message="maxlength">Too many characters.</div>
+						<div ng-if="value.type == 'email'" ng-message="email">Invalid email.</div>
+						<div ng-message="mongoose" ng-show="submitted">{{errors.other}}</div>
+					</div>
+				</md-input-container>
+			</div>
+		</md-content>
+		<md-content>
+			<div layout-sm="column">
+				<div>
+					<md-container flex>
+						<md-button class="md-raised md-info">
+							<md-icon md-svg-src="assets/svg/facebook.svg" aria-label="Close dialog"></md-icon>
+						</md-button>
+						<md-button class="md-raised md-info">
+							<md-icon md-svg-src="assets/svg/twitter.svg" aria-label="Close dialog"></md-icon>
+						</md-button>
+					</md-container>
+				</div>
+			</div>
+		</md-content>
+		<div class="fb-login-button" data-max-rows="1" data-size="medium" data-show-faces="false" data-auto-logout-link="false"></div>
+		<md-actions layout="row">
+			<md-button ng-click="showSignup($event)">Register</md-button>
+			<span flex="flex"></span>
+			<md-button ng-click="cancel()">Cancel</md-button>
+			<md-button type="submit">Login</md-button>
+		</md-actions>
+	</form>
+</md-dialog>
+
+<!-- <div ng-include="'components/navbar/navbar.html'"></div>
 
 <div class="container">
   <div class="row">
@@ -55,4 +105,4 @@
     </div>
   </div>
   <hr>
-</div>
+</div> -->

@@ -30,10 +30,10 @@ angular.module('chatApp', [
         return config;
       },
 
-      // Intercept 401s and redirect you to login
+      // Intercept 401s and redirect you to home
       responseError: function(response) {
         if(response.status === 401) {
-          $location.path('/login');
+          $location.path('/');
           // remove any stale tokens
           $cookieStore.remove('token');
           return $q.reject(response);
@@ -46,12 +46,12 @@ angular.module('chatApp', [
   })
 
   .run(function ($rootScope, $location, Auth) {
-    // Redirect to login if route requires auth and you're not logged in
+    // Redirect to home if route requires auth and you're not logged in
     $rootScope.$on('$routeChangeStart', function (event, next) {
       Auth.isLoggedInAsync(function(loggedIn) {
         if (next.authenticate && !loggedIn) {
           event.preventDefault();
-          $location.path('/login');
+          $location.path('/');
         }
       });
     });
