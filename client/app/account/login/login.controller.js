@@ -5,7 +5,7 @@ angular.module('chatApp')
 		$scope.user = {};
 		$scope.errors = {};
 
-		console.log($scope); 
+		console.log($scope);
 		$scope.formFields = {
 			email: {
 				label: 'Email',
@@ -29,7 +29,7 @@ angular.module('chatApp')
 					.then(function () {
 						$mdDialog.cancel();
 						// Logged in, redirect to home
-						$location.path('/settings');
+						$location.path('/dashboard');
 					})
 					.catch(function (err) {
 						form[err.field].$setValidity("mongoose", false);

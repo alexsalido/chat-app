@@ -4,7 +4,7 @@ angular.module('chatApp')
 	.controller('MainCtrl', function ($scope, $http, socket, $location, $mdDialog) {
 
 		$http.get('/api/users/me').then(function(res) {
-			$location.path('/settings');
+			$location.path('/dashboard');
 		}).catch(function(err){
 			console.log("User is not logged in, no need to re-route");
 		});
