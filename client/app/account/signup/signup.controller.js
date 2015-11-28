@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('chatApp')
-	.controller('SignupCtrl', function ($scope, Auth, $location, $window, $mdDialog) {
+	.controller('SignupCtrl', function ($scope, Auth, showLogin, $location, $window, $mdDialog) {
 		$scope.user = {
 			// firstname: 'Alejandro',
 			// lastname: 'Salido',
@@ -83,15 +83,7 @@ angular.module('chatApp')
 			}
 		};
 
-		$scope.showLogin = function (ev) {
-			$mdDialog.show({
-				controller: 'LoginCtrl',
-				templateUrl: 'app/account/login/login.html',
-				parent: angular.element(document.body),
-				targetEvent: ev,
-				clickOutsideToClose: true,
-			});
-		};
+		$scope.showLogin = showLogin;
 
 		$scope.loginOauth = function (provider) {
 			$window.location.href = '/auth/' + provider;

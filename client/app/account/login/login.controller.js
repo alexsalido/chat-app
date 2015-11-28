@@ -1,11 +1,10 @@
 'use strict';
 
 angular.module('chatApp')
-	.controller('LoginCtrl', function ($scope, Auth, $location, $window, $mdDialog) {
+	.controller('LoginCtrl', function ($scope, Auth, showSignup, $location, $window, $mdDialog) {
 		$scope.user = {};
 		$scope.errors = {};
 
-		console.log($scope);
 		$scope.formFields = {
 			email: {
 				label: 'Email',
@@ -54,13 +53,5 @@ angular.module('chatApp')
 			$mdDialog.cancel();
 		};
 
-		$scope.showSignup = function (ev) {
-			$mdDialog.show({
-				controller: 'SignupCtrl',
-				templateUrl: 'app/account/signup/signup.html',
-				parent: angular.element(document.body),
-				targetEvent: ev,
-				clickOutsideToClose: true
-			});
-		};
+		$scope.showSignup = showSignup;
 	});

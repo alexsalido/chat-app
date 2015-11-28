@@ -3,12 +3,6 @@
 angular.module('chatApp')
 	.controller('MainCtrl', function ($scope, $http, socket, $location, $mdDialog) {
 
-		$http.get('/api/users/me').then(function(res) {
-			$location.path('/dashboard');
-		}).catch(function(err){
-			console.log("User is not logged in, no need to re-route");
-		});
-
 		$scope.awesomeThings = [];
 
 		$http.get('/api/things').success(function (awesomeThings) {
@@ -22,7 +16,10 @@ angular.module('chatApp')
 				templateUrl: 'app/account/signup/signup.html',
 				parent: angular.element(document.body),
 				targetEvent: ev,
-				clickOutsideToClose: true
+				clickOutsideToClose: true,
+				locals: {
+					showLogin: $scope.showLogin
+				}
 			});
 		};
 
@@ -32,7 +29,10 @@ angular.module('chatApp')
 				templateUrl: 'app/account/login/login.html',
 				parent: angular.element(document.body),
 				targetEvent: ev,
-				clickOutsideToClose: true
+				clickOutsideToClose: true,
+				locals: {
+					showSignup: $scope.showSignup
+				}
 			});
 		};
 
