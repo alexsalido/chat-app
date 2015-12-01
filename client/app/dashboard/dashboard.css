@@ -1,7 +1,6 @@
-div#dashboard {
-    display: flex;
+#dashboard {
     min-height: 95vh;
-    flex-direction: column;
+    max-height: 95vh;
     margin: 0 auto;
     top: 1em;
     position: relative;
@@ -22,10 +21,9 @@ div#dashboard {
 }
 
 #dashboard > div {
-    display: flex;
-    flex: 1;
+    min-height: 95vh;
+    max-height: 95vh;
     background-color: white;
-	overflow: auto;
 }
 
 div.right-toolbar {
@@ -34,6 +32,34 @@ div.right-toolbar {
 
 div.left-toolbar {}
 
-#chat-list {
-	overflow: auto;
+.search-box {}
+
+#chat-list {}
+
+#message-box {
+    border: 0px;
+    width: 92%;
+}
+
+#message-box > textarea {
+    font-size: 0.8em;
+    border: 0px;
+    width: 100%;
+    min-height: 1.8em;
+    border-radius: 2px;
+    outline: none;
+    resize: none;
+}
+
+md-icon.new-message svg {
+    fill: rgb(255, 82, 82);
+}
+
+.active {
+	background-color: rgba(158,158,158,0.2);
+}
+
+.round-img {
+	border-radius: 50%;
+	height: 80%;
 }
