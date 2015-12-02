@@ -3,7 +3,7 @@
 		<md-content flex layout="column">
 			<md-toolbar>
 				<div class="md-toolbar-tools">
-					<img class="round-img" alt="{{user.name}}" ng-src="{{user.img || 'assets/images/kitty.jpeg'}}" />
+					<img class="round-img" alt="{{user.name}}" ng-src="{{user.img || 'assets/images/profile_white.png'}}" />
 					<span flex></span>
 					<md-button class="md-icon-button" aria-label="Contacts">
 						<md-icon md-svg-icon="contacts"></md-icon>
@@ -27,60 +27,12 @@
 					</md-menu>
 				</div>
 			</md-toolbar>
-			<md-content class="search-box" layout-padding style="overflow: hidden;">
-				<md-icon md-svg-src="search" class="gray"></md-icon>
-				<input type="text" placeholder="Search for chat" style="padding-top: 0.3em; border: 0px; width: 80%; outline: none;">
-			</md-content>
+			<search-box></search-box>
 			<md-divider></md-divider>
-			<md-content flex>
-				<md-list ng-cloak>
-					<md-list-item ng-repeat="chat in chats" ng-click="openChat(chat._id, $event)" ng-class="{'active': chat.active}">
-						<img alt="{{ chat.name }}" ng-src="{{chat.img || 'assets/images/profile_gray.png'}}" class="md-avatar" />
-						<p>{{ chat.name }}</p>
-						<md-icon md-svg-icon="chat_bubble" ng-click="openChat(chat._id, $event)" aria-label="Unread Message" class="md-secondary gray" ng-class="{'new-message': chat.newMessage}"></md-icon>
-					</md-list-item>
-				</md-list>
-			</md-content>
+			<chat-list></chat-list>
 		</md-content>
 	</div>
 	<div class="right-toolbar" flex="70" layout="column" ng-cloak>
-		<md-content flex layout="column">
-			<md-toolbar>
-				<div class="md-toolbar-tools">
-					<img ng-src="{{activeChat.img || 'assets/images/profile_white.png'}}" alt="{{activeChat.name}}" class="round-img">
-					<md-list>
-						<md-list-item class="md-3-line">
-							<div class="md-list-item-text">
-								<h3 style="color:white;">{{activeChat.name}}</h3>
-								<h4 style="color:white;">click here for contact info</h4>
-							</div>
-						</md-list-item>
-					</md-list>
-					<span flex></span>
-					<md-button class="md-icon-button" aria-label="Send Attachment">
-						<md-icon md-svg-icon="attachment"></md-icon>
-					</md-button>
-					<md-button class="md-icon-button" aria-label="Group options">
-						<md-icon md-svg-icon="more_vert"></md-icon>
-					</md-button>
-				</div>
-			</md-toolbar>
-			<md-content flex>
-			</md-content>
-			<md-toolbar>
-				<div class="md-toolbar-tools">
-					<md-button class="md-icon-button" aria-label="Send Attachment">
-						<md-icon md-svg-icon="insert_emoticon"></md-icon>
-					</md-button>
-					<div id="message-box">
-						<textarea type="text" placeholder="Type a message"></textarea>
-					</div>
-					<span flex></span>
-					<md-button class="md-icon-button" aria-label="Send">
-						<md-icon md-svg-icon="send"></md-icon>
-					</md-button>
-				</div>
-			</md-toolbar>
-		</md-content>
+		<chat-window></chat-window>
 	</div>
 </div>

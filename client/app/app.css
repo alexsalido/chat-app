@@ -76,3 +76,8 @@ body, html {
 md-icon.gray svg {
 	fill: lightgray;
 }
+
+.round-img {
+	border-radius: 50%;
+	height: 80%;
+}

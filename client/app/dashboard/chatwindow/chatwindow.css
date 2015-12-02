@@ -1,0 +1,105 @@
+#message-box {
+    border: 0px;
+    width: 92%;
+}
+
+#message-box > textarea {
+    font-size: 0.8em;
+    border: 0px;
+    width: 100%;
+    min-height: 1.8em;
+    border-radius: 2px;
+    outline: none;
+    resize: none;
+}
+
+message {
+	display: block;
+}
+.message-wrapper {
+    position: relative;
+    overflow: hidden;
+	margin: 0.5em
+}
+
+.message-wrapper .circle-wrapper {
+	margin: 1em 0.5em 1em 0.5em;
+    border-radius: 50%;
+}
+.message-wrapper .circle-wrapper img {
+	width: 3em;
+	height: 3em;
+	border-radius: 50%;
+}
+
+.message-wrapper .text-wrapper {
+	margin: 0.5em 1em;
+    padding: 1em;
+    min-height: 1em;
+    max-width: 35%;
+    box-shadow: 0px 1px 0px 0px rgba(50, 50, 50, 0.3);
+    border-radius: 2px;
+    font-weight: 300;
+    position: relative;
+    /* word-break: break-all; */
+}
+
+.message-wrapper .text-wrapper:before {
+    content: '';
+    width: 0;
+    height: 0;
+    border-style: solid;
+}
+
+.message-wrapper.them .circle-wrapper,
+.message-wrapper.them .text-wrapper {
+    background: rgb(255, 82, 82);
+    float: left;
+    color: #ffffff;
+}
+
+.message-wrapper.them .text-wrapper:before {
+    border-width: 0 10px 10px 0;
+    border-color: transparent rgb(255, 82, 82) transparent transparent;
+    position: absolute;
+    top: 0;
+    left: -9px;
+}
+
+.message-wrapper.me .circle-wrapper,
+.message-wrapper.me .text-wrapper {
+    background: rgb(228,228,228);
+    float: right;
+    color: #333333;
+}
+
+.message-wrapper.me .text-wrapper {
+    background: rgb(228,228,228);
+}
+
+.message-wrapper.me .text-wrapper:before {
+    border-width: 10px 10px 0 0;
+    border-color: rgb(228,228,228) transparent transparent transparent;
+    position: absolute;
+    top: 0;
+    right: -9px;
+}
+
+md-sidenav {
+	min-width: 40%;
+}
+
+.contact-info img {
+	margin: 2em;
+	height: 50%;
+	width: 50%;
+}
+
+.contact-info h4 {
+	color: darkgray;
+}
+
+.contact-info h4, h5 {
+	margin: 0 1em;
+	font-weight: normal;
+}

@@ -1,0 +1,11 @@
+md-list {
+    padding: 0;
+}
+
+md-icon.new-message svg {
+    fill: rgb(255, 82, 82);
+}
+
+.active {
+    background-color: rgba(158, 158, 158, 0.2);
+}
