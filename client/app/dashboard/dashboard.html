@@ -3,9 +3,9 @@
 		<md-content flex layout="column">
 			<md-toolbar>
 				<div class="md-toolbar-tools">
-					<img class="round-img" alt="{{user.name}}" ng-src="{{user.img || 'assets/images/profile_white.png'}}" />
+					<img class="round-img" alt="{{user.name}}" ng-click="toggleProfileInfo()" ng-src="{{user.img || 'assets/images/profile_white.png'}}" style="outline: none; cursor: pointer;"/>
 					<span flex></span>
-					<md-button class="md-icon-button" aria-label="Contacts">
+					<md-button class="md-icon-button" aria-label="Contacts" ng-click="toggleContactList()">
 						<md-icon md-svg-icon="contacts"></md-icon>
 					</md-button>
 					<md-menu md-position-mode="target target">
@@ -16,6 +16,16 @@
 							<md-menu-item>
 								<md-button ng-click="">
 									New group
+								</md-button>
+							</md-menu-item>
+							<md-menu-item>
+								<md-button ng-click="showSettings('password', $event)">
+									Change password
+								</md-button>
+							</md-menu-item>
+							<md-menu-item>
+								<md-button ng-click="showSettings('email', $event)">
+									Change email
 								</md-button>
 							</md-menu-item>
 							<md-menu-item>
@@ -30,6 +40,8 @@
 			<search-box></search-box>
 			<md-divider></md-divider>
 			<chat-list></chat-list>
+			<profile></profile>
+			<contact-list></contact-list>
 		</md-content>
 	</div>
 	<div class="right-toolbar" flex="70" layout="column" ng-cloak>

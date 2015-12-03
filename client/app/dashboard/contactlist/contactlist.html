@@ -1,0 +1,19 @@
+<md-sidenav class="md-sidenav-left md-whiteframe-z2 contact-list" md-component-id="contact-list" layout="column">
+	<md-toolbar class="md-toolbar-tools">
+		<md-button ng-click="toggleContactList()" class="md-icon-button">
+			<md-icon md-svg-src="assets/svg/back.svg" aria-label="Close Contact List"></md-icon>
+		</md-button>
+		<h1 class="md-toolbar-tools">Contacts</h1>
+	</md-toolbar>
+	<search-box></search-box>
+	<md-divider></md-divider>
+	<md-content flex>
+		<md-list ng-cloak>
+			<md-list-item ng-repeat="contact in contacts" ng-click="opencontact(contact._id, $event)" ng-class="{'active': contact.active}">
+				<img alt="{{ contact.name }}" ng-src="{{contact.img || 'assets/images/profile_gray.png'}}" class="md-avatar" />
+				<p>{{ contact.name }}</p>
+				<md-icon md-svg-icon="contact_bubble" ng-click="opencontact(contact._id, $event)" aria-label="Unread Message" class="md-secondary gray" ng-class="{'new-message': contact.newMessage}"></md-icon>
+			</md-list-item>
+		</md-list>
+	</md-content>
+</md-sidenav>

@@ -35,7 +35,6 @@ User.find({}).remove(function() {
     provider: 'local',
     firstname: 'Test',
 	lastname: 'User',
-	username: 'test',
     email: 'test@test.com',
     password: 'test'
   }, {
@@ -43,7 +42,6 @@ User.find({}).remove(function() {
     role: 'admin',
     firstname: 'Admin',
 	lastname: 'User',
-	username: 'admin',
     email: 'admin@admin.com',
     password: 'admin'
   }, function() {

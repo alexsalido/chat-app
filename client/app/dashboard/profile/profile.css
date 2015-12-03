@@ -1,0 +1,25 @@
+md-sidenav.profile-info {
+    min-width: 100%;
+}
+
+.profile-info img {
+    margin: 2em;
+    height: 50%;
+    width: 50%;
+}
+
+.profile-info h4 {
+    color: darkgray;
+}
+
+.profile-info h4,
+h5 {
+    margin: 0 1em;
+    font-weight: normal;
+}
+
+.profile-status span, .profile-status md-input-container {
+	display: inline-block;
+    width: 82%;
+	margin: 0;
+}

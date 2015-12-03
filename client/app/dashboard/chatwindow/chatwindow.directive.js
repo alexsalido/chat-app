@@ -11,10 +11,6 @@ angular.module('chatApp')
 				$scope.toggleContactInfo = function () {
 					$mdSidenav('contact-info').toggle()
 				}
-
-				$scope.close = function () {
-					$mdSidenav('contact-info').close()
-				}
 			},
 			link: function (scope, element, attrs) {}
 		}

@@ -35,6 +35,8 @@ angular.module('chatApp', [
 		.icon('twitter', 'assets/svg/twitter.svg')
 		.icon('insert_emoticon', 'assets/svg/insert_emoticon.svg')
 		.icon('send', 'assets/svg/send.svg')
+		.icon('back', 'assets/svg/back.svg')
+		.icon('edit', 'assets/svg/edit.svg')
 
   })
 

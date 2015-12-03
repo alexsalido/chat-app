@@ -24,13 +24,6 @@ angular.module('chatApp')
 				pattern: /^[A-Z\-']+$/i
 
 			},
-			username: {
-				label: 'Username',
-				type: 'text',
-				maxLength: 12,
-				minLength: 4,
-				pattern: /^[A-Z0-9]+[\.|_]?[A-Z0-9]*$/i
-			},
 			email: {
 				label: 'Email',
 				type: 'email',
@@ -44,7 +37,7 @@ angular.module('chatApp')
 				minLength: 6,
 				pattern: /^[A-Z0-9]+$/i
 			}
-		}
+		};
 
 		$scope.register = function (form) {
 			$scope.submitted = true;

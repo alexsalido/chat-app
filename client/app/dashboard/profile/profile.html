@@ -1,0 +1,25 @@
+<md-sidenav class="md-sidenav-left md-whiteframe-z2 profile-info" md-component-id="profile-info">
+	<md-toolbar class="md-toolbar-tools">
+		<md-button ng-click="toggleProfileInfo()" class="md-icon-button">
+			<md-icon md-svg-src="assets/svg/back.svg" aria-label="Close Profile Info"></md-icon>
+		</md-button>
+		<h1 class="md-toolbar-tools">Profile</h1>
+	</md-toolbar>
+	<md-content class="profile-info" layout-padding>
+		<div layout="column" layout-align="center center" class="profile-photo">
+			<img ng-src="{{user.img || 'assets/images/profile_gray.png'}}" alt="{{activeChat.name}}" class="round-img">
+		</div>
+		<div class="profile-status">
+			<h4>Status</h4>
+			<h5>
+				<span ng-show="!editStatus">{{user.status}}</span>
+				<md-input-container ng-show="editStatus" md-no-float>
+					<input name="status" placeholder="{{user.status}}" ng-model="user.status" ng-blur="editStatus = !editStatus">
+				</md-input-container>
+				<md-button ng-click="editStatus = !editStatus" class="md-icon-button">
+					<md-icon md-svg-src="assets/svg/edit.svg" aria-label="Edit Status" class="gray"></md-icon>
+				</md-button>
+			</h5>
+		</div>
+	</md-content>
+</md-sidenav>
