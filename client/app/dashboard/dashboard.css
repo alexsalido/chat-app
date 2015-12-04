@@ -32,3 +32,7 @@ div.right-toolbar {
 
 div.left-toolbar {
 }
+
+md-sidenav.contact-list {
+    min-width: 100%;
+}

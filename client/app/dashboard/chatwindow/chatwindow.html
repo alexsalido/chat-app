@@ -6,7 +6,12 @@
 				<md-list-item class="md-3-line">
 					<div class="md-list-item-text">
 						<h3 style="color:white;">{{activeChat.name}}</h3>
-						<h4 style="color:white;">click here for contact info</h4>
+						<h4 style="color:white;">
+							<span ng-if="!activeChat.group">click here for contact info</span>
+							<span ng-repeat="member in activeChat.members track by $index">{{member.name}}
+								<span ng-if="!$last">, </span>
+							</span>
+						</h4>
 					</div>
 				</md-list-item>
 			</md-list>
@@ -21,39 +26,22 @@
 				<md-menu-content width="3">
 					<md-menu-item>
 						<md-button ng-click="toggleContactInfo()">
-							Contact info
+							<span ng-if="activeChat.group">Group info</span>
+							<span ng-if="!activeChat.group">Contact info</span>
 						</md-button>
 					</md-menu-item>
 					<md-menu-item>
 						<md-button ng-click="deleteChat()">
-							Delete chat
+							<span ng-if="activeChat.group">Exit group</span>
+							<span ng-if="!activeChat.group">Delete chat</span>
 						</md-button>
 					</md-menu-item>
 				</md-menu-content>
 			</md-menu>
 		</div>
 	</md-toolbar>
-	<md-sidenav class="md-sidenav-right md-whiteframe-z2" md-component-id="contact-info">
-		<md-toolbar class="md-toolbar-tools">
-			<md-button ng-click="toggleContactInfo()" class="md-icon-button">
-				<md-icon md-svg-src="assets/svg/close.svg" aria-label="Close Contact Info"></md-icon>
-			</md-button>
-			<h1 class="md-toolbar-tools">Contact info</h1>
-		</md-toolbar>
-		<md-content class="contact-info" layout-padding>
-			<div layout="column" layout-align="center center">
-				<img ng-src="{{activeChat.img || 'assets/images/profile_white.png'}}" alt="{{activeChat.name}}" class="round-img">
-			</div>
-			<h4>Status</h4>
-			<h5>{{activeChat.status}}</h5>
-			<br>
-			<h4>Email</h4>
-			<h5>{{activeChat.email}}</h5>
-			<br>
-			<div layout="column" layout-align="center center">
-				<md-button ng-click="deleteChat('contact-info')" class="md-raised md-warn" style="width: 95%;">DELETE CHAT</md-button>
-			</div>
-		</md-content>
+	<md-sidenav class="md-sidenav-right md-whiteframe-z2" md-component-id="contact-info" layout="column">
+		<chat-info></chat-info>
 	</md-sidenav>
 	<md-content flex>
 		<message class="message-wrapper them">

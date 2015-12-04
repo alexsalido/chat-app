@@ -89,7 +89,7 @@ md-sidenav {
 	min-width: 40%;
 }
 
-.contact-info img {
+.chat-img {
 	margin: 2em;
 	height: 50%;
 	width: 50%;
@@ -102,4 +102,10 @@ md-sidenav {
 .contact-info h4, h5 {
 	margin: 0 1em;
 	font-weight: normal;
+}
+
+.group-name span, .group-name md-input-container {
+	display: inline-block;
+    width: 82%;
+	margin: 0;
 }
