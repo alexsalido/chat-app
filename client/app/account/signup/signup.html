@@ -9,7 +9,7 @@
 				</md-button>
 			</div>
 		</md-toolbar>
-		<md-content layout-padding ng-repeat="(key, value) in formFields">
+		<md-content layout-padding ng-repeat="(key, value) in formFields" auto-focus="{{$index}}">
 			<div layout layout-sm="column">
 				<md-input-container flex>
 					<label>{{value.label}}</label>

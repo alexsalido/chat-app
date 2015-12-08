@@ -14,7 +14,7 @@
 						</md-button>
 						<md-menu-content width="3">
 							<md-menu-item>
-								<md-button ng-click="">
+								<md-button ng-click="newGroup($event)">
 									New group
 								</md-button>
 							</md-menu-item>
@@ -41,12 +41,14 @@
 			<md-divider></md-divider>
 			<chat-list requests="true"></chat-list>
 			<profile></profile>
-			<md-sidenav class="md-sidenav-left md-whiteframe-z2 contact-list" md-component-id="contact-list" layout="column">
-				<md-toolbar class="md-toolbar-tools">
-					<md-button ng-click="toggleContactList()" class="md-icon-button">
-						<md-icon md-svg-src="assets/svg/back.svg" aria-label="Close Contact List"></md-icon>
-					</md-button>
-					<h1 class="md-toolbar-tools">Contacts</h1>
+			<md-sidenav class="md-sidenav-left contact-list" md-component-id="contact-list" layout="column">
+				<md-toolbar>
+					<div class="md-toolbar-tools">
+						<md-button class="md-icon-button" aria-label="Close Contact List" ng-click="toggleContactList()">
+							<md-icon md-svg-icon="back"></md-icon>
+						</md-button>
+						<h1>Contacts</h1>
+					</div>
 				</md-toolbar>
 				<search-box placeholder="Search for contacts"></search-box>
 				<md-divider></md-divider>

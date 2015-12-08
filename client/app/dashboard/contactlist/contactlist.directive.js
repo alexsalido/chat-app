@@ -10,13 +10,13 @@ angular.module('chatApp')
 
 				$scope.requests = $attrs.requests || false;
 
-				$scope.pending = this.pending || [{
+				$scope.pending = [{
 					name: 'Chewbacca',
 					email: 'chewie@foobar.com',
 					img: '/assets/images/profile_5.jpg',
 				}];
 
-				$scope.toggleContactList = this.toggleContactList || function () {
+				$scope.toggleContactList = function () {
 					$mdSidenav('contact-list').toggle()
 				};
 
@@ -51,87 +51,6 @@ angular.module('chatApp')
 					active: false,
 					online: true,
 					status: 'Speaking with Darth Vader'
-				}, {
-					_id: 4,
-					name: 'Stormtroopers',
-					username: 'Stormtroopers',
-					users: ['Joe Perkins', 'Mark Johnson', 'Peter Carlson'],
-					group: true,
-					img: '/assets/images/group_1.jpg',
-					newMessage: true,
-					active: false
-				}, {
-					_id: 4,
-					name: 'Stormtroopers',
-					username: 'Stormtroopers',
-					users: ['Joe Perkins', 'Mark Johnson', 'Peter Carlson'],
-					group: true,
-					img: '/assets/images/group_1.jpg',
-					newMessage: true,
-					active: false
-				}, {
-					_id: 4,
-					name: 'Stormtroopers',
-					username: 'Stormtroopers',
-					users: ['Joe Perkins', 'Mark Johnson', 'Peter Carlson'],
-					group: true,
-					img: '/assets/images/group_1.jpg',
-					newMessage: true,
-					active: false
-				}, {
-					_id: 4,
-					name: 'Stormtroopers',
-					username: 'Stormtroopers',
-					users: ['Joe Perkins', 'Mark Johnson', 'Peter Carlson'],
-					group: true,
-					img: '/assets/images/group_1.jpg',
-					newMessage: true,
-					active: false
-				}, {
-					_id: 4,
-					name: 'Stormtroopers',
-					username: 'Stormtroopers',
-					users: ['Joe Perkins', 'Mark Johnson', 'Peter Carlson'],
-					group: true,
-					img: '/assets/images/group_1.jpg',
-					newMessage: true,
-					active: false
-				}, {
-					_id: 4,
-					name: 'Stormtroopers',
-					username: 'Stormtroopers',
-					users: ['Joe Perkins', 'Mark Johnson', 'Peter Carlson'],
-					group: true,
-					img: '/assets/images/group_1.jpg',
-					newMessage: true,
-					active: false
-				}, {
-					_id: 4,
-					name: 'Stormtroopers',
-					username: 'Stormtroopers',
-					users: ['Joe Perkins', 'Mark Johnson', 'Peter Carlson'],
-					group: true,
-					img: '/assets/images/group_1.jpg',
-					newMessage: true,
-					active: false
-				}, {
-					_id: 4,
-					name: 'Stormtroopers',
-					username: 'Stormtroopers',
-					users: ['Joe Perkins', 'Mark Johnson', 'Peter Carlson'],
-					group: true,
-					img: '/assets/images/group_1.jpg',
-					newMessage: true,
-					active: false
-				}, {
-					_id: 4,
-					name: 'Stormtroopers',
-					username: 'Stormtroopers',
-					users: ['Joe Perkins', 'Mark Johnson', 'Peter Carlson'],
-					group: true,
-					img: '/assets/images/group_1.jpg',
-					newMessage: true,
-					active: false
 				}];
 			},
 			link: function (scope, element, attrs) {

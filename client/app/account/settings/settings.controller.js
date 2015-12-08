@@ -7,7 +7,6 @@ angular.module('chatApp')
 		$scope.type = type;
 
 		$scope.saveChanges = function (form, type) {
-			console.log($scope);
 			$scope.submitted = true;
 			if (form.$valid) {
 				if (type == 'password') {

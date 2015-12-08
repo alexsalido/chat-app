@@ -124,11 +124,12 @@ angular.module('chatApp')
 		$scope.deleteChat = function (sidenav) {
 			if (sidenav) $mdSidenav(sidenav).close();
 			var _id = $scope.activeChat._id;
+			console.log(_id);
 			for (var i = 0; i < $scope.chats.length; i++) {
 				if ($scope.chats[i]._id === _id) {
-					$scope.activeChat = $scope.chats[i + 1];
 					$scope.activeChat.active = true;
 					$scope.chats.splice(i, 1);
+					$scope.activeChat = $scope.chats[i + 1];
 				}
 			}
 		};
@@ -146,4 +147,37 @@ angular.module('chatApp')
 			});
 		};
 
+		$scope.newGroup = function (ev) {
+			$mdDialog.show({
+				scope: $scope,
+				preserveScope: true,
+				templateUrl: 'app/dashboard/views/newgroup.html',
+				parent: angular.element(document.body),
+				targetEvent: ev,
+				clickOutsideToClose: true
+			});
+		};
+
+		$scope.cancel = function () {
+			$mdDialog.cancel();
+			$scope.submitted = false;
+		};
+
+		$scope.createGroup = function (form) {
+			$scope.submitted = true;
+			if (form.$valid) {
+				console.log("group created");
+				$scope.chats.push({
+					_id: 5,
+					name: $scope.newgroup.name,
+					members: [],
+					group: true,
+					img: '/assets/images/group_1.jpg',
+					newMessage: false,
+					active: false
+				});
+				$scope.cancel();
+				$scope.newgroup = {};
+			}
+		};
 	});

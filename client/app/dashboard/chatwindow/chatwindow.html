@@ -2,14 +2,13 @@
 	<md-toolbar>
 		<div class="md-toolbar-tools">
 			<img ng-src="{{activeChat.img || 'assets/images/profile_white.png'}}" alt="{{activeChat.name}}" class="round-img">
-			<md-list>
+			<md-list ng-click="toggleContactInfo()" class="no-outline clickable">
 				<md-list-item class="md-3-line">
 					<div class="md-list-item-text">
 						<h3 style="color:white;">{{activeChat.name}}</h3>
 						<h4 style="color:white;">
 							<span ng-if="!activeChat.group">click here for contact info</span>
-							<span ng-repeat="member in activeChat.members track by $index">{{member.name}}
-								<span ng-if="!$last">, </span>
+							<span ng-repeat="member in activeChat.members track by $index">{{member.name}}{{$last ? '' : ', '}}
 							</span>
 						</h4>
 					</div>
@@ -46,6 +45,7 @@
 	<md-content flex>
 		<message class="message-wrapper them">
 			<div class="circle-wrapper">
+				<img class="no-outline" alt="{{user.name}}" ng-src="{{user.img || 'assets/images/profile_white.png'}}"/>
 			</div>
 			<div class="text-wrapper">Hello!</div>
 		</message>

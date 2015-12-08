@@ -1,3 +1,5 @@
+'use strict';
+
 var compareTo = function() {
     return {
         require: "ngModel",

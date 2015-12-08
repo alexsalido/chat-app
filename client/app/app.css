@@ -74,8 +74,12 @@ html {
     background-color: lightgray;
 }
 
-md-icon {
+md-icon, .no-outline {
     outline: none;
+}
+
+.clickable {
+	cursor: pointer;
 }
 
 md-icon.gray svg {
