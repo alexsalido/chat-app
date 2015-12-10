@@ -135,6 +135,17 @@ angular.module('chatApp')
 			});
 		};
 
+		$scope.showScribble = function (ev) {
+			$mdDialog.show({
+				scope: $scope,
+				preserveScope: true,
+				templateUrl: 'app/dashboard/views/scribble.html',
+				parent: angular.element(document.body),
+				targetEvent: ev,
+				clickOutsideToClose: true,
+			});
+		};
+
 		$scope.newGroup = function (ev) {
 			$mdDialog.show({
 				scope: $scope,
