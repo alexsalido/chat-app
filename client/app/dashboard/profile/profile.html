@@ -7,7 +7,13 @@
 	</md-toolbar>
 	<md-content class="profile-info" layout-padding>
 		<div layout="column" layout-align="center center" class="profile-photo">
-			<img ng-src="{{user.img || 'assets/images/profile_gray.png'}}" alt="{{activeChat.name}}" class="round-img">
+			<div class="image-overlay" ng-click="">
+				<md-icon md-svg-icon="camera" class="s48"></md-icon>
+				<p>
+					Click here to change photo
+				</p>
+			</div>
+			<img ng-src="{{user.img || 'assets/images/profile_gray.png'}}" alt="{{activeChat.name}}">
 		</div>
 		<div class="profile-status">
 			<h4>Status</h4>
@@ -23,3 +29,4 @@
 		</div>
 	</md-content>
 </md-sidenav>
+<!-- style="background: url({{user.img}})" -->

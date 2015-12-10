@@ -1,13 +1,18 @@
 <md-content flex layout="column" style="overflow: hidden;">
 	<md-toolbar>
 		<div class="md-toolbar-tools">
-			<img ng-src="{{activeChat.img || 'assets/images/profile_white.png'}}" alt="{{activeChat.name}}" class="round-img">
+			<div class="round-img-container">
+				<img ng-src="{{activeChat.user.img || activeChat.img || 'assets/images/profile_white.png'}}" alt="{{activeChat.user.name}}">
+			</div>
 			<md-list ng-click="toggleContactInfo()" class="no-outline clickable">
 				<md-list-item class="md-3-line">
 					<div class="md-list-item-text">
-						<h3 style="color:white;">{{activeChat.name}}</h3>
+						<h3 style="color:white;">{{activeChat.user.name || activeChat.name}}</h3>
 						<h4 style="color:white;">
-							<span ng-if="!activeChat.group">click here for contact info</span>
+							<span ng-if="!activeChat.group">
+								<span class="online" ng-show="activeChat.user.online">online</span>
+								<span class="offline" ng-show="!activeChat.user.online">offline</span>
+							</span>
 							<span ng-repeat="member in activeChat.members track by $index">{{member.name}}{{$last ? '' : ', '}}
 							</span>
 						</h4>
@@ -45,7 +50,7 @@
 	<md-content flex>
 		<message class="message-wrapper them">
 			<div class="circle-wrapper">
-				<img class="no-outline" alt="{{user.name}}" ng-src="{{user.img || 'assets/images/profile_white.png'}}"/>
+				<img class="no-outline" alt="{{activeChat.user.name}}" ng-src="{{activeChat.user.img || 'assets/images/profile_white.png'}}"/>
 			</div>
 			<div class="text-wrapper">Hello!</div>
 		</message>

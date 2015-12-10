@@ -22,7 +22,7 @@ angular.module('chatApp')
 			}
 		};
 
-		$scope.addMember = function() {};
+		$scope.addMember = function () {};
 		//Fake contacts
 		$scope.contacts = [{
 			_id: 1,
@@ -33,7 +33,8 @@ angular.module('chatApp')
 			newMessage: false,
 			active: false,
 			online: true,
-			status: 'Shooting some Jedi'
+			status: 'Shooting some Jedi',
+			online: true
 		}, {
 			_id: 2,
 			name: 'Mark Johnson',
@@ -43,7 +44,8 @@ angular.module('chatApp')
 			newMessage: true,
 			active: false,
 			online: true,
-			status: 'Just standing there'
+			status: 'Just standing there',
+			online: true
 		}, {
 			_id: 3,
 			name: 'Peter Carlson',
@@ -53,42 +55,28 @@ angular.module('chatApp')
 			newMessage: false,
 			active: false,
 			online: true,
-			status: 'Speaking with Darth Vader'
-		}, {
-			_id: 4,
-			name: 'Stormtroopers',
-			username: 'Stormtroopers',
-			users: ['Joe Perkins', 'Mark Johnson', 'Peter Carlson'],
-			group: true,
-			img: '/assets/images/group_1.jpg',
-			newMessage: true,
-			active: false
+			status: 'Speaking with Darth Vader',
+			online: false
 		}];
 
 		//Fake chats
 		$scope.chats = [{
 			_id: 1,
-			name: 'Joe Perkins',
-			email: 'perks@foobar.com',
-			img: 'assets/images/profile_2.jpg',
+			user: $scope.contacts[0],
 			newMessage: false,
 			active: false,
 			online: true,
 			status: 'Shooting some Jedi'
 		}, {
 			_id: 2,
-			name: 'Mark Johnson',
-			email: 'mark@foobar.com',
-			img: '/assets/images/profile_3.jpg',
+			user: $scope.contacts[1],
 			newMessage: true,
 			active: false,
 			online: true,
 			status: 'Just standing there'
 		}, {
 			_id: 3,
-			name: 'Peter Carlson',
-			email: 'pita@foobar.com',
-			img: '/assets/images/profile_4.jpg',
+			user: $scope.contacts[2],
 			newMessage: false,
 			active: false,
 			online: true,

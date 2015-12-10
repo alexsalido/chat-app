@@ -1,3 +1,11 @@
 md-sidenav.contact-list {
     min-width: 100%;
 }
+
+.online {
+	color: green !important;
+}
+
+.offline {
+	color: red !important;
+}

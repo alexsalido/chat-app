@@ -1,8 +1,4 @@
-md-sidenav.profile-info {
-    min-width: 100%;
-}
-
-.profile-photo {
+.chat-photo {
     position: relative;
     width: 50%;
     margin: 1em auto;
@@ -11,16 +7,16 @@ md-sidenav.profile-info {
     overflow: hidden;
 }
 
-.profile-photo:hover .image-overlay {
+.chat-photo:hover .image-overlay {
     opacity: 0.8;
 }
 
-.profile-photo img {
+.chat-photo img {
     border-radius: 50%;
 }
 
 .image-overlay {
-	cursor: pointer;
+    cursor: pointer;
     position: absolute;
     width: 100%;
     height: 100%;
@@ -33,21 +29,4 @@ md-sidenav.profile-info {
 .image-overlay p {
     font-size: 1.5em;
     color: white;
-}
-
-.profile-info h4 {
-    color: darkgray;
-}
-
-.profile-info h4,
-h5 {
-    margin: 0 1em;
-    font-weight: normal;
-}
-
-.profile-status span,
-.profile-status md-input-container {
-    display: inline-block;
-    width: 80%;
-    margin: 0;
 }

@@ -6,15 +6,22 @@
 	<h1 ng-if="activeChat.group" class="md-toolbar-tools">Group info</h1>
 </md-toolbar>
 <md-content class="contact-info" flex>
-	<div layout="column" layout-align="center center" layout-padding>
-		<img ng-src="{{activeChat.img || 'assets/images/profile_white.png'}}" alt="{{activeChat.name}}" class="round-img chat-img">
+	<div layout="column" layout-align="center center" class="chat-photo">
+		<div class="image-overlay" ng-click="" ng-show="activeChat.group">
+			<md-icon md-svg-icon="camera" class="s48"></md-icon>
+			<p>
+				Click here to change photo
+			</p>
+		</div>
+		<img ng-src="{{activeChat.user.img || activeChat.img || 'assets/images/profile_white.png'}}" alt="{{activeChat.user.name}}">
 	</div>
 	<div ng-if="!activeChat.group" layout-padding>
 		<h4>Status</h4>
-		<h5>{{activeChat.status}}</h5>
+		<h5>{{activeChat.user.status}}</h5>
 		<h4>Email</h4>
-		<h5>{{activeChat.email}}</h5>
+		<h5>{{activeChat.user.email}}</h5>
 	</div>
+	<!-- shown if active chat is a group-->
 	<div ng-if="activeChat.group" layout-padding>
 		<h4>Name</h4>
 		<h5 class="group-name">
@@ -52,6 +59,7 @@
 			</md-list-item>
 		</md-list>
 	</div>
+	<!-- End -->
 	<div layout="column" layout-align="center center" layout-padding>
 		<md-button ng-click="deleteChat('contact-info')" class="md-raised md-warn" style="width: 90%;">
 			<span ng-if="activeChat.group">EXIT GROUP</span>

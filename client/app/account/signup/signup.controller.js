@@ -13,16 +13,10 @@ angular.module('chatApp')
 
 		//Signup form object schema
 		$scope.formFields = {
-			firstname: {
-				label: 'First Name',
+			name: {
+				label: 'Name',
 				type: 'text',
 				pattern: /^[A-Z\-']+$/i
-			},
-			lastname: {
-				label: 'Last Name',
-				type: 'text',
-				pattern: /^[A-Z\-']+$/i
-
 			},
 			email: {
 				label: 'Email',

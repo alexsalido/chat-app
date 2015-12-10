@@ -94,7 +94,21 @@ md-icon.red svg {
     fill: #FF0000;
 }
 
-.round-img {
-    border-radius: 50%;
-    height: 80%;
+.s48 {
+	height: 48px;
+	width: 48px;
+}
+
+.round-img-container {
+	overflow: hidden;
+	display: inline-block;
+	border-radius: 50%;
+	padding: 0;
+	height: 2.3em;
+	width: 2.3em
+}
+
+.round-img-container img {
+	width: 100%;
+	height: 100%;
 }

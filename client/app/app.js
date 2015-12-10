@@ -40,6 +40,7 @@ angular.module('chatApp', [
 		.icon('done', 'assets/svg/done.svg')
 		.icon('add', 'assets/svg/add.svg')
 		.icon('person_add', 'assets/svg/person_add.svg')
+		.icon('camera', 'assets/svg/camera.svg')
 
   })
 

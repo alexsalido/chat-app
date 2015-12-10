@@ -1,14 +1,14 @@
 <md-content flex>
-	<md-content flex ng-if="!requests">
+	<md-content flex ng-show="{{requests}}">
 		<md-list ng-cloak>
 			<md-subheader class="md-primary">Pending requests</md-subheader>
-			<md-list-item ng-repeat="request in pending" ng-click="" class="md-2-line">
+			<md-list-item ng-repeat="request in pending" ng-click="" class="md-3-line">
 				<img alt="{{ request.name }}" ng-src="{{request.img || 'assets/images/profile_gray.png'}}" class="md-avatar" />
 				<div class="md-list-item-text">
 					<h3>{{ request.name }}</h3>
-					<p>
+					<h4>
 						{{request.email}}
-					</p>
+					</h4>
 				</div>
 				<md-button class="md-icon-button md-exclude">
 					<md-icon md-svg-icon="done" ng-click="handleFriendRequest(request.email, 'accept')" aria-label="Accept Request" class="md-primary green"></md-icon>
@@ -19,15 +19,21 @@
 			</md-list-item>
 		</md-list>
 	</md-content>
-	<md-divider></md-divider>
+	<md-divider ng-show="{{requests}}"></md-divider>
 	<md-content flex>
 		<md-list ng-cloak>
-			<md-list-item ng-repeat="contact in contacts" ng-click="opencontact(contact._id, $event)" ng-class="{'active': contact.active}" class="md-2-line">
+			<md-list-item ng-repeat="contact in contacts track by $index" ng-click="opencontact(contact._id, $event)" ng-class="{'active': contact.active}" class="md-2-line">
 				<img alt="{{ contact.name }}" ng-src="{{contact.img || 'assets/images/profile_gray.png'}}" class="md-avatar" />
 				<div class="md-list-item-text">
 					<h3>{{ contact.name }}</h3>
-					<p>
+					<h4>
 						{{contact.status}}
+					</h4>
+					<p ng-show="contact.online" class="online">
+						online
+					</p>
+					<p ng-show="!contact.online" class="offline">
+						offline
 					</p>
 				</div>
 			</md-list-item>

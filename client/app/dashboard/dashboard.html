@@ -3,7 +3,9 @@
 		<md-content flex layout="column">
 			<md-toolbar>
 				<div class="md-toolbar-tools">
-					<img class="round-img" alt="{{user.name}}" ng-click="toggleProfileInfo()" ng-src="{{user.img || 'assets/images/profile_white.png'}}" style="outline: none; cursor: pointer;" />
+					<div class="round-img-container">
+						<img class="round-img" alt="{{user.name}}" ng-click="toggleProfileInfo()" ng-src="{{user.img || 'assets/images/profile_white.png'}}" style="outline: none; cursor: pointer;" />
+					</div>
 					<span flex></span>
 					<md-button class="md-icon-button" aria-label="Contacts" ng-click="toggleContactList()">
 						<md-icon md-svg-icon="contacts"></md-icon>
@@ -52,7 +54,7 @@
 				</md-toolbar>
 				<search-box placeholder="Search for contacts"></search-box>
 				<md-divider></md-divider>
-				<contact-list></contact-list>
+				<contact-list requests="true"></contact-list>
 			</md-sidenav>
 		</md-content>
 	</div>
