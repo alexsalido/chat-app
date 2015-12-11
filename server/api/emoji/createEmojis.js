@@ -6,48 +6,26 @@ var objects = path.join(__dirname, 'objects.emojis.txt');
 var places = path.join(__dirname, 'places.emojis.txt');
 var symbols = path.join(__dirname, 'symbols.emojis.txt');
 var totalFiles = 5;
-var emojis;
+var emojis = {};
 var readFiles = 0;
 
 
 
-function readFile() {
+function readFile(fileName, property) {
 	return new Promise(function (resolve, reject) {
-		if (emojis !== undefined) resolve(emojis);
+		if (emojis[property] !== undefined) resolve(emojis[property])
 		else {
-			emojis = {};
-			
-			fs.readFile(people, function (err, data) {
-				emojis.people = data.toString().split('\n');
-				console.log('people')
-				if (readFiles++ === totalFiles) resolve();
-			});
-
-			fs.readFile(nature, function (err, data) {
-				emojis.nature = data.toString().split('\n');
-				console.log('nature')
-				if (readFiles++ === totalFiles) resolve();
-			});
-
-			fs.readFile(objects, function (err, data) {
-				emojis.objects = data.toString().split('\n');
-				console.log('objects');
-				if (readFiles++ === totalFiles) resolve();
-			});
-
-			fs.readFile(places, function (err, data) {
-				emojis.places = data.toString().split('\n');
-				console.log('places')
-				if (readFiles++ === totalFiles) resolve();
-			});
-
-			fs.readFile(symbols, function (err, data) {
-				emojis.symbols = data.toString().split('\n');
-				console.log('symbols')
-				if (readFiles++ === totalFiles) resolve();
+			fs.readFile(fileName, function (err, data) {
+				if (err) {
+					return reject(err);
+				}
+				emojis[property] = data.toString().split('\n')
+				resolve(emojis[property]);
 			});
 		}
 	});
 }
 
-module.exports = readFile;
+module.exports = function () {
+	return Promise.all([readFile(people, 'people'), readFile(nature, 'nature'), readFile(objects, 'objects'), readFile(places, 'places'), readFile(symbols, 'symbols')])
+};
