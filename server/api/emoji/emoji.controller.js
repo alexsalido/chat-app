@@ -5,7 +5,7 @@ var Emoji = require('./emoji.model');
 var readFile = require('./createEmojis');
 // Get list of emojis
 exports.index = function(req, res) {
-	readFile(function (arr) {
+	readFile().then(function(arr) {
 		return res.status(200).json(arr);
 	});
   // Emoji.find(function (err, emojis) {

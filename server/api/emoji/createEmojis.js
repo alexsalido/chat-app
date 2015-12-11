@@ -11,12 +11,12 @@ var readFiles = 0;
 
 
 
-function readFile(callback) {
-	if (emojis !== undefined) callback(emojis);
-	else {
-		emojis = {};
-		var promise = new Promise(function (resolve, reject) {
-
+function readFile() {
+	return new Promise(function (resolve, reject) {
+		if (emojis !== undefined) resolve(emojis);
+		else {
+			emojis = {};
+			
 			fs.readFile(people, function (err, data) {
 				emojis.people = data.toString().split('\n');
 				console.log('people')
@@ -46,13 +46,8 @@ function readFile(callback) {
 				console.log('symbols')
 				if (readFiles++ === totalFiles) resolve();
 			});
-		});
-
-		promise.then(function () {
-			callback(emojis);
-			console.log('promise resolved');
-		});
-	}
+		}
+	});
 }
 
 module.exports = readFile;
