@@ -53,7 +53,7 @@
 	<md-content flex>
 		<message class="message-wrapper them">
 			<div class="circle-wrapper">
-				<img class="no-outline" alt="{{activeChat.user.name}}" ng-src="{{activeChat.user.img || 'assets/images/profile_white.png'}}"/>
+				<img class="no-outline" alt="{{activeChat.user.name}}" ng-src="{{activeChat.user.img || 'assets/images/profile_white.png'}}" />
 			</div>
 			<div class="text-wrapper">Hello!</div>
 		</message>
@@ -75,14 +75,13 @@
 				Mauris placerat eleifend leo</div>
 		</message>
 	</md-content>
-	<md-toolbar>
+	<md-content flex id="emojis-box"></md-content>
+	<md-toolbar id="message-box">
 		<div class="md-toolbar-tools">
-			<md-button class="md-icon-button" aria-label="Send Attachment">
+			<md-button class="md-icon-button" aria-label="Send Attachment" ng-click="showEmojis($event)">
 				<md-icon md-svg-icon="insert_emoticon"></md-icon>
 			</md-button>
-			<div id="message-box">
-				<textarea type="text" placeholder="Type a message"></textarea>
-			</div>
+			<textarea type="text" placeholder="Type a message"></textarea>
 			<span flex></span>
 			<md-button class="md-icon-button" aria-label="Send">
 				<md-icon md-svg-icon="send"></md-icon>

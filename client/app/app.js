@@ -9,7 +9,7 @@ angular.module('chatApp', [
   'ngMaterial',
   'ngMessages'
 ])
-  .config(function ($routeProvider, $locationProvider, $httpProvider, $mdIconProvider) {
+  .config(function ($routeProvider, $locationProvider, $httpProvider, $mdIconProvider, emojifyProvider) {
     $routeProvider
       .otherwise({
         redirectTo: '/'
@@ -42,6 +42,8 @@ angular.module('chatApp', [
 		.icon('person_add', 'assets/svg/person_add.svg')
 		.icon('camera', 'assets/svg/camera.svg')
 		.icon('scribble', 'assets/svg/scribble.svg')
+
+		emojifyProvider.setConfig('assets/emojis');
 
   })
 

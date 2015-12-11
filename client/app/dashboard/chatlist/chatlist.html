@@ -3,7 +3,7 @@
 		<md-list-item ng-repeat="chat in chats" ng-click="openChat(chat._id, $event)" ng-class="{'active': chat.active}">
 			<img alt="{{ chat.user.name }}" ng-src="{{chat.user.img || chat.img || 'assets/images/profile_gray.png'}}" class="md-avatar" />
 			<p>{{ chat.user.name || chat.name}}</p>
-			<md-icon md-svg-icon="chat_bubble" ng-click="openChat(chat.user._id, $event)" aria-label="Unread Message" class="md-secondary gray" ng-class="{'new-message': chat.newMessage}"></md-icon>
+			<md-icon md-svg-icon="chat_bubble" ng-click="openChat(chat._id, $event)" aria-label="Unread Message" class="md-secondary gray" ng-class="{'new-message': chat.newMessage}"></md-icon>
 		</md-list-item>
 	</md-list>
 </md-content>
