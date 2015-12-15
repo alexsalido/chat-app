@@ -22,17 +22,26 @@
 	<md-divider ng-show="{{requests}}"></md-divider>
 	<md-content flex>
 		<md-list ng-cloak>
-			<md-list-item ng-repeat="contact in contacts track by $index" ng-click="opencontact(contact._id, $event)" ng-class="{'active': contact.active}" class="md-2-line">
+			<md-list-item ng-repeat="contact in (contacts | filter:{ online: 'true' }) | filter:contactListSearch | orderBy:'name' track by $index" ng-click="opencontact(contact._id, $event)" class="md-2-line">
 				<img alt="{{ contact.name }}" ng-src="{{contact.img || 'assets/images/profile_gray.png'}}" class="md-avatar" />
 				<div class="md-list-item-text">
 					<h3>{{ contact.name }}</h3>
 					<h4>
 						{{contact.status}}
 					</h4>
-					<p ng-show="contact.online" class="online">
+					<p class="online">
 						online
 					</p>
-					<p ng-show="!contact.online" class="offline">
+				</div>
+			</md-list-item>
+			<md-list-item ng-repeat="contact in (contacts | filter:{ online: 'false' }) | filter:contactListSearch | orderBy:'name' track by $index" class="md-2-line disabled">
+				<img alt="{{ contact.name }}" ng-src="{{contact.img || 'assets/images/profile_gray.png'}}" class="md-avatar" />
+				<div class="md-list-item-text">
+					<h3>{{ contact.name }}</h3>
+					<h4>
+						{{contact.status}}
+					</h4>
+					<p class="offline">
 						offline
 					</p>
 				</div>

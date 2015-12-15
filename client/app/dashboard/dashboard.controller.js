@@ -3,6 +3,8 @@
 angular.module('chatApp')
 	.controller('DashboardCtrl', function ($scope, $location, Auth, $mdSidenav, $mdDialog, $mdBottomSheet, $mdToast) {
 
+		$scope.searchbox = 'p';
+		
 		$scope.user = {
 			status: 'Force choking my commanders',
 			img: '/assets/images/profile_1.jpg',
@@ -193,4 +195,14 @@ angular.module('chatApp')
 			});
 		};
 
+		$scope.newContact = function (ev) {
+			$mdDialog.show({
+				scope: $scope,
+				preserveScope: true,
+				templateUrl: 'app/dashboard/views/newcontact.html',
+				parent: angular.element(document.body),
+				targetEvent: ev,
+				clickOutsideToClose: true
+			});
+		};
 	});

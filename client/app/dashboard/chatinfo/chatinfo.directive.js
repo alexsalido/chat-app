@@ -38,19 +38,7 @@ angular.module('chatApp')
 
 				$scope.showContactList = function (ev) {
 					$mdDialog.show({
-						template: '<md-dialog aria-label="Add Participant" ng-cloak="ng-cloak" style="width: 30%;">' +
-							'<md-toolbar class="md-toolbar-tools">' +
-							'<md-button ng-click="close()" class="md-icon-button">' +
-							'<md-icon md-svg-src="close" aria-label="Close Contact List"></md-icon>' +
-							'</md-button>' +
-							'<h1>Add participants</h1>' +
-							'</md-toolbar>' +
-							'<md-content class="md-padding autocomplete" layout="column">' +
-								' <md-contact-chips ng-model="selected" md-contacts="querySearch($query)" md-contact-name="name" md-contact-image="img" ' +  'md-contact-email="email" md-require-match="true" md-highlight-flags="i" filter-selected="true" placeholder="Type to add participants">' +
-								'</md-contact-chips>' +
-							' </md-content>' +
-							'<contact-list requests="false" close="toggleContactList"></contact-list>' +
-							'</md-dialog>',
+						templateUrl: 'app/dashboard/views/addparticipant.html',
 						scope: $scope,
 						preserveScope: true,
 						parent: angular.element(document.body),

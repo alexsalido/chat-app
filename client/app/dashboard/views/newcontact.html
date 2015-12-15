@@ -1,0 +1,32 @@
+<!-- New contact dialog -->
+<md-dialog aria-label="New Contact" ng-cloak="ng-cloak" style="width: 30%;">
+	<form name="newcontactForm" ng-submit="addContact(newcontactForm)" novalidate>
+		<md-toolbar>
+			<div class="md-toolbar-tools">
+				<h2>New contact</h2>
+				<span flex="flex"></span>
+				<md-button ng-click="cancel()" class="md-icon-button">
+					<md-icon md-svg-src="assets/svg/close.svg" aria-label="Close dialog"></md-icon>
+				</md-button>
+			</div>
+		</md-toolbar>
+		<md-content>
+			<div layout layout-padding>
+				<md-input-container flex>
+					<label>Email</label>
+					<input name="email" type="email" ng-model="newcontact.email" mongoose-error required/>
+					<div ng-messages="newgroupForm.name.$error">
+						<div ng-message="required">This is required.</div>
+						<div ng-message="email">Invalid email</div>
+						<div ng-message="mongoose" ng-show="submitted">{{errors.other}}</div>
+					</div>
+				</md-input-container>
+			</div>
+		</md-content>
+		<md-actions layout="row">
+			<span flex="flex"></span>
+			<md-button ng-click="cancel()">Cancel</md-button>
+			<md-button type="submit">Create</md-button>
+		</md-actions>
+	</form>
+</md-dialog>

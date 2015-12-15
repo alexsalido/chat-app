@@ -1,0 +1,23 @@
+<md-dialog aria-label="Add Participant" ng-cloak="ng-cloak" style="width: 30%;">
+	<md-toolbar class="md-toolbar-tools">
+		<md-button ng-click="close()" class="md-icon-button">
+			<md-icon md-svg-src="close" aria-label="Close Contact List"></md-icon>
+		</md-button>
+		<h1>Add participants</h1>
+	</md-toolbar>
+	<md-content class="md-padding autocomplete" layout="column">
+		<md-contact-chips ng-model="selected" md-contacts="querySearch($query)" md-contact-name="name" md-contact-image="img" md-contact-email="email" md-require-match="true" md-highlight-flags="i" filter-selected="true" placeholder="Type to add participants">
+		</md-contact-chips>
+	</md-content>
+	<md-list>
+		<md-list-item ng-repeat="contact in contactsClone | orderBy: 'name' track by $index" class="md-2-line">
+			<img alt="{{ contact.name }}" ng-src="{{contact.img || 'assets/images/profile_gray.png'}}" class="md-avatar" />
+			<div class="md-list-item-text">
+				<h3>{{ contact.name }}</h3>
+				<h4>
+					{{contact.status}}
+				</h4>
+			</div>
+		</md-list-item>
+	</md-list>
+</md-dialog>
