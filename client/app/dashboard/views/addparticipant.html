@@ -10,7 +10,7 @@
 		</md-contact-chips>
 	</md-content>
 	<md-list>
-		<md-list-item ng-repeat="contact in contactsClone | orderBy: 'name' track by $index" class="md-2-line">
+		<md-list-item ng-repeat="contact in contactsClone | orderBy: 'name' track by $index" class="md-2-line" ng-if="selected.indexOf(contact) < 0 && activeChat.members.indexOf(contact) < 0">
 			<img alt="{{ contact.name }}" ng-src="{{contact.img || 'assets/images/profile_gray.png'}}" class="md-avatar" />
 			<div class="md-list-item-text">
 				<h3>{{ contact.name }}</h3>
@@ -20,4 +20,9 @@
 			</div>
 		</md-list-item>
 	</md-list>
+	<md-actions layout="row">
+		<span flex="flex"></span>
+		<md-button ng-click="cancel()">Cancel</md-button>
+		<md-button ng-click="addParticipants()">Add</md-button>
+	</md-actions>
 </md-dialog>

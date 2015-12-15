@@ -4,7 +4,7 @@ angular.module('chatApp')
 	.controller('DashboardCtrl', function ($scope, $location, Auth, $mdSidenav, $mdDialog, $mdBottomSheet, $mdToast) {
 
 		$scope.searchbox = 'p';
-		
+
 		$scope.user = {
 			status: 'Force choking my commanders',
 			img: '/assets/images/profile_1.jpg',
@@ -86,7 +86,7 @@ angular.module('chatApp')
 		}, {
 			_id: 4,
 			name: 'Stormtroopers',
-			members: [$scope.contacts[0], $scope.contacts[1], $scope.contacts[2]],
+			members: [$scope.contacts[0], $scope.contacts[2]],
 			group: true,
 			img: '/assets/images/group_1.jpg',
 			newMessage: true,
