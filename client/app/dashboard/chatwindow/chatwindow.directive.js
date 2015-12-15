@@ -8,6 +8,8 @@ angular.module('chatApp')
 			replace: true,
 			controller: function ($scope) {
 
+				$scope.activeTabIndex = 0;
+
 				$scope.toggleContactInfo = function () {
 					$mdSidenav('contact-info').toggle()
 				};

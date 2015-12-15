@@ -5,10 +5,19 @@ angular.module('chatApp')
 		return {
 			restrict: 'EA',
 			link: function (scope, element, attrs) {
-				for(var i = 0; i < 100; i++) {
-					element.append(':' + emojify.emojiNames[i] + ': ');
+				var category = attrs.category;
+				if (emojify.DOMLoaded[category]) element.append(emojify.DOMLoaded[category]);
+				else {
+					if (category) {
+						var emojis = emojify.emojis[category];
+						for (var i = 0; i < emojis.length; i++) {
+							element.append(emojis[i] + ' ')
+						}
+					}
+					emojify.run(element[0]);
+					emojify.DOMLoaded[category] = element.children();
 				}
-				emojify.run(element[0]);
+
 			}
 		};
 	}]);

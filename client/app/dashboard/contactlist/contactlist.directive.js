@@ -15,7 +15,6 @@ angular.module('chatApp')
 				};
 			},
 			link: function (scope, element, attrs) {
-				console.log(attrs.requests);
 				scope.requests = attrs.requests || false;
 			}
 		};

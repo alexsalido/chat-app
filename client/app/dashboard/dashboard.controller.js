@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('chatApp')
-	.controller('DashboardCtrl', function ($scope, $location, Auth, $mdSidenav, $mdDialog, $mdBottomSheet) {
+	.controller('DashboardCtrl', function ($scope, $location, Auth, $mdSidenav, $mdDialog, $mdBottomSheet, $mdToast) {
 
 		$scope.user = {
 			status: 'Force choking my commanders',
@@ -181,17 +181,16 @@ angular.module('chatApp')
 		};
 
 
-		var emojisBox = false;
 		$scope.showEmojis = function (ev) {
-			if (emojisBox) $mdBottomSheet.hide()
-			else {
-				$mdBottomSheet.show({
-					templateUrl: 'app/dashboard/views/emojis.html',
-					parent: document.getElementById('emojis-box'),
-					clickOutsideToClose: false,
-					targetEvent: ev
-				})
-			}
-			emojisBox = !emojisBox;
-		}
+			var element = document.getElementById('chat-box');
+			$mdBottomSheet.show({
+				templateUrl: 'app/dashboard/views/emojis.html',
+				parent: element,
+				scope: $scope,
+				preserveScope: true,
+				clickOutsideToClose: true,
+				targetEvent: ev
+			});
+		};
+
 	});

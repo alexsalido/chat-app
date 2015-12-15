@@ -1,14 +1,28 @@
-<md-bottom-sheet class="md-list md-has-header" ng-cloak style="height: 100%; padding-left: 0; padding-right: 0;">
-	<md-tabs md-dynamic-height md-border-bottom>
-      <md-tab label="one">
-        <md-content class="md-padding">
-		  <emojis></emojis>
-      </md-tab>
-      <md-tab label="one">
-        <md-content class="md-padding">
-          <h1 class="md-display-2">Tab One</h1>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla venenatis ante augue. Phasellus volutpat neque ac dui mattis vulputate. Etiam consequat aliquam cursus. In sodales pretium ultrices. Maecenas lectus est, sollicitudin consectetur felis nec, feugiat ultricies mi.</p>
-        </md-content>
-      </md-tab>
-  </md-tabs>
+<md-bottom-sheet ng-cloak>
+	<v-tabs class="vTabs--default" horizontal active="activeTabIndex" style="padding: 7px 0;">
+		<v-tab><md-icon md-svg-icon="emojis-people"></md-icon></v-tab>
+		<v-tab><md-icon md-svg-icon="emojis-nature"></md-icon></v-tab>
+		<v-tab><md-icon md-svg-icon="emojis-objects"></md-icon></v-tab>
+		<v-tab><md-icon md-svg-icon="emojis-places"></md-icon></v-tab>
+		<v-tab><md-icon md-svg-icon="emojis-symbols"></md-icon></v-tab>
+	</v-tabs>
+
+	<v-pages class="vPages--default" active="activeTabIndex">
+		<v-page style="overflow-x: hidden; height: 7em;">
+			<emojis category="people"></emojis>
+		</v-page>
+		<v-page style="overflow-x: hidden; height: 7em;">
+			<emojis category="nature"></emojis>
+		</v-page>
+		<v-page style="overflow-x: hidden; height: 7em;">
+			<emojis category="objects"></emojis>
+		</v-page>
+		<v-page style="overflow-x: hidden; height: 7em;">
+			<emojis category="places"></emojis>
+		</v-page>
+		<v-page style="overflow-x: hidden; height: 7em;">
+			<emojis category="symbols"></emojis>
+		</v-page>
+	</v-pages>
 </md-bottom-sheet>
+<!-- style="padding: 0; padding-left: 0; padding-right: 0; overflow-x: hidden;" -->

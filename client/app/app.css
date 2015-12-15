@@ -118,4 +118,6 @@ md-icon.red svg {
     height: 1.5em;
     display: inline-block;
     margin-bottom: -0.25em;
+	cursor: pointer;
+	margin: 0.5em;
 }
