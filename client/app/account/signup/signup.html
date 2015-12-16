@@ -1,4 +1,4 @@
-<md-dialog aria-label="Sign Up" ng-cloak="ng-cloak" style="width: 50%;">
+<md-dialog aria-label="Sign Up" ng-cloak="ng-cloak" flex-gt-md="70" flex-xs="95" flex-gt-xs="95" style="min-width: 420px;">
 	<form name="signupForm" ng-submit="register(signupForm)" novalidate>
 		<md-toolbar>
 			<div class="md-toolbar-tools">
@@ -10,8 +10,8 @@
 			</div>
 		</md-toolbar>
 		<md-content layout-padding ng-repeat="(key, value) in formFields" auto-focus="{{$index}}">
-			<div layout layout-sm="column">
-				<md-input-container flex>
+			<div layout-gt-xs="row">
+				<md-input-container class="md-block" flex-gt-xs>
 					<label>{{value.label}}</label>
 					<input name="{{key}}" type="{{value.type}}" ng-model="user[key]" ng-pattern="{{'value.pattern' || '/.*/'}}" ng-minlength="{{value.minLength}}" ng-maxlength="{{value.maxLength}}" mongoose-error required/>
 					<div ng-messages="signupForm[key].$error">
@@ -23,7 +23,7 @@
 						<div ng-message="mongoose">{{errors[key]}}</div>
 					</div>
 				</md-input-container>
-				<md-input-container flex ng-if="value.confirmation">
+				<md-input-container class="md-block" flex-gt-xs ng-if="value.confirmation">
 					<label>{{value.label}} confirmation</label>
 					<input name="{{key + '-confirmation'}}" type="{{value.type}}" ng-model="user[key + '-confirmation']" ng-minlength="{{value.minLength}}" ng-maxlength="{{value.maxLength}}" compare-to="user[key]" required/>
 					<div ng-messages="signupForm[key + '-confirmation'].$error">

@@ -1,36 +1,14 @@
 #dashboard {
-    min-height: 95vh;
-    max-height: 95vh;
+    max-height: 100vh;
     margin: 0 auto;
-    top: 1em;
+    /*top: 1em;*/
     position: relative;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
 }
 
-#dashboard:before,
-#dashboard:after {
-    content: "";
-    position: absolute;
-    z-index: -1;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
-    top: 50%;
-    bottom: 0;
-    left: 10px;
-    right: 10px;
-    border-radius: 100px / 10px;
-}
+div.right-toolbar {}
 
-#dashboard > div {
-    min-height: 95vh;
-    max-height: 95vh;
-    background-color: white;
-}
-
-div.right-toolbar {
-    border-left: 1px solid darkgray;
-}
-
-div.left-toolbar {
+.left-toolbar {
+    border-right: 1px solid darkgray;
 }
 
 md-sidenav.contact-list {

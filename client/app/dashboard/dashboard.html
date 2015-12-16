@@ -1,6 +1,6 @@
-<div id="dashboard" flex="80" ng-controller="DashboardCtrl" layout>
-	<div class="left-toolbar" flex="30" layout="column" ng-cloak>
-		<md-content flex layout="column">
+<div id="dashboard" flex-sm="100" flex-md="100" flex-gt-md="80" class="md-whiteframe-z2" ng-controller="DashboardCtrl" layout style="min-height: 480px;">
+	<md-sidenav flex="auto" class="md-sidenav-left left-toolbar" md-component-id="left-toolbar" layout="column" ng-cloak md-is-locked-open="$mdMedia('gt-sm')">
+		<md-content flex>
 			<md-toolbar>
 				<div class="md-toolbar-tools">
 					<div class="round-img-container">
@@ -61,8 +61,8 @@
 				<contact-list requests="true"></contact-list>
 			</md-sidenav>
 		</md-content>
-	</div>
-	<div class="right-toolbar" flex="70" layout="column" ng-cloak>
+	</md-sidenav>
+	<div flex-gt-sm="75" class="right-toolbar" layout="column" ng-cloak>
 		<chat-window></chat-window>
 	</div>
 </div>

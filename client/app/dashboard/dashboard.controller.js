@@ -76,7 +76,8 @@ angular.module('chatApp')
 			active: false,
 			online: true,
 			status: 'Just standing there'
-		}, {
+		}
+		, {
 			_id: 3,
 			user: $scope.contacts[2],
 			newMessage: false,
@@ -91,7 +92,9 @@ angular.module('chatApp')
 			img: '/assets/images/group_1.jpg',
 			newMessage: true,
 			active: false
-		}];
+		}
+
+	];
 
 		$scope.activeChat = $scope.chats[0];
 
@@ -205,4 +208,8 @@ angular.module('chatApp')
 				clickOutsideToClose: true
 			});
 		};
+
+		$scope.toggleLeftToolbar = function () {
+			$mdSidenav('left-toolbar').toggle()
+		}
 	});

@@ -1,6 +1,9 @@
 <md-content flex layout="column" style="overflow: hidden;" id="chat-box">
 	<md-toolbar>
 		<div class="md-toolbar-tools">
+			<md-button class="md-icon-button" aria-label="Show Sidenav" ng-click="toggleLeftToolbar()" hide-gt-sm>
+				<md-icon md-svg-icon="more_horiz"></md-icon>
+			</md-button>
 			<div class="round-img-container">
 				<img ng-src="{{activeChat.user.img || activeChat.img || 'assets/images/profile_white.png'}}" alt="{{activeChat.user.name}}">
 			</div>

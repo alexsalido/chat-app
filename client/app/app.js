@@ -32,6 +32,7 @@ angular.module('chatApp', [
 			.icon('fingerprint', 'assets/svg/fingerprint.svg')
 			.icon('info', 'assets/svg/info.svg')
 			.icon('more_vert', 'assets/svg/more_vert.svg')
+			.icon('more_horiz', 'assets/svg/more_horiz.svg')
 			.icon('search', 'assets/svg/search.svg')
 			.icon('search_black', 'assets/svg/search_black.svg')
 			.icon('twitter', 'assets/svg/twitter.svg')

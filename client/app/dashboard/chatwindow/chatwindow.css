@@ -88,9 +88,9 @@ message {
     right: -9px;
 }
 
-md-sidenav {
+/*md-sidenav {
 	min-width: 40%;
-}
+}*/
 
 .chat-img {
 	margin: 2em;

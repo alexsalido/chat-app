@@ -10,39 +10,6 @@
     font-style: normal;
 }
 
-
-/**
- * App-wide Styles
- */
-
-.browsehappy {
-    margin: 0.2em 0;
-    background: #ccc;
-    color: #000;
-    padding: 0.2em 0;
-}
-
-
-/* Responsive: Portrait tablets and up */
-
-@media screen and (min-width: 768px) {
-    .container {
-        max-width: 730px;
-    }
-}
-
-
-/* Google Fonts for Angular Material Icons */
-
-@font-face {
-    font-family: 'Material Icons';
-    font-style: normal;
-    font-weight: 400;
-    src: url(MaterialIcons-Regular.eot);
-    /* For IE6-8 */
-    src: local('/fonts/Material Icons'), local('/fonts/MaterialIcons-Regular'), url(fonts/MaterialIcons-Regular.woff2) format('woff2'), url(fonts/MaterialIcons-Regular.woff) format('woff'), url(fonts/MaterialIcons-Regular.ttf) format('truetype');
-}
-
 .material-icons {
     font-family: 'Material Icons';
     font-weight: normal;
@@ -70,7 +37,6 @@
 
 body,
 html {
-    /*background-color: rgb(63, 81, 181);*/
     background-color: lightgray;
 }
 
