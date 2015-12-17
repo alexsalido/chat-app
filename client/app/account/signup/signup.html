@@ -1,44 +1,46 @@
-<md-dialog aria-label="Sign Up" ng-cloak="ng-cloak" flex-gt-md="70" flex-xs="95" flex-gt-xs="95" style="min-width: 420px;">
+<md-dialog aria-label="Sign Up" ng-cloak="ng-cloak" flex-xs="95" flex-gt-xs="80" flex-gt-sm="60" flex-gt-md="50" flex-gt-lg="40">
+	<md-toolbar>
+		<div class="md-toolbar-tools">
+			<h2>Sign Up</h2>
+			<span flex="flex"></span>
+			<md-button ng-click="cancel()" class="md-icon-button">
+				<md-icon md-svg-src="assets/svg/close.svg" aria-label="Close dialog"></md-icon>
+			</md-button>
+		</div>
+	</md-toolbar>
 	<form name="signupForm" ng-submit="register(signupForm)" novalidate>
-		<md-toolbar>
-			<div class="md-toolbar-tools">
-				<h2>Sign Up</h2>
-				<span flex="flex"></span>
-				<md-button ng-click="cancel()" class="md-icon-button">
-					<md-icon md-svg-src="assets/svg/close.svg" aria-label="Close dialog"></md-icon>
-				</md-button>
-			</div>
-		</md-toolbar>
-		<md-content layout-padding ng-repeat="(key, value) in formFields" auto-focus="{{$index}}">
-			<div layout-gt-xs="row">
-				<md-input-container class="md-block" flex-gt-xs>
-					<label>{{value.label}}</label>
-					<input name="{{key}}" type="{{value.type}}" ng-model="user[key]" ng-pattern="{{'value.pattern' || '/.*/'}}" ng-minlength="{{value.minLength}}" ng-maxlength="{{value.maxLength}}" mongoose-error required/>
-					<div ng-messages="signupForm[key].$error">
-						<div ng-message="required">This is required.</div>
-						<div ng-if="value.pattern" ng-message="pattern">Invalid characters.</div>
-						<div ng-if="value.minLength" ng-message="minlength">Insufficient characters.</div>
-						<div ng-if="value.maxLength" ng-message="maxlength">Too many characters.</div>
-						<div ng-if="value.type == 'email'" ng-message="email">Invalid email.</div>
-						<div ng-message="mongoose">{{errors[key]}}</div>
-					</div>
-				</md-input-container>
-				<md-input-container class="md-block" flex-gt-xs ng-if="value.confirmation">
-					<label>{{value.label}} confirmation</label>
-					<input name="{{key + '-confirmation'}}" type="{{value.type}}" ng-model="user[key + '-confirmation']" ng-minlength="{{value.minLength}}" ng-maxlength="{{value.maxLength}}" compare-to="user[key]" required/>
-					<div ng-messages="signupForm[key + '-confirmation'].$error">
-						<div ng-message="required">This is required.</div>
-						<div ng-if="value.minLength" ng-message="minlength">Insufficient characters.</div>
-						<div ng-if="value.maxLength" ng-message="maxlength">Too many characters.</div>
-						<div ng-if="value.type == 'email'" ng-message="email">Invalid email.</div>
-						<div ng-message="compareTo">Confirmation doesn't match.</div>
-					</div>
-				</md-input-container>
+		<md-content layout-padding>
+			<div layout="column">
+				<span layout-gt-xs="row" ng-repeat="(key, value) in formFields" auto-focus="{{$index}}">
+					<md-input-container class="md-block" flex-gt-xs>
+						<label>{{value.label}}</label>
+						<input name="{{key}}" type="{{value.type}}" ng-model="user[key]" ng-pattern="{{'value.pattern' || '/.*/'}}" ng-minlength="{{value.minLength}}" ng-maxlength="{{value.maxLength}}" mongoose-error required/>
+						<div ng-messages="signupForm[key].$error">
+							<div ng-message="required">This is required.</div>
+							<div ng-if="value.pattern" ng-message="pattern">Invalid characters.</div>
+							<div ng-if="value.minLength" ng-message="minlength">Insufficient characters.</div>
+							<div ng-if="value.maxLength" ng-message="maxlength">Too many characters.</div>
+							<div ng-if="value.type == 'email'" ng-message="email">Invalid email.</div>
+							<div ng-message="mongoose">{{errors[key]}}</div>
+						</div>
+					</md-input-container>
+					<md-input-container class="md-block" flex-gt-xs ng-if="value.confirmation">
+						<label>{{value.label}} confirmation</label>
+						<input name="{{key + '-confirmation'}}" type="{{value.type}}" ng-model="user[key + '-confirmation']" ng-minlength="{{value.minLength}}" ng-maxlength="{{value.maxLength}}" compare-to="user[key]" required/>
+						<div ng-messages="signupForm[key + '-confirmation'].$error">
+							<div ng-message="required">This is required.</div>
+							<div ng-if="value.minLength" ng-message="minlength">Insufficient characters.</div>
+							<div ng-if="value.maxLength" ng-message="maxlength">Too many characters.</div>
+							<div ng-if="value.type == 'email'" ng-message="email">Invalid email.</div>
+							<div ng-message="compareTo">Confirmation doesn't match.</div>
+						</div>
+					</md-input-container>
+				</span>
 			</div>
 		</md-content>
 		<md-actions layout="row">
 			<md-button href="#" target="_blank" md-autofus="md-autofus">Terms</md-button>
-			<md-button ng-click="showLogin($event)">Login</md-button>
+			<md-button ng-click="showLogin($event)" hide-xs>Login</md-button>
 			<span flex="flex"></span>
 			<md-button ng-click="cancel()">Cancel</md-button>
 			<md-button type="submit">Sign Up</md-button>

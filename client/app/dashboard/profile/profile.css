@@ -31,23 +31,6 @@ md-sidenav.profile-info {
 }
 
 .image-overlay p {
-    font-size: 1.5em;
+    font-size: 1em;
     color: white;
-}
-
-.profile-info h4 {
-    color: darkgray;
-}
-
-.profile-info h4,
-h5 {
-    margin: 0 1em;
-    font-weight: normal;
-}
-
-.profile-status span,
-.profile-status md-input-container {
-    display: inline-block;
-    width: 80%;
-    margin: 0;
 }

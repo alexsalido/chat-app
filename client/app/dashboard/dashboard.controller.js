@@ -151,7 +151,7 @@ angular.module('chatApp')
 			});
 		};
 
-		$scope.newGroup = function (ev) {
+		$scope.showNewGroupDialog = function (ev) {
 			$mdDialog.show({
 				scope: $scope,
 				preserveScope: true,
@@ -173,7 +173,7 @@ angular.module('chatApp')
 				console.log("group created");
 				$scope.chats.push({
 					_id: 5,
-					name: $scope.newgroup.name,
+					name: $scope.newGroup.name,
 					members: [],
 					group: true,
 					img: '/assets/images/group_1.jpg',
@@ -181,7 +181,7 @@ angular.module('chatApp')
 					active: false
 				});
 				$scope.cancel();
-				$scope.newgroup = {};
+				$scope.newGroup = {};
 			}
 		};
 
@@ -198,7 +198,7 @@ angular.module('chatApp')
 			});
 		};
 
-		$scope.newContact = function (ev) {
+		$scope.showNewContactDialog = function (ev) {
 			$mdDialog.show({
 				scope: $scope,
 				preserveScope: true,

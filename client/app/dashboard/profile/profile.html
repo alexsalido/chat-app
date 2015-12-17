@@ -1,32 +1,30 @@
-<md-sidenav class="md-sidenav-left md-whiteframe-z2 profile-info" md-component-id="profile-info">
-	<md-toolbar class="md-toolbar-tools">
-		<md-button ng-click="toggleProfileInfo()" class="md-icon-button">
-			<md-icon md-svg-src="assets/svg/back.svg" aria-label="Close Profile Info"></md-icon>
-		</md-button>
-		<h1>Profile</h1>
+<md-sidenav flex="100" class="md-sidenav-left profile-info" md-component-id="profile-info" layout="column">
+	<md-toolbar>
+		<div class="md-toolbar-tools">
+			<md-button ng-click="toggleProfileInfo()" class="md-icon-button">
+				<md-icon md-svg-src="assets/svg/back.svg" aria-label="Close Profile Info"></md-icon>
+			</md-button>
+			<h1>Profile</h1>
+		</div>
 	</md-toolbar>
-	<md-content class="profile-info" layout-padding>
-		<div layout="column" layout-align="center center" class="profile-photo">
-			<div class="image-overlay" ng-click="">
-				<md-icon md-svg-icon="camera" class="s48"></md-icon>
-				<p>
-					Click here to change photo
-				</p>
+	<md-content layout-padding class="profile-info">
+		<div layout-align="center center" class="profile-photo">
+				<div class="image-overlay" ng-click="">
+					<md-icon md-svg-icon="camera" class="s48"></md-icon>
+					<p>
+						Click here to change photo
+					</p>
+				</div>
+				<img ng-src="{{user.img}}" alt="{{user.name}}">
 			</div>
-			<img ng-src="{{user.img || 'assets/images/profile_gray.png'}}" alt="{{activeChat.name}}">
-		</div>
-		<div class="profile-status">
-			<h4>Status</h4>
-			<h5>
-				<span ng-show="!editStatus">{{user.status}}</span>
-				<md-input-container ng-show="editStatus" md-no-float>
-					<input name="status" placeholder="{{user.status}}" ng-model="user.status" ng-blur="editStatus = !editStatus">
-				</md-input-container>
-				<md-button ng-click="editStatus = !editStatus" class="md-icon-button">
-					<md-icon md-svg-src="assets/svg/edit.svg" aria-label="Edit Status" class="gray"></md-icon>
-				</md-button>
-			</h5>
-		</div>
+		<form name="statusForm">
+			<md-input-container class="md-block">
+				<label>Status</label>
+				<input md-maxlength="30" name="status" ng-model="user.status">
+				<div ng-messages="statusForm.status.$error">
+					<div ng-message="md-maxlength">The status has to be less than 30 characters long.</div>
+				</div>
+			</md-input-container>
+		</form>
 	</md-content>
 </md-sidenav>
-<!-- style="background: url({{user.img}})" -->

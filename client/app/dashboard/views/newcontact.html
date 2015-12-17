@@ -1,23 +1,22 @@
 <!-- New contact dialog -->
-<md-dialog aria-label="New Contact" ng-cloak="ng-cloak" style="width: 30%;">
-	<form name="newcontactForm" ng-submit="addContact(newcontactForm)" novalidate>
-		<md-toolbar>
-			<div class="md-toolbar-tools">
-				<h2>New contact</h2>
-				<span flex="flex"></span>
-				<md-button ng-click="cancel()" class="md-icon-button">
-					<md-icon md-svg-src="assets/svg/close.svg" aria-label="Close dialog"></md-icon>
-				</md-button>
-			</div>
-		</md-toolbar>
-		<md-content>
-			<div layout layout-padding>
-				<md-input-container flex>
+<md-dialog aria-label="New Contact" ng-cloak="ng-cloak" flex-xs="95" flex-gt-xs="50" flex-gt-sm="40" flex-gt-md="30" flex-gt-lg="20">
+	<md-toolbar flex>
+		<div class="md-toolbar-tools">
+			<h2>New contact</h2>
+			<span flex="flex"></span>
+			<md-button ng-click="cancel()" class="md-icon-button">
+				<md-icon md-svg-src="assets/svg/close.svg" aria-label="Close dialog"></md-icon>
+			</md-button>
+		</div>
+	</md-toolbar>
+	<form name="newContactForm" ng-submit="addContact(newContactForm)" novalidate>
+		<md-content layout-padding>
+			<div layout="column">
+				<md-input-container class="md-block">
 					<label>Email</label>
-					<input name="email" type="email" ng-model="newcontact.email" mongoose-error required/>
-					<div ng-messages="newgroupForm.name.$error">
+					<input name="email" type="email" ng-model="newContact.email" mongoose-error required autofocus/>
+					<div ng-messages="newContactForm.email.$error">
 						<div ng-message="required">This is required.</div>
-						<div ng-message="email">Invalid email</div>
 						<div ng-message="mongoose" ng-show="submitted">{{errors.other}}</div>
 					</div>
 				</md-input-container>
@@ -26,7 +25,7 @@
 		<md-actions layout="row">
 			<span flex="flex"></span>
 			<md-button ng-click="cancel()">Cancel</md-button>
-			<md-button type="submit">Create</md-button>
+			<md-button type="submit">Add</md-button>
 		</md-actions>
 	</form>
 </md-dialog>

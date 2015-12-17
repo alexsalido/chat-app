@@ -1,10 +1,10 @@
-<div id="dashboard" flex-sm="100" flex-md="100" flex-gt-md="80" class="md-whiteframe-z2" ng-controller="DashboardCtrl" layout style="min-height: 480px;">
-	<md-sidenav flex="auto" class="md-sidenav-left left-toolbar" md-component-id="left-toolbar" layout="column" ng-cloak md-is-locked-open="$mdMedia('gt-sm')">
+<div id="dashboard" flex-sm="100" flex-md="100" flex-gt-md="80" class="md-whiteframe-z2" ng-controller="DashboardCtrl" layout>
+	<md-sidenav flex-gt-sm="30" class="md-sidenav-left left-toolbar" md-component-id="left-toolbar" layout="column" ng-cloak md-is-locked-open="$mdMedia('gt-sm')">
 		<md-content flex>
 			<md-toolbar>
 				<div class="md-toolbar-tools">
 					<div class="round-img-container">
-						<img class="round-img" alt="{{user.name}}" ng-click="toggleProfileInfo()" ng-src="{{user.img || 'assets/images/profile_white.png'}}" style="outline: none; cursor: pointer;" />
+						<img class="round-img no-outline clickable" alt="{{user.name}}" ng-click="toggleProfileInfo()" ng-src="{{user.img || 'assets/images/profile_white.png'}}" />
 					</div>
 					<span flex></span>
 					<md-button class="md-icon-button" aria-label="Contacts" ng-click="toggleContactList()">
@@ -16,7 +16,7 @@
 						</md-button>
 						<md-menu-content width="3">
 							<md-menu-item>
-								<md-button ng-click="newGroup($event)">
+								<md-button ng-click="showNewGroupDialog($event)">
 									New group
 								</md-button>
 							</md-menu-item>
@@ -43,7 +43,7 @@
 			<md-divider></md-divider>
 			<chat-list requests="true"></chat-list>
 			<profile></profile>
-			<md-sidenav class="md-sidenav-left contact-list" md-component-id="contact-list" layout="column">
+			<md-sidenav flex="100" class="md-sidenav-left contact-list" md-component-id="contact-list" layout="column">
 				<md-toolbar>
 					<div class="md-toolbar-tools">
 						<md-button class="md-icon-button" aria-label="Close Contact List" ng-click="toggleContactList()">
@@ -51,7 +51,7 @@
 						</md-button>
 						<h1>Contacts</h1>
 						<span flex></span>
-						<md-button class="md-icon-button" aria-label="New Contact" ng-click="newContact($event)">
+						<md-button class="md-icon-button" aria-label="New Contact" ng-click="showNewContactDialog($event)">
 							<md-icon md-svg-icon="person_add"></md-icon>
 						</md-button>
 					</div>
@@ -62,7 +62,7 @@
 			</md-sidenav>
 		</md-content>
 	</md-sidenav>
-	<div flex-gt-sm="75" class="right-toolbar" layout="column" ng-cloak>
+	<div flex-gt-sm="70" flex="100" class="right-toolbar" layout="column" ng-cloak>
 		<chat-window></chat-window>
 	</div>
 </div>
