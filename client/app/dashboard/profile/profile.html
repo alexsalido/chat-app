@@ -1,30 +1,20 @@
-<md-sidenav flex="100" class="md-sidenav-left profile-info" md-component-id="profile-info" layout="column">
-	<md-toolbar>
-		<div class="md-toolbar-tools">
-			<md-button ng-click="toggleProfileInfo()" class="md-icon-button">
-				<md-icon md-svg-src="assets/svg/back.svg" aria-label="Close Profile Info"></md-icon>
-			</md-button>
-			<h1>Profile</h1>
+<md-content layout-padding class="profile-info">
+	<div layout-align="center center" class="profile-photo">
+		<div class="image-overlay" ng-click="">
+			<md-icon md-svg-icon="camera" class="s48"></md-icon>
+			<p>
+				Click here to change photo
+			</p>
 		</div>
-	</md-toolbar>
-	<md-content layout-padding class="profile-info">
-		<div layout-align="center center" class="profile-photo">
-				<div class="image-overlay" ng-click="">
-					<md-icon md-svg-icon="camera" class="s48"></md-icon>
-					<p>
-						Click here to change photo
-					</p>
-				</div>
-				<img ng-src="{{user.img}}" alt="{{user.name}}">
+		<img ng-src="{{user.img}}" alt="{{user.name}}">
+	</div>
+	<form name="statusForm">
+		<md-input-container class="md-block">
+			<label>Status</label>
+			<input md-maxlength="30" name="status" ng-model="user.status">
+			<div ng-messages="statusForm.status.$error">
+				<div ng-message="md-maxlength">The status has to be less than 30 characters long.</div>
 			</div>
-		<form name="statusForm">
-			<md-input-container class="md-block">
-				<label>Status</label>
-				<input md-maxlength="30" name="status" ng-model="user.status">
-				<div ng-messages="statusForm.status.$error">
-					<div ng-message="md-maxlength">The status has to be less than 30 characters long.</div>
-				</div>
-			</md-input-container>
-		</form>
-	</md-content>
-</md-sidenav>
+		</md-input-container>
+	</form>
+</md-content>

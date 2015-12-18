@@ -1,49 +1,50 @@
-<md-toolbar class="md-toolbar-tools">
-	<md-button ng-click="toggleContactInfo()" class="md-icon-button">
-		<md-icon md-svg-src="assets/svg/close.svg" aria-label="Close Contact Info"></md-icon>
-	</md-button>
-	<h1 ng-if="!activeChat.group" class="md-toolbar-tools">Contact info</h1>
-	<h1 ng-if="activeChat.group" class="md-toolbar-tools">Group info</h1>
-</md-toolbar>
-<md-content class="contact-info" flex>
-	<div layout="column" layout-align="center center" class="chat-photo">
-		<div class="image-overlay" ng-click="" ng-show="activeChat.group">
-			<md-icon md-svg-icon="camera" class="s48"></md-icon>
-			<p>
-				Click here to change photo
-			</p>
+<md-content flex class="contact-info" layout="column" layout-padding>
+	<div class="no-padding">
+		<!-- containing element to fall to when position relative -->
+		<div layout-align="center center" class="chat-photo">
+			<div class="image-overlay" ng-click="" ng-show="activeChat.group">
+				<md-icon md-svg-icon="camera" class="s48"></md-icon>
+				<p>
+					Click here to change photo
+				</p>
+			</div>
+			<img ng-src="{{ activeChat.user.img || activeChat.img }}" alt="{{ activeChat.user.img || activeChat.img }}">
 		</div>
-		<img ng-src="{{activeChat.user.img || activeChat.img || 'assets/images/profile_white.png'}}" alt="{{activeChat.user.name}}">
 	</div>
-	<div ng-if="!activeChat.group" layout-padding>
+	<div ng-if="!activeChat.group">
 		<h4>Status</h4>
-		<h5>{{activeChat.user.status}}</h5>
+		<h5>{{ activeChat.user.status }}</h5>
 		<h4>Email</h4>
-		<h5>{{activeChat.user.email}}</h5>
+		<h5>{{ activeChat.user.email }}</h5>
 	</div>
 	<!-- shown if active chat is a group-->
-	<div ng-if="activeChat.group" layout-padding>
-		<h4>Name</h4>
-		<h5 class="group-name">
-			<span ng-show="!editName">{{activeChat.name}}</span>
-			<md-input-container ng-show="editName" md-no-float>
-				<input name="status" placeholder="{{activeChat.name}}" ng-model="activeChat.name" ng-blur="editName = !editName">
-			</md-input-container>
-			<md-button ng-click="editName = !editName" class="md-icon-button">
-				<md-icon md-svg-src="assets/svg/edit.svg" aria-label="Edit Name" class="gray"></md-icon>
-			</md-button>
-		</h5>
-		<h4>Members</h4>
+	<form name="groupNameForm" class="group-name no-padding" ng-if="activeChat.group">
+		<md-input-container class="md-block">
+			<label>Name</label>
+			<input md-maxlength="20" name="status" ng-model="activeChat.name" required>
+			<div ng-messages="groupNameForm.status.$error">
+				<div ng-message="md-maxlength">The group's name has to be less than 20 characters long.</div>
+				<div ng-message="required">The group's name can't be empty.</div>
+			</div>
+		</md-input-container>
+	</form>
+	<md-list ng-if="activeChat.group">
+		<md-subheader>Members
+			<md-icon md-svg-icon="person_add" aria-label="Add Participant" class="md-primary gray clickable" ng-click="showContactList($event)" hide-gt-xs></md-icon>
+		</md-subheader>
+
+		<md-list-item ng-click="showContactList($event)" class="no-padding" hide-xs>
+			<md-icon md-svg-icon="person_add" aria-label="Add Participant" class="md-primary gray"></md-icon>
+			<p>
+				Add participant
+			</p>
+		</md-list-item>
+	</md-list>
+	<md-divider class="no-padding" ng-if="activeChat.group"></md-divider>
+	<md-content flex ng-if="activeChat.group">
 		<md-list ng-cloak>
-			<md-list-item ng-click="showContactList($event)">
-				<md-icon md-svg-icon="person_add" aria-label="Add Participant" class="md-primary gray"></md-icon>
-				<p>
-					Add participant
-				</p>
-			</md-list-item>
-			<md-divider></md-divider>
-			<md-list-item ng-repeat="member in activeChat.members" class="md-2-line">
-				<img alt="{{ member.name }}" ng-src="{{member.img || 'assets/images/profile_gray.png'}}" class="md-avatar" />
+			<md-list-item ng-repeat="member in activeChat.members" class="md-2-line no-padding">
+				<img alt="{{ member.name }}" ng-src="{{member.img || 'assets/images/profile_gray.png'}}" class="md-avatar object-fit-cover" />
 				<div class="md-list-item-text">
 					<h3>{{member.name}}</h3>
 					<p>
@@ -58,12 +59,9 @@
 				</md-button>
 			</md-list-item>
 		</md-list>
-	</div>
-	<!-- End -->
-	<div layout="column" layout-align="center center" layout-padding>
-		<md-button ng-click="deleteChat('contact-info')" class="md-raised md-warn" style="width: 90%;">
-			<span ng-if="activeChat.group">EXIT GROUP</span>
-			<span ng-if="!activeChat.group">DELETE CHAT</span>
-		</md-button>
-	</div>
+	</md-content>
+	<md-button ng-click="deleteChat('contact-info')" class="md-raised md-warn" aria-label="Delete Chat" hide-xs>
+		<span ng-if="activeChat.group">EXIT GROUP</span>
+		<span ng-if="!activeChat.group">DELETE CHAT</span>
+	</md-button>
 </md-content>

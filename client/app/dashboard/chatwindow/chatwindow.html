@@ -7,8 +7,8 @@
 			<div class="round-img-container">
 				<img ng-src="{{activeChat.user.img || activeChat.img || 'assets/images/profile_white.png'}}" alt="{{activeChat.user.name}}">
 			</div>
-			<md-list ng-click="toggleContactInfo()" class="no-outline clickable">
-				<md-list-item class="md-3-line">
+			<md-list ng-click="toggleContactInfo()" class="no-outline clickable" style="width: 60%;">
+				<md-list-item class="md-3-line" style="text-overflow: ellipsis;">
 					<div class="md-list-item-text">
 						<h3 style="color:white;">{{activeChat.user.name || activeChat.name}}</h3>
 						<h4 style="color:white;">
@@ -23,10 +23,10 @@
 				</md-list-item>
 			</md-list>
 			<span flex></span>
-			<md-button class="md-icon-button" aria-label="Send Scribble" ng-click="showScribble($event)">
+			<md-button class="md-icon-button" aria-label="Send Scribble" ng-click="showScribble($event)" hide-xs>
 				<md-icon md-svg-icon="scribble"></md-icon>
 			</md-button>
-			<md-button class="md-icon-button" aria-label="Send Attachment">
+			<md-button class="md-icon-button" aria-label="Send Attachment" hide-xs>
 				<md-icon md-svg-icon="attachment"></md-icon>
 			</md-button>
 			<md-menu md-position-mode="target target">
@@ -35,13 +35,23 @@
 				</md-button>
 				<md-menu-content width="3">
 					<md-menu-item>
-						<md-button ng-click="toggleContactInfo()">
+						<md-button ng-click="showScribble($event)" aria-label="Send Scribble">
+							Send scribble
+						</md-button>
+					</md-menu-item>
+					<md-menu-item>
+						<md-button ng-click="" aria-label="Send Attachment">
+							Send attachment
+						</md-button>
+					</md-menu-item>
+					<md-menu-item>
+						<md-button ng-click="toggleContactInfo()" aria-label="Information">
 							<span ng-if="activeChat.group">Group info</span>
 							<span ng-if="!activeChat.group">Contact info</span>
 						</md-button>
 					</md-menu-item>
 					<md-menu-item>
-						<md-button ng-click="deleteChat()">
+						<md-button ng-click="deleteChat()" aria-label="Delete">
 							<span ng-if="activeChat.group">Exit group</span>
 							<span ng-if="!activeChat.group">Delete chat</span>
 						</md-button>
@@ -50,7 +60,16 @@
 			</md-menu>
 		</div>
 	</md-toolbar>
-	<md-sidenav class="md-sidenav-right md-whiteframe-z2" md-component-id="contact-info" layout="column">
+	<md-sidenav flex="100" class="md-sidenav-right width-45" md-component-id="contact-info" layout="column">
+		<md-toolbar>
+			<div class="md-toolbar-tools">
+				<md-button ng-click="toggleContactInfo()" class="md-icon-button">
+					<md-icon md-svg-src="assets/svg/close.svg" aria-label="Close Contact Info"></md-icon>
+				</md-button>
+				<h1 ng-if="!activeChat.group" class="md-toolbar-tools">Contact info</h1>
+				<h1 ng-if="activeChat.group" class="md-toolbar-tools">Group info</h1>
+			</div>
+		</md-toolbar>
 		<chat-info></chat-info>
 	</md-sidenav>
 	<md-content flex id="conversation-box">

@@ -5,6 +5,7 @@ angular.module('chatApp')
 		return {
 			templateUrl: 'app/dashboard/chatinfo/chatinfo.html',
 			restrict: 'EA',
+			replace: true,
 			controller: function ($scope) {
 
 				$scope.selected = [];

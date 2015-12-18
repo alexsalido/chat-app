@@ -5,9 +5,10 @@ angular.module('chatApp')
     return {
       templateUrl: 'app/dashboard/profile/profile.html',
       restrict: 'E',
+	  replace: true,
 	  controller: function ($scope) {
 		  $scope.editStatus = false;
-		  
+
 		  $scope.toggleProfileInfo = function () {
 			  $mdSidenav('profile-info').toggle()
 		  };

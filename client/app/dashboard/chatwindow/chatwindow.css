@@ -1,3 +1,7 @@
+#chat-box {
+	overflow-x: hidden;
+}
+
 #message-box {
     border: 0px;
     width: 100%;
@@ -85,29 +89,4 @@ message {
     position: absolute;
     top: 0;
     right: -9px;
-}
-
-/*md-sidenav {
-	min-width: 40%;
-}*/
-
-.chat-img {
-	margin: 2em;
-	height: 50%;
-	width: 50%;
-}
-
-.contact-info h4 {
-	color: darkgray;
-}
-
-.contact-info h4, h5 {
-	margin: 0 1em;
-	font-weight: normal;
-}
-
-.group-name span, .group-name md-input-container {
-	display: inline-block;
-    width: 80%;
-	margin: 0;
 }

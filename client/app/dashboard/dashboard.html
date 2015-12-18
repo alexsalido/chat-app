@@ -1,65 +1,75 @@
 <div id="dashboard" flex-sm="100" flex-md="100" flex-gt-md="80" class="md-whiteframe-z2" ng-controller="DashboardCtrl" layout>
 	<md-sidenav flex-gt-sm="30" class="md-sidenav-left left-toolbar" md-component-id="left-toolbar" layout="column" ng-cloak md-is-locked-open="$mdMedia('gt-sm')">
-		<md-content flex>
+		<md-sidenav flex="100" class="md-sidenav-left profile-info width-100" md-component-id="profile-info" layout="column">
 			<md-toolbar>
 				<div class="md-toolbar-tools">
-					<div class="round-img-container">
-						<img class="round-img no-outline clickable" alt="{{user.name}}" ng-click="toggleProfileInfo()" ng-src="{{user.img || 'assets/images/profile_white.png'}}" />
-					</div>
-					<span flex></span>
-					<md-button class="md-icon-button" aria-label="Contacts" ng-click="toggleContactList()">
-						<md-icon md-svg-icon="contacts"></md-icon>
+					<md-button ng-click="toggleProfileInfo()" class="md-icon-button">
+						<md-icon md-svg-src="assets/svg/back.svg" aria-label="Close Profile Info"></md-icon>
 					</md-button>
-					<md-menu md-position-mode="target target">
-						<md-button class="md-icon-button" aria-label="Options" ng-click="$mdOpenMenu()">
-							<md-icon md-svg-icon="more_vert"></md-icon>
-						</md-button>
-						<md-menu-content width="3">
-							<md-menu-item>
-								<md-button ng-click="showNewGroupDialog($event)">
-									New group
-								</md-button>
-							</md-menu-item>
-							<md-menu-item>
-								<md-button ng-click="showSettings('password', $event)">
-									Change password
-								</md-button>
-							</md-menu-item>
-							<md-menu-item>
-								<md-button ng-click="showSettings('email', $event)">
-									Change email
-								</md-button>
-							</md-menu-item>
-							<md-menu-item>
-								<md-button ng-click="logout()">
-									Logout
-								</md-button>
-							</md-menu-item>
-						</md-menu-content>
-					</md-menu>
+					<h1>Profile</h1>
 				</div>
 			</md-toolbar>
-			<search-box placeholder="Search for chat"></search-box>
-			<md-divider></md-divider>
-			<chat-list requests="true"></chat-list>
 			<profile></profile>
-			<md-sidenav flex="100" class="md-sidenav-left contact-list" md-component-id="contact-list" layout="column">
-				<md-toolbar>
-					<div class="md-toolbar-tools">
-						<md-button class="md-icon-button" aria-label="Close Contact List" ng-click="toggleContactList()">
-							<md-icon md-svg-icon="back"></md-icon>
-						</md-button>
-						<h1>Contacts</h1>
-						<span flex></span>
-						<md-button class="md-icon-button" aria-label="New Contact" ng-click="showNewContactDialog($event)">
-							<md-icon md-svg-icon="person_add"></md-icon>
-						</md-button>
-					</div>
-				</md-toolbar>
-				<search-box placeholder="Search for contacts" bind="contactListSearch"></search-box>
-				<md-divider></md-divider>
-				<contact-list requests="true"></contact-list>
-			</md-sidenav>
+		</md-sidenav>
+		<md-sidenav flex="100" class="md-sidenav-left contact-list width-100" md-component-id="contact-list" layout="column">
+			<md-toolbar>
+				<div class="md-toolbar-tools">
+					<md-button class="md-icon-button" aria-label="Close Contact List" ng-click="toggleContactList()">
+						<md-icon md-svg-icon="back"></md-icon>
+					</md-button>
+					<h1>Contacts</h1>
+					<span flex></span>
+					<md-button class="md-icon-button" aria-label="New Contact" ng-click="showNewContactDialog($event)">
+						<md-icon md-svg-icon="person_add"></md-icon>
+					</md-button>
+				</div>
+			</md-toolbar>
+			<search-box placeholder="Search for contacts" bind="contactListSearch"></search-box>
+			<md-divider></md-divider>
+			<contact-list requests="true"></contact-list>
+		</md-sidenav>
+		<md-toolbar>
+			<div class="md-toolbar-tools">
+				<div class="round-img-container">
+					<img class="round-img no-outline clickable" alt="{{user.name}}" ng-click="toggleProfileInfo()" ng-src="{{user.img || 'assets/images/profile_white.png'}}" />
+				</div>
+				<span flex></span>
+				<md-button class="md-icon-button" aria-label="Contacts" ng-click="toggleContactList()">
+					<md-icon md-svg-icon="contacts"></md-icon>
+				</md-button>
+				<md-menu md-position-mode="target target">
+					<md-button class="md-icon-button" aria-label="Options" ng-click="$mdOpenMenu()">
+						<md-icon md-svg-icon="more_vert"></md-icon>
+					</md-button>
+					<md-menu-content width="3">
+						<md-menu-item>
+							<md-button ng-click="showNewGroupDialog($event)">
+								New group
+							</md-button>
+						</md-menu-item>
+						<md-menu-item>
+							<md-button ng-click="showSettings('password', $event)">
+								Change password
+							</md-button>
+						</md-menu-item>
+						<md-menu-item>
+							<md-button ng-click="showSettings('email', $event)">
+								Change email
+							</md-button>
+						</md-menu-item>
+						<md-menu-item>
+							<md-button ng-click="logout()">
+								Logout
+							</md-button>
+						</md-menu-item>
+					</md-menu-content>
+				</md-menu>
+			</div>
+		</md-toolbar>
+		<search-box placeholder="Search for chat"></search-box>
+		<md-divider></md-divider>
+		<md-content flex>
+			<chat-list requests="true"></chat-list>
 		</md-content>
 	</md-sidenav>
 	<div flex-gt-sm="70" flex="100" class="right-toolbar" layout="column" ng-cloak>

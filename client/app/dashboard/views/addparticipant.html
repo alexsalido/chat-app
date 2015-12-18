@@ -1,25 +1,31 @@
-<md-dialog aria-label="Add Participant" ng-cloak="ng-cloak" style="width: 30%;">
-	<md-toolbar class="md-toolbar-tools">
-		<md-button ng-click="close()" class="md-icon-button">
-			<md-icon md-svg-src="close" aria-label="Close Contact List"></md-icon>
-		</md-button>
-		<h1>Add participants</h1>
+<md-dialog aria-label="Add Participant" ng-cloak="ng-cloak" flex-xs="95" flex-gt-xs="50" flex-gt-sm="40" flex-gt-md="30" flex-gt-lg="20" layout="column" style="max-height: 80%;">
+	<md-toolbar>
+		<div class="md-toolbar-tools">
+			<md-button ng-click="close()" class="md-icon-button">
+				<md-icon md-svg-src="close" aria-label="Close Contact List"></md-icon>
+			</md-button>
+			<h1>Add participants</h1>
+		</div>
 	</md-toolbar>
-	<md-content class="md-padding autocomplete" layout="column">
-		<md-contact-chips ng-model="selected" md-contacts="querySearch($query)" md-contact-name="name" md-contact-image="img" md-contact-email="email" md-require-match="true" md-highlight-flags="i" filter-selected="true" placeholder="Type to add participants">
-		</md-contact-chips>
+	<div> <!-- dummy containing element -->
+		<md-content class="md-padding autocomplete" layout="column">
+			<md-contact-chips ng-model="selected" md-contacts="querySearch($query)" md-contact-name="name" md-contact-image="img" md-contact-email="email" md-require-match="true" md-highlight-flags="i" filter-selected="true" placeholder="Type to add participants">
+			</md-contact-chips>
+		</md-content>
+	</div>
+	<md-content>
+		<md-list flex>
+			<md-list-item ng-repeat="contact in contactsClone | orderBy: 'name' track by $index" class="md-2-line" ng-if="selected.indexOf(contact) < 0 && activeChat.members.indexOf(contact) < 0">
+				<img alt="{{ contact.name }}" ng-src="{{ contact.img }}" class="md-avatar" />
+				<div class="md-list-item-text">
+					<h3>{{ contact.name }}</h3>
+					<h4>
+						{{contact.status}}
+					</h4>
+				</div>
+			</md-list-item>
+		</md-list>
 	</md-content>
-	<md-list>
-		<md-list-item ng-repeat="contact in contactsClone | orderBy: 'name' track by $index" class="md-2-line" ng-if="selected.indexOf(contact) < 0 && activeChat.members.indexOf(contact) < 0">
-			<img alt="{{ contact.name }}" ng-src="{{contact.img || 'assets/images/profile_gray.png'}}" class="md-avatar" />
-			<div class="md-list-item-text">
-				<h3>{{ contact.name }}</h3>
-				<h4>
-					{{contact.status}}
-				</h4>
-			</div>
-		</md-list-item>
-	</md-list>
 	<md-actions layout="row">
 		<span flex="flex"></span>
 		<md-button ng-click="cancel()">Cancel</md-button>
