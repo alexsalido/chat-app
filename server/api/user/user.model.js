@@ -5,16 +5,29 @@ var Schema = mongoose.Schema;
 var crypto = require('crypto');
 var authTypes = ['github', 'twitter', 'facebook', 'google'];
 
+var defaultProfileImgs = ['captain_america', 'darth_vader', 'hulk', 'iron_man', 'silver_surfer', 'stormtrooper_1', 'stormtrooper_2'];
+
 var UserSchema = new Schema({
-	firstname: String,
-	lastname: String,
+	name: String,
 	email: {
 		type: String,
 		lowercase: true
 	},
+	status: {
+		type: String,
+		default: 'Available'
+	},
 	role: {
 		type: String,
 		default: 'user'
+	},
+	img: {
+		type: 'String',
+		default: function () {
+			var index = Math.floor((Math.random() * (defaultProfileImgs.length - 1)));
+			console.log(index);
+			return 'assets/images/' + defaultProfileImgs[index] + '.jpg';
+		}
 	},
 	hashedPassword: String,
 	provider: String,
@@ -78,21 +91,13 @@ UserSchema
 		return hashedPassword.length;
 	}, 'Password cannot be blank');
 
-// Validate empty first name
+// Validate empty name
 UserSchema
-	.path('firstname')
+	.path('name')
 	.validate(function (firstname) {
 		if (authTypes.indexOf(this.provider) !== -1) return true;
 		return firstname.length;
 	}, 'First name cannot be blank');
-
-// Validate empty first name
-UserSchema
-	.path('lastname')
-	.validate(function (lastname) {
-		if (authTypes.indexOf(this.provider) !== -1) return true;
-		return lastname.length;
-	}, 'Last name cannot be blank');
 
 // Validate email is not taken
 UserSchema
@@ -110,7 +115,12 @@ UserSchema
 			respond(true);
 		});
 	}, 'The specified email address is already in use.');
-	
+
+// Validate status length
+UserSchema.path('status').validate(function(value, respond) {
+	return respond(value.length <= 30);
+}, 'The status has to be less than 30 characters long.')
+
 var validatePresenceOf = function (value) {
 	return value && value.length;
 };

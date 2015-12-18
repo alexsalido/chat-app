@@ -3,12 +3,7 @@
 angular.module('chatApp')
 	.controller('DashboardCtrl', function ($scope, $location, Auth, $mdSidenav, $mdDialog, $mdBottomSheet, $mdToast) {
 
-		$scope.searchbox = 'p';
-
-		$scope.user = {
-			status: 'Force choking my commanders',
-			img: '/assets/images/profile_1.jpg',
-		};
+		$scope.user = Auth.getCurrentUser();
 
 		$scope.logout = function () {
 			Auth.logout();
@@ -25,6 +20,7 @@ angular.module('chatApp')
 		};
 
 		$scope.addMember = function () {};
+
 		//Fake contacts
 		$scope.contacts = [{
 			_id: 1,
@@ -60,116 +56,7 @@ angular.module('chatApp')
 			online: true,
 			status: 'Speaking with Darth Vader',
 			online: false
-		}
-		, {
-			_id: 3,
-			name: 'Peter Carlson',
-			username: 'pita',
-			email: 'pita@foobar.com',
-			img: '/assets/images/profile_4.jpg',
-			newMessage: false,
-			active: false,
-			online: true,
-			status: 'Speaking with Darth Vader',
-			online: false
-		}
-		, {
-			_id: 3,
-			name: 'Peter Carlson',
-			username: 'pita',
-			email: 'pita@foobar.com',
-			img: '/assets/images/profile_4.jpg',
-			newMessage: false,
-			active: false,
-			online: true,
-			status: 'Speaking with Darth Vader',
-			online: false
-		}
-		, {
-			_id: 3,
-			name: 'Peter Carlson',
-			username: 'pita',
-			email: 'pita@foobar.com',
-			img: '/assets/images/profile_4.jpg',
-			newMessage: false,
-			active: false,
-			online: true,
-			status: 'Speaking with Darth Vader',
-			online: false
-		}
-		, {
-			_id: 3,
-			name: 'Peter Carlson',
-			username: 'pita',
-			email: 'pita@foobar.com',
-			img: '/assets/images/profile_4.jpg',
-			newMessage: false,
-			active: false,
-			online: true,
-			status: 'Speaking with Darth Vader',
-			online: false
-		}
-		, {
-			_id: 3,
-			name: 'Peter Carlson',
-			username: 'pita',
-			email: 'pita@foobar.com',
-			img: '/assets/images/profile_4.jpg',
-			newMessage: false,
-			active: false,
-			online: true,
-			status: 'Speaking with Darth Vader',
-			online: false
-		}
-		, {
-			_id: 3,
-			name: 'Peter Carlson',
-			username: 'pita',
-			email: 'pita@foobar.com',
-			img: '/assets/images/profile_4.jpg',
-			newMessage: false,
-			active: false,
-			online: true,
-			status: 'Speaking with Darth Vader',
-			online: false
-		}
-		, {
-			_id: 3,
-			name: 'Peter Carlson',
-			username: 'pita',
-			email: 'pita@foobar.com',
-			img: '/assets/images/profile_4.jpg',
-			newMessage: false,
-			active: false,
-			online: true,
-			status: 'Speaking with Darth Vader',
-			online: false
-		}
-		, {
-			_id: 3,
-			name: 'Peter Carlson',
-			username: 'pita',
-			email: 'pita@foobar.com',
-			img: '/assets/images/profile_4.jpg',
-			newMessage: false,
-			active: false,
-			online: true,
-			status: 'Speaking with Darth Vader',
-			online: false
-		}
-		, {
-			_id: 3,
-			name: 'Peter Carlson',
-			username: 'pita',
-			email: 'pita@foobar.com',
-			img: '/assets/images/profile_4.jpg',
-			newMessage: false,
-			active: false,
-			online: true,
-			status: 'Speaking with Darth Vader',
-			online: false
-		}
-	];
+		}];
 
 		//Fake chats
 		$scope.chats = [{
@@ -203,153 +90,7 @@ angular.module('chatApp')
 			img: '/assets/images/group_1.jpg',
 			newMessage: true,
 			active: false
-		}
-		, {
-			_id: 2,
-			user: $scope.contacts[1],
-			newMessage: true,
-			active: false,
-			online: true,
-			status: 'Just standing there'
-		}
-		, {
-			_id: 3,
-			user: $scope.contacts[2],
-			newMessage: false,
-			active: false,
-			online: true,
-			status: 'Speaking with Darth Vader'
-		}, {
-			_id: 4,
-			name: 'Stormtroopers',
-			members: [$scope.contacts[0], $scope.contacts[2]],
-			group: true,
-			img: '/assets/images/group_1.jpg',
-			newMessage: true,
-			active: false
-		}
-		, {
-			_id: 2,
-			user: $scope.contacts[1],
-			newMessage: true,
-			active: false,
-			online: true,
-			status: 'Just standing there'
-		}
-		, {
-			_id: 3,
-			user: $scope.contacts[2],
-			newMessage: false,
-			active: false,
-			online: true,
-			status: 'Speaking with Darth Vader'
-		}, {
-			_id: 4,
-			name: 'Stormtroopers',
-			members: [$scope.contacts[0], $scope.contacts[2]],
-			group: true,
-			img: '/assets/images/group_1.jpg',
-			newMessage: true,
-			active: false
-		}
-		, {
-			_id: 2,
-			user: $scope.contacts[1],
-			newMessage: true,
-			active: false,
-			online: true,
-			status: 'Just standing there'
-		}
-		, {
-			_id: 3,
-			user: $scope.contacts[2],
-			newMessage: false,
-			active: false,
-			online: true,
-			status: 'Speaking with Darth Vader'
-		}, {
-			_id: 4,
-			name: 'Stormtroopers',
-			members: [$scope.contacts[0], $scope.contacts[2]],
-			group: true,
-			img: '/assets/images/group_1.jpg',
-			newMessage: true,
-			active: false
-		}
-		, {
-			_id: 2,
-			user: $scope.contacts[1],
-			newMessage: true,
-			active: false,
-			online: true,
-			status: 'Just standing there'
-		}
-		, {
-			_id: 3,
-			user: $scope.contacts[2],
-			newMessage: false,
-			active: false,
-			online: true,
-			status: 'Speaking with Darth Vader'
-		}, {
-			_id: 4,
-			name: 'Stormtroopers',
-			members: [$scope.contacts[0], $scope.contacts[2]],
-			group: true,
-			img: '/assets/images/group_1.jpg',
-			newMessage: true,
-			active: false
-		}
-		, {
-			_id: 2,
-			user: $scope.contacts[1],
-			newMessage: true,
-			active: false,
-			online: true,
-			status: 'Just standing there'
-		}
-		, {
-			_id: 3,
-			user: $scope.contacts[2],
-			newMessage: false,
-			active: false,
-			online: true,
-			status: 'Speaking with Darth Vader'
-		}, {
-			_id: 4,
-			name: 'Stormtroopers',
-			members: [$scope.contacts[0], $scope.contacts[2]],
-			group: true,
-			img: '/assets/images/group_1.jpg',
-			newMessage: true,
-			active: false
-		}
-		, {
-			_id: 2,
-			user: $scope.contacts[1],
-			newMessage: true,
-			active: false,
-			online: true,
-			status: 'Just standing there'
-		}
-		, {
-			_id: 3,
-			user: $scope.contacts[2],
-			newMessage: false,
-			active: false,
-			online: true,
-			status: 'Speaking with Darth Vader'
-		}, {
-			_id: 4,
-			name: 'Stormtroopers',
-			members: [$scope.contacts[0], $scope.contacts[2]],
-			group: true,
-			img: '/assets/images/group_1.jpg',
-			newMessage: true,
-			active: false
-		}
-
-	];
+		}];
 
 		$scope.activeChat = $scope.chats[0];
 
