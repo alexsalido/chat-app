@@ -3,6 +3,9 @@
 angular.module('chatApp')
 	.controller('DashboardCtrl', function ($scope, $location, Auth, $mdSidenav, $mdDialog, $mdBottomSheet, $mdToast) {
 
+		$scope.toggleSidenav = function (id) {
+			if (id == 'profile-info') $mdSidenav('profile-info').toggle();
+		}
 		$scope.user = Auth.getCurrentUser();
 
 		$scope.logout = function () {
@@ -44,8 +47,7 @@ angular.module('chatApp')
 			online: true,
 			status: 'Just standing there',
 			online: true
-		}
-		, {
+		}, {
 			_id: 3,
 			name: 'Peter Carlson',
 			username: 'pita',
@@ -66,16 +68,14 @@ angular.module('chatApp')
 			active: false,
 			online: true,
 			status: 'Shooting some Jedi'
-		}
-		, {
+		}, {
 			_id: 2,
 			user: $scope.contacts[1],
 			newMessage: true,
 			active: false,
 			online: true,
 			status: 'Just standing there'
-		}
-		, {
+		}, {
 			_id: 3,
 			user: $scope.contacts[2],
 			newMessage: false,
@@ -208,4 +208,5 @@ angular.module('chatApp')
 		$scope.toggleLeftToolbar = function () {
 			$mdSidenav('left-toolbar').toggle()
 		}
+
 	});

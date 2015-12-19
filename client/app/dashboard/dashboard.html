@@ -1,16 +1,6 @@
 <div id="dashboard" flex-sm="100" flex-md="100" flex-gt-md="80" class="md-whiteframe-z2" ng-controller="DashboardCtrl" layout>
 	<md-sidenav flex-gt-sm="30" class="md-sidenav-left left-toolbar" md-component-id="left-toolbar" layout="column" ng-cloak md-is-locked-open="$mdMedia('gt-sm')">
-		<md-sidenav flex="100" class="md-sidenav-left profile-info width-100" md-component-id="profile-info" layout="column">
-			<md-toolbar>
-				<div class="md-toolbar-tools">
-					<md-button ng-click="toggleProfileInfo()" class="md-icon-button">
-						<md-icon md-svg-src="assets/svg/back.svg" aria-label="Close Profile Info"></md-icon>
-					</md-button>
-					<h1>Profile</h1>
-				</div>
-			</md-toolbar>
-			<profile></profile>
-		</md-sidenav>
+		<profile></profile>
 		<md-sidenav flex="100" class="md-sidenav-left contact-list width-100" md-component-id="contact-list" layout="column">
 			<md-toolbar>
 				<div class="md-toolbar-tools">
@@ -31,7 +21,7 @@
 		<md-toolbar>
 			<div class="md-toolbar-tools">
 				<div class="round-img-container">
-					<img class="round-img no-outline clickable" alt="{{user.name}}" ng-click="toggleProfileInfo()" ng-src="{{user.img || 'assets/images/profile_white.png'}}" />
+					<img class="round-img no-outline clickable" alt="{{user.name}}" ng-click="toggleSidenav('profile-info')" ng-src="{{ user.img }}" />
 				</div>
 				<span flex></span>
 				<md-button class="md-icon-button" aria-label="Contacts" ng-click="toggleContactList()">

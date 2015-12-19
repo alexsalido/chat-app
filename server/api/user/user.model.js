@@ -25,7 +25,6 @@ var UserSchema = new Schema({
 		type: 'String',
 		default: function () {
 			var index = Math.floor((Math.random() * (defaultProfileImgs.length - 1)));
-			console.log(index);
 			return 'assets/images/' + defaultProfileImgs[index] + '.jpg';
 		}
 	},
