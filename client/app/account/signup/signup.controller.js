@@ -2,13 +2,7 @@
 
 angular.module('chatApp')
 	.controller('SignupCtrl', function ($scope, Auth, showLogin, $location, $window, $mdDialog) {
-		$scope.user = {
-			// firstname: 'Alejandro',
-			// lastname: 'Salido',
-			// email: 'alexsalidoa@gmail.com',
-			// username: 'alexsalido',
-			// password: '123456',
-		};
+		$scope.user = {};
 		$scope.errors = {};
 
 		//Signup form object schema
@@ -38,9 +32,7 @@ angular.module('chatApp')
 
 			if (form.$valid) {
 				Auth.createUser({
-						firstname: $scope.user.firstname,
-						lastname: $scope.user.lastname,
-						username: $scope.user.username,
+						name: $scope.user.name,
 						email: $scope.user.email,
 						password: $scope.user.password
 					})

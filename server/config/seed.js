@@ -5,45 +5,77 @@
 
 'use strict';
 
-var Thing = require('../api/thing/thing.model');
 var User = require('../api/user/user.model');
+var Img = require('../api/image/image.model');
 
-Thing.find({}).remove(function() {
-  Thing.create({
-    name : 'Development Tools',
-    info : 'Integration with popular tools such as Bower, Grunt, Karma, Mocha, JSHint, Node Inspector, Livereload, Protractor, Jade, Stylus, Sass, CoffeeScript, and Less.'
-  }, {
-    name : 'Server and Client integration',
-    info : 'Built with a powerful and fun stack: MongoDB, Express, AngularJS, and Node.'
-  }, {
-    name : 'Smart Build System',
-    info : 'Build system ignores `spec` files, allowing you to keep tests alongside code. Automatic injection of scripts and styles into your index.html'
-  },  {
-    name : 'Modular Structure',
-    info : 'Best practice client and server structures allow for more code reusability and maximum scalability'
-  },  {
-    name : 'Optimized Build',
-    info : 'Build process packs up your templates as a single JavaScript payload, minifies your scripts/css/images, and rewrites asset names for caching.'
-  },{
-    name : 'Deployment Ready',
-    info : 'Easily deploy your app to Heroku or Openshift with the heroku and openshift subgenerators'
-  });
+//AWS
+var AWS = require('aws-sdk');
+
+AWS.config.update({
+	accessKeyId: process.env.AWS_ACCESSKEYID,
+	secretAccessKey: process.env.AWS_SECRETACCESSKEY
 });
 
-User.find({}).remove(function() {
-  User.create({
-    provider: 'local',
-    name: 'Test',
-    email: 'test@test.com',
-    password: 'test'
-  }, {
-    provider: 'local',
-    role: 'admin',
-    name: 'Admin',
-    email: 'admin@admin.com',
-    password: 'admin'
-  }, function() {
-      console.log('finished populating users');
-    }
-  );
+var s3 = new AWS.S3({
+	apiVersion: '2006-03-01'
+});
+
+Img.find({}).remove(function () {
+
+	s3.listObjects({
+		Bucket: 'tm-chatapp',
+		Prefix: 'default/users'
+	}, function (err, data) {
+		if (err) {
+			console.log('Unsuccessful request to default user images');
+			console.log(err, err.stack);
+		} else {
+			console.log('Successful request to default user images');
+			data.Contents.forEach(function (currentValue, index, array) {
+				if (index !== 0) {
+					Img.create({
+						url: process.env.BUCKET + currentValue.Key,
+						info: 'default/users'
+					})
+				}
+			})
+		}
+	});
+
+	s3.listObjects({
+		Bucket: 'tm-chatapp',
+		Prefix: 'default/groups'
+	}, function (err, data) {
+		if (err) {
+			console.log('Unsuccessful request to default group images');
+			console.log(err, err.stack);
+		} else {
+			console.log('Successful request to default group images');
+			data.Contents.forEach(function (currentValue, index, array) {
+				if (index !== 0) {
+					Img.create({
+						url: process.env.BUCKET + currentValue.Key,
+						info: 'default/groups'
+					})
+				}
+			})
+		}
+	});
+})
+
+User.find({}).remove(function () {
+	User.create({
+		provider: 'local',
+		name: 'Test',
+		email: 'test@test.com',
+		password: 'test'
+	}, {
+		provider: 'local',
+		role: 'admin',
+		name: 'Admin',
+		email: 'admin@admin.com',
+		password: 'admin'
+	}, function () {
+		console.log('finished populating users');
+	});
 });

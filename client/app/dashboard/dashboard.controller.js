@@ -2,7 +2,7 @@
 
 angular.module('chatApp')
 	.controller('DashboardCtrl', function ($scope, $location, Auth, $mdSidenav, $mdDialog, $mdBottomSheet, $mdToast) {
-
+		
 		$scope.toggleSidenav = function (id) {
 			if (id == 'profile-info') $mdSidenav('profile-info').toggle();
 		}

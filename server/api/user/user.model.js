@@ -5,8 +5,6 @@ var Schema = mongoose.Schema;
 var crypto = require('crypto');
 var authTypes = ['github', 'twitter', 'facebook', 'google'];
 
-var defaultProfileImgs = ['captain_america', 'darth_vader', 'hulk', 'iron_man', 'silver_surfer', 'stormtrooper_1', 'stormtrooper_2'];
-
 var UserSchema = new Schema({
 	name: String,
 	email: {
@@ -22,11 +20,8 @@ var UserSchema = new Schema({
 		default: 'user'
 	},
 	img: {
-		type: 'String',
-		default: function () {
-			var index = Math.floor((Math.random() * (defaultProfileImgs.length - 1)));
-			return 'assets/images/' + defaultProfileImgs[index] + '.jpg';
-		}
+		type: String,
+		default: process.env.BUCKET_URL + process.env.BUCKET_DEFAULT_IMAGE
 	},
 	hashedPassword: String,
 	provider: String,
@@ -116,7 +111,7 @@ UserSchema
 	}, 'The specified email address is already in use.');
 
 // Validate status length
-UserSchema.path('status').validate(function(value, respond) {
+UserSchema.path('status').validate(function (value, respond) {
 	return respond(value.length <= 30);
 }, 'The status has to be less than 30 characters long.')
 
