@@ -62,7 +62,9 @@
 			<chat-list requests="true"></chat-list>
 		</md-content>
 	</md-sidenav>
-	<div flex-gt-sm="70" flex="100" class="right-toolbar" layout="column" ng-cloak>
+	<md-content flex-gt-sm="70" flex="100" class="right-toolbar" layout="column" ng-cloak>
+		<!-- <md-content ng-include="'app/dashboard/views/welcome.html'"></md-content> -->
+		<div ng-include="'app/dashboard/views/welcome.html'"></div>
 		<chat-window ng-if="chats.length > 0"></chat-window>
-	</div>
+	</md-content>
 </div>
