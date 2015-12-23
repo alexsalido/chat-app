@@ -9,7 +9,8 @@ angular.module('chatApp', [
 		'ngMaterial',
 		'ngMessages',
 		'ngAnimate',
-		'vTabs'
+		'vTabs',
+		'angularFileUpload'
 	])
 	.config(function ($routeProvider, $locationProvider, $httpProvider, $mdIconProvider, emojifyProvider) {
 		$routeProvider

@@ -12,6 +12,12 @@ angular.module('chatApp')
           controller:'password'
         }
       },
+	  changeStatus: {
+		  method: 'PUT',
+		  params: {
+			  controller: 'status'
+		  }
+	  },
       get: {
         method: 'GET',
         params: {

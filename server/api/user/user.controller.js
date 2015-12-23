@@ -88,7 +88,6 @@ exports.changePassword = function (req, res, next) {
 	var userId = req.user._id;
 	var oldPass = String(req.body.oldPassword);
 	var newPass = String(req.body.newPassword);
-
 	User.findById(userId, function (err, user) {
 		if (user.authenticate(oldPass)) {
 			user.password = newPass;
@@ -99,6 +98,21 @@ exports.changePassword = function (req, res, next) {
 		} else {
 			res.status(403).send('Forbidden');
 		}
+	});
+};
+
+//Change a users status
+
+exports.changeStatus = function (req, res, next) {
+	var userId = req.user._id;
+	var status = String(req.body.status);
+	User.findById(userId, function (err, user) {
+		user.status = status;
+		user.save(function (err) {
+			if (err) return validationError(res, err);
+			res.status(200).send('OK');
+		});
+
 	});
 };
 

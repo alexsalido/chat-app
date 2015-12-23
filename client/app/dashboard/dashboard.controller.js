@@ -2,10 +2,10 @@
 
 angular.module('chatApp')
 	.controller('DashboardCtrl', function ($scope, $location, Auth, $mdSidenav, $mdDialog, $mdBottomSheet, $mdToast) {
-		
+
 		$scope.toggleSidenav = function (id) {
 			if (id == 'profile-info') $mdSidenav('profile-info').toggle();
-		}
+		};
 		$scope.user = Auth.getCurrentUser();
 
 		$scope.logout = function () {
@@ -13,7 +13,7 @@ angular.module('chatApp')
 			$location.path('/');
 		};
 
-		$scope.openChat = function (_id, ev) {
+		$scope.openChat = function (_id) {
 			for (var i = 0; i < $scope.chats.length; i++) {
 				if ($scope.chats[i]._id === _id) {
 					$scope.chats[i].newMessage = false;
@@ -35,7 +35,6 @@ angular.module('chatApp')
 			active: false,
 			online: true,
 			status: 'Shooting some Jedi',
-			online: true
 		}, {
 			_id: 2,
 			name: 'Mark Johnson',
@@ -46,7 +45,6 @@ angular.module('chatApp')
 			active: false,
 			online: true,
 			status: 'Just standing there',
-			online: true
 		}, {
 			_id: 3,
 			name: 'Peter Carlson',
@@ -57,7 +55,6 @@ angular.module('chatApp')
 			active: false,
 			online: true,
 			status: 'Speaking with Darth Vader',
-			online: false
 		}];
 
 		//Fake chats
@@ -104,14 +101,16 @@ angular.module('chatApp')
 			name: 'Chewbacca',
 			email: 'chewie@foobar.com',
 			img: '/assets/images/profile_5.jpg',
-		}]
+		}];
 
 		$scope.handleFriendRequest = function (email, action) {
 			console.log(email, action);
-		}
+		};
 
 		$scope.deleteChat = function (sidenav) {
-			if (sidenav) $mdSidenav(sidenav).close();
+			if (sidenav) {
+				$mdSidenav(sidenav).close();
+			}
 			var _id = $scope.activeChat._id;
 			console.log(_id);
 			for (var i = 0; i < $scope.chats.length; i++) {
@@ -166,7 +165,6 @@ angular.module('chatApp')
 		$scope.createGroup = function (form) {
 			$scope.submitted = true;
 			if (form.$valid) {
-				console.log("group created");
 				$scope.chats.push({
 					_id: 5,
 					name: $scope.newGroup.name,
@@ -207,6 +205,6 @@ angular.module('chatApp')
 
 		$scope.toggleLeftToolbar = function () {
 			$mdSidenav('left-toolbar').toggle()
-		}
+		};
 
 	});

@@ -34,3 +34,14 @@
     font-size: 1em;
     color: white;
 }
+
+.progress-overlay {
+    width: 100%;
+    height: 100%;
+	background: lightgray;
+	border-radius: 50%;
+}
+
+.display-none{
+	display: none;
+}

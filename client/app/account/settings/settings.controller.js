@@ -10,6 +10,7 @@ angular.module('chatApp')
 			$scope.submitted = true;
 			if (form.$valid) {
 				if (type == 'password') {
+					console.log($scope.user.password);
 					Auth.changePassword($scope.user.current, $scope.user.password)
 					.then(function () {
 						//$scope.message = 'Password successfully changed.';

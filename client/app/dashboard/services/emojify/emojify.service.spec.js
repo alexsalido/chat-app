@@ -10,9 +10,4 @@ describe('Service: emojify', function () {
   beforeEach(inject(function (_emojify_) {
     emojify = _emojify_;
   }));
-
-  it('should do something', function () {
-    expect(!!emojify).toBe(true);
-  });
-
 });

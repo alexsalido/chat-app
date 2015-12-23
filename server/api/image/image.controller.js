@@ -3,6 +3,8 @@
 var _ = require('lodash');
 var Image = require('./image.model');
 
+var User = require('../user/user.model');
+
 //AWS
 var AWS = require('aws-sdk');
 
@@ -50,36 +52,27 @@ exports.create = function (req, res) {
 
 // Updates an existing image in the DB.
 exports.update = function (req, res) {
-	var userid = req.params.userid;
-	var id = req.params.id;
-
-	s3.getObject({
-		Bucket: process.env.BUCKET,
-		Key: 'default/users/' + userid
-	}, function (err, data) {
-		if (err) { //not found
-		} else {
-			//found
-		}
-	});
-
-	if (req.body._id) {
-		delete req.body._id;
-	}
-	Image.findById(req.params.id, function (err, image) {
-		if (err) {
-			return handleError(res, err);
-		}
-		if (!image) {
-			return res.status(404).send('Not Found');
-		}
-		var updated = _.merge(image, req.body);
-		updated.save(function (err) {
-			if (err) {
-				return handleError(res, err);
-			}
+	var userId = req.params.userid;
+	Image.findOne({
+		'info': userId
+	}, function (err, image) {
+		if (err) console.log(err);
+		if (image) {
 			return res.status(200).json(image);
-		});
+		} else {
+			Image.create({
+				url: process.env.BUCKET_URL_UPLOADS + userId + req.body.ext,
+				info: userId
+			}).then(function (image) {
+				User.findById(userId, function (err, user) {
+					user.img = image.url;
+					user.save(function (err) {
+						if (err) return handleError(res, err);
+						return res.status(200).json(image);
+					});
+				});
+			});
+		}
 	});
 };
 
