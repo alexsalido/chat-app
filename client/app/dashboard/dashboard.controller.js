@@ -25,76 +25,76 @@ angular.module('chatApp')
 		$scope.addMember = function () {};
 
 		//Fake contacts
-		$scope.contacts = [{
-			_id: 1,
-			name: 'Joe Perkins',
-			username: 'theperks',
-			email: 'perks@foobar.com',
-			img: 'assets/images/profile_2.jpg',
-			newMessage: false,
-			active: false,
-			online: true,
-			status: 'Shooting some Jedi',
-		}, {
-			_id: 2,
-			name: 'Mark Johnson',
-			username: 'marksman',
-			email: 'mark@foobar.com',
-			img: '/assets/images/profile_3.jpg',
-			newMessage: true,
-			active: false,
-			online: true,
-			status: 'Just standing there',
-		}, {
-			_id: 3,
-			name: 'Peter Carlson',
-			username: 'pita',
-			email: 'pita@foobar.com',
-			img: '/assets/images/profile_4.jpg',
-			newMessage: false,
-			active: false,
-			online: true,
-			status: 'Speaking with Darth Vader',
-		}];
+		// $scope.contacts = [{
+		// 	_id: 1,
+		// 	name: 'Joe Perkins',
+		// 	username: 'theperks',
+		// 	email: 'perks@foobar.com',
+		// 	img: 'assets/images/profile_2.jpg',
+		// 	newMessage: false,
+		// 	active: false,
+		// 	online: true,
+		// 	status: 'Shooting some Jedi',
+		// }, {
+		// 	_id: 2,
+		// 	name: 'Mark Johnson',
+		// 	username: 'marksman',
+		// 	email: 'mark@foobar.com',
+		// 	img: '/assets/images/profile_3.jpg',
+		// 	newMessage: true,
+		// 	active: false,
+		// 	online: true,
+		// 	status: 'Just standing there',
+		// }, {
+		// 	_id: 3,
+		// 	name: 'Peter Carlson',
+		// 	username: 'pita',
+		// 	email: 'pita@foobar.com',
+		// 	img: '/assets/images/profile_4.jpg',
+		// 	newMessage: false,
+		// 	active: false,
+		// 	online: true,
+		// 	status: 'Speaking with Darth Vader',
+		// }];
 
 		//Fake chats
-		$scope.chats = [{
-			_id: 1,
-			user: $scope.contacts[0],
-			newMessage: false,
-			active: false,
-			online: true,
-			status: 'Shooting some Jedi'
-		}, {
-			_id: 2,
-			user: $scope.contacts[1],
-			newMessage: true,
-			active: false,
-			online: true,
-			status: 'Just standing there'
-		}, {
-			_id: 3,
-			user: $scope.contacts[2],
-			newMessage: false,
-			active: false,
-			online: true,
-			status: 'Speaking with Darth Vader'
-		}, {
-			_id: 4,
-			name: 'Stormtroopers',
-			members: [$scope.contacts[0], $scope.contacts[2]],
-			group: true,
-			img: '/assets/images/group_1.jpg',
-			newMessage: true,
-			active: false
-		}];
+		// $scope.chats = [{
+		// 	_id: 1,
+		// 	user: $scope.contacts[0],
+		// 	newMessage: false,
+		// 	active: false,
+		// 	online: true,
+		// 	status: 'Shooting some Jedi'
+		// }, {
+		// 	_id: 2,
+		// 	user: $scope.contacts[1],
+		// 	newMessage: true,
+		// 	active: false,
+		// 	online: true,
+		// 	status: 'Just standing there'
+		// }, {
+		// 	_id: 3,
+		// 	user: $scope.contacts[2],
+		// 	newMessage: false,
+		// 	active: false,
+		// 	online: true,
+		// 	status: 'Speaking with Darth Vader'
+		// }, {
+		// 	_id: 4,
+		// 	name: 'Stormtroopers',
+		// 	members: [$scope.contacts[0], $scope.contacts[2]],
+		// 	group: true,
+		// 	img: '/assets/images/group_1.jpg',
+		// 	newMessage: true,
+		// 	active: false
+		// }];
 
-		$scope.activeChat = $scope.chats[0];
+		// $scope.activeChat = $scope.chats[0];
 
-		$scope.$watch('activeChat', function (newVal, oldVal) {
-			oldVal.active = false;
-			newVal.active = true;
-		});
+		// $scope.$watch('activeChat', function (newVal, oldVal) {
+		// 	oldVal.active = false;
+		// 	newVal.active = true;
+		// });
 
 
 		$scope.pending = [{

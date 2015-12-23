@@ -28,8 +28,10 @@ module.exports = function (config) {
 			'client/bower_components/v-tabs/dist/v-tabs.js',
 			'client/bower_components/angular-file-upload/dist/angular-file-upload.min.js',
 			'client/app/app.js',
+			'client/app/**/*.html',
 			'client/app/**/*.js',
 			'client/components/**/*.js',
+			'client/assets/**/*.svg'
 		],
 
 		preprocessors: {
@@ -56,8 +58,8 @@ module.exports = function (config) {
 
 		// level of logging
 		// possible values: LOG_DISABLE || LOG_ERROR || LOG_WARN || LOG_INFO || LOG_DEBUG
-		// logLevel: config.LOG_INFO,
-		logLevel: config.LOG_DEBUG,
+		logLevel: config.LOG_INFO,
+		// logLevel: config.LOG_DEBUG,
 
 
 		// enable / disable watching file and executing tests whenever any file changes

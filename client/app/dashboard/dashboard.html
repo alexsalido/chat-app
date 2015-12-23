@@ -63,6 +63,6 @@
 		</md-content>
 	</md-sidenav>
 	<div flex-gt-sm="70" flex="100" class="right-toolbar" layout="column" ng-cloak>
-		<chat-window></chat-window>
+		<chat-window ng-if="chats.length > 0"></chat-window>
 	</div>
 </div>
