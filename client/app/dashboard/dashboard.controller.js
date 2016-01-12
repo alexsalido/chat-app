@@ -1,12 +1,28 @@
 'use strict';
 
 angular.module('chatApp')
-	.controller('DashboardCtrl', function ($scope, $location, Auth, $mdSidenav, $mdDialog, $mdBottomSheet, $mdToast) {
+	.controller('DashboardCtrl', function ($scope, $location, Auth, Group, $mdSidenav, $mdDialog, $mdBottomSheet, $mdToast) {
 
-		$scope.toggleSidenav = function (id) {
-			if (id == 'profile-info') $mdSidenav('profile-info').toggle();
-		};
 		$scope.user = Auth.getCurrentUser();
+		$scope.me = Auth.getCurrentUser();
+
+		$scope.createGroup = function (form) {
+			$scope.submitted = true;
+			if (form.$valid) {
+				Group.save({
+					name: $scope.newGroupName,
+					admin: $scope.me._id,
+					members: [$scope.me._id]
+				}, function (res) {
+					$mdToast.show($mdToast.simple().position('top right').textContent('The group was created successfully.').action('OK'));
+				}, function (err) {
+					$mdToast.show($mdToast.simple().position('top right').textContent('Oh no! There was a problem creating the group. Please try again.').action('OK'));
+				});
+				$mdDialog.cancel();
+				$scope.submitted = false;
+				$scope.newGroupName = '';
+			}
+		};
 
 		$scope.logout = function () {
 			Auth.logout();
@@ -95,13 +111,13 @@ angular.module('chatApp')
 		// 	oldVal.active = false;
 		// 	newVal.active = true;
 		// });
-
-
-		$scope.pending = [{
-			name: 'Chewbacca',
-			email: 'chewie@foobar.com',
-			img: '/assets/images/profile_5.jpg',
-		}];
+		//
+		//
+		// $scope.pending = [{
+		// 	name: 'Chewbacca',
+		// 	email: 'chewie@foobar.com',
+		// 	img: '/assets/images/profile_5.jpg',
+		// }];
 
 		$scope.handleFriendRequest = function (email, action) {
 			console.log(email, action);
@@ -162,24 +178,6 @@ angular.module('chatApp')
 			$scope.submitted = false;
 		};
 
-		$scope.createGroup = function (form) {
-			$scope.submitted = true;
-			if (form.$valid) {
-				$scope.chats.push({
-					_id: 5,
-					name: $scope.newGroup.name,
-					members: [],
-					group: true,
-					img: '/assets/images/group_1.jpg',
-					newMessage: false,
-					active: false
-				});
-				$scope.cancel();
-				$scope.newGroup = {};
-			}
-		};
-
-
 		$scope.showEmojis = function (ev) {
 			var element = document.getElementById('chat-box');
 			$mdBottomSheet.show({
@@ -205,6 +203,10 @@ angular.module('chatApp')
 
 		$scope.toggleLeftToolbar = function () {
 			$mdSidenav('left-toolbar').toggle()
+		};
+
+		$scope.toggleSidenav = function (id) {
+			if (id == 'profile-info') $mdSidenav('profile-info').toggle();
 		};
 
 	});

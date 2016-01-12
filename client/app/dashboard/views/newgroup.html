@@ -14,7 +14,7 @@
 			<div layout="column">
 				<md-input-container flex>
 					<label>Name</label>
-					<input name="name" type="text" ng-model="newGroup.name" mongoose-error required autofocus/>
+					<input name="name" type="text" ng-model="newGroupName" mongoose-error required autofocus/>
 					<div ng-messages="newGroupForm.name.$error">
 						<div ng-message="required">This is required.</div>
 						<div ng-message="mongoose" ng-show="submitted">{{errors.other}}</div>

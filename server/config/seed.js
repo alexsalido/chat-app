@@ -7,6 +7,7 @@
 
 var User = require('../api/user/user.model');
 var Img = require('../api/image/image.model');
+var Group = require('../api/group/group.model');
 
 //AWS
 var AWS = require('aws-sdk');
@@ -78,4 +79,8 @@ User.find({}).remove(function () {
 	}, function () {
 		console.log('finished populating users');
 	});
+});
+
+Group.find({}).remove(function () {
+	console.log('Deleted existing groups.');
 });

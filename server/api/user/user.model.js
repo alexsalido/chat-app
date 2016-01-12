@@ -28,7 +28,11 @@ var UserSchema = new Schema({
 	salt: String,
 	facebook: {},
 	twitter: {},
-	github: {}
+	github: {},
+	groups: [{
+		type: Schema.Types.ObjectId,
+		ref: 'Group'
+	}],
 });
 
 /**
