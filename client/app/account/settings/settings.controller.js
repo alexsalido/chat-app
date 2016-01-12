@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('chatApp')
-	.controller('SettingsCtrl', function ($scope, User, Auth, type, $mdDialog) {
+	.controller('SettingsCtrl', function ($scope, User, Auth, type, $mdDialog, $mdToast) {
 		$scope.errors = {};
 
 		$scope.type = type;
@@ -10,20 +10,35 @@ angular.module('chatApp')
 			$scope.submitted = true;
 			if (form.$valid) {
 				if (type == 'password') {
-					console.log($scope.user.password);
 					Auth.changePassword($scope.user.current, $scope.user.password)
-					.then(function () {
-						//$scope.message = 'Password successfully changed.';
-						$scope.cancel();
-					})
-					.catch(function () {
-						form.current.$setValidity('mongoose', false);
-						$scope.errors.other = 'Incorrect password';
-						$scope.message = '';
-					});
+						.then(function () {
+							$mdToast.show($mdToast.simple().position('top right').textContent('Your password was changed successfully.').action('OK'));
+							$scope.cancel();
+						})
+						.catch(function () {
+							if (err.status === 422) {
+								$mdToast.show($mdToast.simple().position('top right').textContent('Oh no! There was a problem changing your password. Please try again.').action('OK'));
+							} else {
+								form.current.$setValidity('mongoose', false);
+								$scope.errors.other = 'Incorrect password';
+								$scope.message = '';
+							}
+						});
 				} else if (type == 'email') {
-					console.log('implement email change');
-					$scope.cancel();
+					Auth.changeEmail($scope.user.current, $scope.user.email)
+						.then(function () {
+							$mdToast.show($mdToast.simple().position('top right').textContent('Your email was changed successfully.').action('OK'));
+							$scope.cancel();
+						})
+						.catch(function (err) {
+							if (err.status === 422) {
+								$mdToast.show($mdToast.simple().position('top right').textContent('Oh no! There was a problem changing your email. Please try again.').action('OK'));
+							} else {
+								form.current.$setValidity('mongoose', false);
+								$scope.errors.other = 'Incorrect password';
+								$scope.message = '';
+							}
+						});
 				}
 			} else {
 				// Update validity of form fields

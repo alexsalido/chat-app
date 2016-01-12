@@ -95,7 +95,30 @@ angular.module('chatApp')
 			},
 
 			/**
-			 * Change password
+			 * Change email
+			 *
+			 * @param  {String}   oldPassword
+			 * @param  {String}   newPassword
+			 * @param  {Function} callback    - optional
+			 * @return {Promise}
+			 */
+			changeEmail: function (password, newEmail, callback) {
+				var cb = callback || angular.noop;
+
+				return User.changeEmail({
+					id: currentUser._id
+				}, {
+					password: password,
+					newEmail: newEmail
+				}, function (user) {
+					return cb(user);
+				}, function (err) {
+					return cb(err);
+				}).$promise;
+			},
+
+			/**
+			 * Change status
 			 *
 			 * @param  {String}   status
 			 * @param  {Function} callback    - optional

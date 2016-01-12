@@ -101,8 +101,29 @@ exports.changePassword = function (req, res, next) {
 	});
 };
 
-//Change a users status
+/**
+ * Change a users email
+ */
+exports.changeEmail = function (req, res, next) {
+	var userId = req.user._id;
+	var pass = String(req.body.password);
+	var newEmail = String(req.body.newEmail);
+	User.findById(userId, function (err, user) {
+		if (user.authenticate(pass)) {
+			user.email = newEmail;
+			user.save(function (err) {
+				if (err) return validationError(res, err);
+				res.status(200).send('OK');
+			});
+		} else {
+			res.status(403).send('Forbidden');
+		}
+	});
+};
 
+/**
+ * Change a users email
+ */
 exports.changeStatus = function (req, res, next) {
 	var userId = req.user._id;
 	var status = String(req.body.status);

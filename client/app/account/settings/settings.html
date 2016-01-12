@@ -13,8 +13,8 @@
 		<md-content layout-padding>
 			<div layout="column">
 				<md-input-container flex>
-					<label>Current {{type}}</label>
-					<input name="current" type="{{type}}" ng-model="user.current" mongoose-error required autofocus/>
+					<label>Verify Password</label>
+					<input name="current" type="password" ng-model="user.current" mongoose-error required autofocus/>
 					<div ng-messages="settingsForm.current.$error">
 						<div ng-message="required">This is required.</div>
 						<div ng-message="mongoose" ng-show="submitted">{{errors.other}}</div>
