@@ -73,7 +73,9 @@ angular.module('chatApp')
 					return $mdSidenav('profile-info').isOpen();
 				}, function () {
 					if ($scope.statusForm.$valid && $scope.me.status !== $scope.dummyStatus) {
-						Auth.changeStatus($scope.dummyStatus);
+						Auth.changeStatus($scope.dummyStatus).catch(function (err) {
+							$mdToast.show($mdToast.simple().position('top right').textContent(err.data).action('OK'));
+						});
 						$scope.me.status = $scope.dummyStatus;
 					}
 				});

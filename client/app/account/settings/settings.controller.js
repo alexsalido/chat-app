@@ -11,13 +11,13 @@ angular.module('chatApp')
 			if (form.$valid) {
 				if (type == 'password') {
 					Auth.changePassword($scope.user.current, $scope.user.password)
-						.then(function () {
-							$mdToast.show($mdToast.simple().position('top right').textContent('Your password was changed successfully.').action('OK'));
+						.then(function (res) {
+							$mdToast.show($mdToast.simple().position('top right').textContent(res.message).action('OK'));
 							$scope.cancel();
 						})
 						.catch(function () {
-							if (err.status === 422) {
-								$mdToast.show($mdToast.simple().position('top right').textContent('Oh no! There was a problem changing your password. Please try again.').action('OK'));
+							if (err.status === 500) {
+								$mdToast.show($mdToast.simple().position('top right').textContent(err.data).action('OK'));
 							} else {
 								form.current.$setValidity('mongoose', false);
 								$scope.errors.other = 'Incorrect password';
@@ -26,13 +26,13 @@ angular.module('chatApp')
 						});
 				} else if (type == 'email') {
 					Auth.changeEmail($scope.user.current, $scope.user.email)
-						.then(function () {
-							$mdToast.show($mdToast.simple().position('top right').textContent('Your email was changed successfully.').action('OK'));
+						.then(function (res) {
+							$mdToast.show($mdToast.simple().position('top right').textContent(res.message).action('OK'));
 							$scope.cancel();
 						})
 						.catch(function (err) {
 							if (err.status === 422) {
-								$mdToast.show($mdToast.simple().position('top right').textContent('Oh no! There was a problem changing your email. Please try again.').action('OK'));
+								$mdToast.show($mdToast.simple().position('top right').textContent(err.data).action('OK'));
 							} else {
 								form.current.$setValidity('mongoose', false);
 								$scope.errors.other = 'Incorrect password';

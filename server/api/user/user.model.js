@@ -29,6 +29,14 @@ var UserSchema = new Schema({
 	facebook: {},
 	twitter: {},
 	github: {},
+	contacts: [{
+		type: Schema.Types.ObjectId,
+		ref: 'User'
+	}],
+	pending: [{
+		type: Schema.Types.ObjectId,
+		ref: 'User'
+	}],
 	groups: [{
 		type: Schema.Types.ObjectId,
 		ref: 'Group'

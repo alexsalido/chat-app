@@ -14,7 +14,9 @@ router.get('/me', auth.isAuthenticated(), controller.me);
 router.put('/:id/password', auth.isAuthenticated(), controller.changePassword);
 router.put('/:id/email', auth.isAuthenticated(), controller.changeEmail);
 router.put('/:id/status', auth.isAuthenticated(), controller.changeStatus);
+router.put('/:id/request', auth.isAuthenticated(), controller.sendFriendRequest);
 router.get('/:id', auth.isAuthenticated(), controller.show);
+router.get('/email/:email', auth.isAuthenticated(), controller.isRegistered)
 router.post('/', controller.create);
 
 module.exports = router;

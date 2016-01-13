@@ -37,7 +37,7 @@ exports.create = function (req, res) {
 			if (err) {
 				return handleError(res, err);
 			}
-			user.groups.push(group._id);
+			user.groups.addToSet(group._id);
 			user.save(function (err) {
 				if (err) return handleError(res, err);
 			});

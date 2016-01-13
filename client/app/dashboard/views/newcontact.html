@@ -9,13 +9,13 @@
 			</md-button>
 		</div>
 	</md-toolbar>
-	<form name="newContactForm" ng-submit="addContact(newContactForm)" novalidate>
+	<form name="friendRequestForm" ng-submit="sendFriendRequest(friendRequestForm)" novalidate>
 		<md-content layout-padding>
 			<div layout="column">
 				<md-input-container class="md-block">
 					<label>Email</label>
-					<input name="email" type="email" ng-model="newContact.email" mongoose-error required autofocus/>
-					<div ng-messages="newContactForm.email.$error">
+					<input name="email" type="email" ng-model="newContactEmail" mongoose-error required autofocus/>
+					<div ng-messages="friendRequestForm.$error">
 						<div ng-message="required">This is required.</div>
 						<div ng-message="mongoose" ng-show="submitted">{{errors.other}}</div>
 					</div>

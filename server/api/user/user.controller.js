@@ -11,6 +11,11 @@ var validationError = function (res, err) {
 	return res.status(422).json(err);
 };
 
+var handleError = function (res, err, msg) {
+	var message = msg || 'Oh no! An unknown error has occurred, please try again.';
+	return res.status(500).json(message);
+};
+
 /**
  * Get list of users
  * restriction: 'admin'
@@ -44,7 +49,7 @@ exports.create = function (req, res, next) {
 		if (err) return res.status(500).send(err);
 		newUser.img = image[0].url;
 		newUser.save(function (err, user) {
-			if (err) return validationError(res, err);
+			if (err) return handleError(res, err);
 			var token = jwt.sign({
 				_id: user._id
 			}, config.secrets.session, {
@@ -92,8 +97,10 @@ exports.changePassword = function (req, res, next) {
 		if (user.authenticate(oldPass)) {
 			user.password = newPass;
 			user.save(function (err) {
-				if (err) return validationError(res, err);
-				res.status(200).send('OK');
+				if (err) return handleError(res, err, 'Oh no! There was a problem changing your password. Please try again.');
+				res.status(200).send({
+					message: 'Your password was changed successfully.'
+				});
 			});
 		} else {
 			res.status(403).send('Forbidden');
@@ -112,8 +119,10 @@ exports.changeEmail = function (req, res, next) {
 		if (user.authenticate(pass)) {
 			user.email = newEmail;
 			user.save(function (err) {
-				if (err) return validationError(res, err);
-				res.status(200).send('OK');
+				if (err) return handleError(res, err, 'Oh no! There was a problem changing your email. Please try again.');
+				res.status(200).send({
+					message: 'Your email was changed successfully.'
+				});
 			});
 		} else {
 			res.status(403).send('Forbidden');
@@ -125,16 +134,66 @@ exports.changeEmail = function (req, res, next) {
  * Change a users email
  */
 exports.changeStatus = function (req, res, next) {
-	var userId = req.user._id;
 	var status = String(req.body.status);
-	User.findById(userId, function (err, user) {
-		user.status = status;
-		user.save(function (err) {
-			if (err) return validationError(res, err);
-			res.status(200).send('OK');
-		});
-
+	User.update({
+		_id: req.user._id
+	}, {
+		$set: {
+			status: status
+		}
+	}, function (err) {
+		if (err) return handleError(res, err, 'Your status wasn\'t updated. An unknown error occurred, please try again.');
+		res.status(200).send('Status changed successfully.');
 	});
+};
+
+/**
+ * Check if email is registered
+ */
+exports.isRegistered = function (req, res, next) {
+	var email = req.params.email;
+	User.findOne({
+		email: email.toLowerCase()
+	}, function (err, user) {
+		if (err) return handleError(res, err);
+		if (!user) {
+			return res.status(404).json({
+				field: 'email',
+				message: 'This email is not registered.'
+			});
+		}
+		return res.status(200).send({
+			_id: user._id
+		});
+	})
+};
+
+/**
+ * Send friend request
+ */
+exports.sendFriendRequest = function (req, res, next) {
+	var to = req.body.to;
+	var from = req.user;
+	if (to != from._id) {
+		User.findById(to, function (err, user) {
+			from.pending.addToSet(user._id)
+			user.pending.addToSet(from._id)
+			user.save(function (err) {
+				if (err) return handleError(res, err);
+				from.save(function (err) {
+					if (err) return handleError(res, err);
+					res.status(200).send({
+						message: 'Friend request sent successfully.'
+					});
+
+				})
+			});
+		});
+	} else {
+		res.status(400).send({
+			message: 'You can\'t send a friend request to yourself.'
+		});
+	}
 };
 
 /**

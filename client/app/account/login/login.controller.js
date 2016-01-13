@@ -31,6 +31,7 @@ angular.module('chatApp')
 						$location.path('/dashboard');
 					})
 					.catch(function (err) {
+						console.log(err);
 						form[err.field].$setValidity('mongoose', false);
 						$scope.errors.other = err.message;
 					});

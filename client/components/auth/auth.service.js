@@ -87,8 +87,8 @@ angular.module('chatApp')
 				}, {
 					oldPassword: oldPassword,
 					newPassword: newPassword
-				}, function (user) {
-					return cb(user);
+				}, function (res) {
+					return cb(res);
 				}, function (err) {
 					return cb(err);
 				}).$promise;
@@ -110,8 +110,8 @@ angular.module('chatApp')
 				}, {
 					password: password,
 					newEmail: newEmail
-				}, function (user) {
-					return cb(user);
+				}, function (res) {
+					return cb(res);
 				}, function (err) {
 					return cb(err);
 				}).$promise;
@@ -131,12 +131,49 @@ angular.module('chatApp')
 					id: currentUser._id
 				}, {
 					status: status
-				}, function (user) {
-					return cb(user);
+				}, function (res) {
+					return cb(res);
 				}, function (err) {
 					return cb(err);
 				}).$promise;
 			},
+
+			/**
+			 * Check if email is registered, returns the user's id if found
+			 */
+			isRegistered: function (email, callback) {
+				var cb = callback || angular.noop;
+				var deferred = $q.defer();
+
+				$http.get('/api/users/email/' + email).
+				success(function (data) {
+					deferred.resolve(data);
+					return cb();
+				}).
+				error(function (err) {
+					deferred.reject(err);
+					return cb(err);
+				});
+
+				return deferred.promise;
+			},
+
+			/**
+			 * Sends friend request
+			 */
+			 sendFriendRequest: function (to, callback) {
+				 var cb = callback || angular.noop;
+
+ 				return User.sendFriendRequest({
+ 					id: currentUser._id
+ 				}, {
+ 					to: to
+ 				}, function (res) {
+ 					return cb(res);
+ 				}, function (err) {
+ 					return cb(err);
+ 				}).$promise;
+			 },
 
 			/**
 			 * Gets all available info on authenticated user

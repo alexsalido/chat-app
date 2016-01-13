@@ -23,6 +23,12 @@ angular.module('chatApp')
 					controller: 'status'
 				}
 			},
+			sendFriendRequest: {
+				method: 'PUT',
+				params: {
+					controller: 'request'
+				}
+			},
 			get: {
 				method: 'GET',
 				params: {
