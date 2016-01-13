@@ -190,9 +190,7 @@ exports.sendFriendRequest = function (req, res, next) {
 			});
 		});
 	} else {
-		res.status(400).send({
-			message: 'You can\'t send a friend request to yourself.'
-		});
+		res.status(400).send('You can\'t send a friend request to yourself.');
 	}
 };
 
