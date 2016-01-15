@@ -1,11 +1,12 @@
 'use strict';
 
 angular.module('chatApp')
-	.controller('DashboardCtrl', function ($scope, $location, Auth, Group, $mdSidenav, $mdDialog, $mdBottomSheet, $mdToast) {
+	.controller('DashboardCtrl', function ($scope, $location, Auth, Group, $mdSidenav, $mdDialog, $mdBottomSheet, $mdToast, socket) {
 
 		$scope.user = Auth.getCurrentUser();
 		$scope.me = Auth.getCurrentUser();
 		$scope.errors = {};
+		$scope.contactListUpdate = false;
 
 		$scope.createGroup = function (form) {
 			$scope.submitted = true;
@@ -29,28 +30,31 @@ angular.module('chatApp')
 			$scope.submitted = true;
 			if (form.$valid) {
 				Auth.isRegistered($scope.newContactEmail)
-				.then(function (data) {
-					Auth.sendFriendRequest(data._id).then(function (res) {
-						$mdToast.show($mdToast.simple().position('top right').textContent(res.message).action('OK'));
-						$mdDialog.cancel();
-						$scope.newContactEmail = '';
-					}).catch(function (err) {
-						$mdToast.show($mdToast.simple().position('top right').textContent(err.data).action('OK'));
+					.then(function (data) {
+						Auth.sendFriendRequest(data._id).then(function (res) {
+							$mdToast.show($mdToast.simple().position('top right').textContent(res.message).action('OK'));
+							socket.friendRequest(data._id, $scope.me._id);
+							$mdDialog.cancel();
+							$scope.newContactEmail = '';
+						}).catch(function (err) {
+							$mdToast.show($mdToast.simple().position('top right').textContent(err.data).action('OK'));
+						});
+					})
+					.catch(function (err) {
+						form[err.field].$setValidity('mongoose', false);
+						$scope.errors.other = err.message;
 					});
-				})
-				.catch(function (err) {
-					form[err.field].$setValidity('mongoose', false);
-					$scope.errors.other = err.message;
-				});
 			}
 		};
 
 		$scope.toggleLeftToolbar = function () {
-			$mdSidenav('left-toolbar').toggle()
+			$mdSidenav('left-toolbar').toggle();
 		};
 
 		$scope.toggleSidenav = function (id) {
-			if (id == 'profile-info') $mdSidenav('profile-info').toggle();
+			if (id == 'profile-info') {
+				$mdSidenav('profile-info').toggle();
+			}
 		};
 
 		$scope.showSettingsDialog = function (type, ev) {
@@ -88,6 +92,11 @@ angular.module('chatApp')
 			});
 		};
 
+		$scope.toggleContactList = function () {
+			$scope.contactListUpdate = false;
+			$mdSidenav('contact-list').toggle();
+		};
+
 		$scope.cancel = function () {
 			$mdDialog.cancel();
 			$scope.submitted = false;
@@ -95,10 +104,18 @@ angular.module('chatApp')
 
 
 		$scope.logout = function () {
+			socket.disconnect();
 			Auth.logout();
 			$location.path('/');
 		};
 
+		//**	 **//
+		// Events  //
+		//**	 **//
+
+		$scope.$on('contactListUpdate', function () {
+			$scope.contactListUpdate = true;
+		});
 		// $scope.openChat = function (_id) {
 		// 	for (var i = 0; i < $scope.chats.length; i++) {
 		// 		if ($scope.chats[i]._id === _id) {

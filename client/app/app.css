@@ -60,6 +60,11 @@ md-icon.red svg {
     fill: #FF0000;
 }
 
+md-icon.notification svg {
+    fill: rgb(255, 82, 82);
+}
+
+
 .s48 {
 	height: 48px;
 	width: 48px;

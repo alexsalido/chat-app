@@ -16,6 +16,8 @@ var handleError = function (res, err, msg) {
 	return res.status(500).json(message);
 };
 
+var objectIdFields = 'contacts sent pending groups';
+var insensitiveFields = 'name email img status';
 /**
  * Get list of users
  * restriction: 'admin'
@@ -23,6 +25,8 @@ var handleError = function (res, err, msg) {
 exports.index = function (req, res) {
 	User.find({}, '-salt -hashedPassword', function (err, users) {
 		if (err) return res.status(500).send(err);
+	}).populate(objectIdFields, insensitiveFields).exec(function (err, users) {
+		if (err) return handleError(res, err);
 		res.status(200).json(users);
 	});
 };
@@ -176,12 +180,13 @@ exports.sendFriendRequest = function (req, res, next) {
 	var from = req.user;
 	if (to != from._id) {
 		User.findById(to, function (err, user) {
-			from.pending.addToSet(user._id)
+			from.sent.addToSet(user._id)
 			user.pending.addToSet(from._id)
 			user.save(function (err) {
 				if (err) return handleError(res, err);
 				from.save(function (err) {
 					if (err) return handleError(res, err);
+					// user.schema.emit('friendRequest', user, from);
 					res.status(200).send({
 						message: 'Friend request sent successfully.'
 					});
@@ -201,7 +206,7 @@ exports.me = function (req, res, next) {
 	var userId = req.user._id;
 	User.findOne({
 		_id: userId
-	}, '-salt -hashedPassword', function (err, user) { // don't ever give out the password or salt
+	}, '-salt -hashedPassword').populate(objectIdFields, insensitiveFields).exec(function (err, user) {
 		if (err) return next(err);
 		if (!user) return res.status(401).send('Unauthorized');
 		res.json(user);

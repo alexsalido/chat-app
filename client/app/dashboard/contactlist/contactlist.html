@@ -46,6 +46,16 @@
 					</p>
 				</div>
 			</md-list-item>
+			<md-list-item ng-repeat="request in sent | filter:contactListSearch | orderBy:'name' track by $index" class="md-2-line disabled">
+				<img alt="{{ request.name }}" ng-src="{{request.img || 'assets/images/profile_gray.png'}}" class="md-avatar object-fit-cover" />
+				<div class="md-list-item-text">
+					<h3>{{ request.name }}</h3>
+					<h4>
+						{{ request.email }}
+					</h4>
+				</div>
+				<md-icon md-svg-icon="schedule" aria-label="Awaiting Response" class="md-primary gray"></md-icon>
+			</md-list-item>
 		</md-list>
 	</md-content>
 </md-content>

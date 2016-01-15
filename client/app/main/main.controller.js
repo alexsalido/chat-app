@@ -1,14 +1,14 @@
 'use strict';
 
 angular.module('chatApp')
-	.controller('MainCtrl', function ($scope, $http, socket, $location, $mdDialog) {
+	.controller('MainCtrl', function ($scope, $http, $location, $mdDialog) {
 
-		$scope.awesomeThings = [];
-
-		$http.get('/api/things').success(function (awesomeThings) {
-			$scope.awesomeThings = awesomeThings;
-			socket.syncUpdates('thing', $scope.awesomeThings);
-		});
+		// $scope.awesomeThings = [];
+		//
+		// $http.get('/api/things').success(function (awesomeThings) {
+		// 	$scope.awesomeThings = awesomeThings;
+		// 	socket.syncUpdates('thing', $scope.awesomeThings);
+		// });
 
 		$scope.showSignup = function (ev) {
 			$mdDialog.show({
@@ -48,7 +48,7 @@ angular.module('chatApp')
 		//   $http.delete('/api/things/' + thing._id);
 		// };
 
-		$scope.$on('$destroy', function () {
-			socket.unsyncUpdates('thing');
-		});
+		// $scope.$on('$destroy', function () {
+		// 	socket.unsyncUpdates('thing');
+		// });
 	});

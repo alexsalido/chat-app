@@ -5,56 +5,76 @@
 'use strict';
 
 var config = require('./environment');
+var User = require('../../server/api/user/user.model');
 
 // When the user disconnects.. perform this
-function onDisconnect(socket) {
-}
+function onDisconnect(socket) {}
 
 // When the user connects.. perform this
-function onConnect(socket) {
-  // When the client emits 'info', this listens and executes
-  socket.on('info', function (data) {
-    console.info('[%s] %s', socket.address, JSON.stringify(data, null, 2));
-  });
+function onConnect(socket, io) {
 
-  // Insert sockets below
-  require('../api/group/group.socket').register(socket);
-  require('../api/image/image.socket').register(socket);
-  require('../api/emoji/emoji.socket').register(socket);
-  require('../api/thing/thing.socket').register(socket);
+	// When the client emits 'info', this listens and executes
+	socket.on('info', function (data) {
+		console.info('[%s] %s', socket.address, JSON.stringify(data, null, 2));
+	});
+
+	socket.on('friendRequest', function (to, from) {
+		console.log('Friend request sent by user with id [%s]', from);
+		User.findById(to, function (err, to) {
+			User.findById(from, function (err, from) {
+				socket.emit('friendRequestSent', to);
+				socket.to(to._id).emit('friendRequestReceived', from);
+			});
+		});
+	})
+
+	// Insert sockets below
+	// require('../api/group/group.socket').register(socket);
+	// require('../api/image/image.socket').register(socket);
+	// require('../api/emoji/emoji.socket').register(socket);
+	// require('../api/thing/thing.socket').register(socket);
+	// require('../api/user/user.socket').register(socket);
 }
 
 module.exports = function (socketio) {
-  // socket.io (v1.x.x) is powered by debug.
-  // In order to see all the debug output, set DEBUG (in server/config/local.env.js) to including the desired scope.
-  //
-  // ex: DEBUG: "http*,socket.io:socket"
+	// socket.io (v1.x.x) is powered by debug.
+	// In order to see all the debug output, set DEBUG (in server/config/local.env.js) to including the desired scope.
+	//
+	// ex: DEBUG: "http*,socket.io:socket"
 
-  // We can authenticate socket.io users and access their token through socket.handshake.decoded_token
-  //
-  // 1. You will need to send the token in `client/components/socket/socket.service.js`
-  //
-  // 2. Require authentication here:
-  // socketio.use(require('socketio-jwt').authorize({
-  //   secret: config.secrets.session,
-  //   handshake: true
-  // }));
+	// We can authenticate socket.io users and access their token through socket.handshake.decoded_token
+	//
+	// 1. You will need to send the token in `client/components/socket/socket.service.js`
+	//
+	// 2. Require authentication here:
+	// socketio.use(require('socketio-jwt').authorize({
+	//   secret: config.secrets.session,
+	//   handshake: true
+	// }));
 
-  socketio.on('connection', function (socket) {
-    socket.address = socket.handshake.address !== null ?
-            socket.handshake.address.address + ':' + socket.handshake.address.port :
-            process.env.DOMAIN;
+	socketio.on('connection', function (socket) {
 
-    socket.connectedAt = new Date();
+		socket.address = socket.handshake.address !== null ?
+			socket.handshake.address.address + ':' + socket.handshake.address.port :
+			process.env.DOMAIN;
 
-    // Call onDisconnect.
-    socket.on('disconnect', function () {
-      onDisconnect(socket);
-      console.info('[%s] DISCONNECTED', socket.address);
-    });
+		socket.connectedAt = new Date();
 
-    // Call onConnect.
-    onConnect(socket);
-    console.info('[%s] CONNECTED', socket.address);
-  });
+		//Create room
+		socket.on('room', function (id) {
+			socket.join(id);
+			console.info('ROOM [%s] CREATED', id);
+		});
+
+		// Call onDisconnect.
+		socket.on('disconnect', function () {
+			onDisconnect(socket);
+			console.info('[%s] DISCONNECTED', socket.address);
+		});
+
+		// Call onConnect.
+		onConnect(socket, socketio);
+		console.log(socketio.engine.clientsCount + ' clients connected to socket.');
+		console.info('[%s] CONNECTED', socket.address);
+	});
 };

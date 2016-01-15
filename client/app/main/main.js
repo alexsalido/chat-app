@@ -18,7 +18,7 @@ angular.module('chatApp')
 						deferred.resolve(true);
 						console.log('User is not logged in, no need to re-route');
 					}
-				})
+				});
 				return deferred.promise;
 			}
 		}

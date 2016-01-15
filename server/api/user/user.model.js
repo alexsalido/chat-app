@@ -33,6 +33,10 @@ var UserSchema = new Schema({
 		type: Schema.Types.ObjectId,
 		ref: 'User'
 	}],
+	sent: [{
+		type: Schema.Types.ObjectId,
+		ref: 'User'
+	}],
 	pending: [{
 		type: Schema.Types.ObjectId,
 		ref: 'User'

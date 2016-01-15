@@ -1,19 +1,33 @@
 'use strict';
 
 angular.module('chatApp')
-	.directive('contactList', function ($mdSidenav) {
+	.directive('contactList', function ($mdSidenav, Auth, socket, $mdToast) {
 		return {
 			templateUrl: 'app/dashboard/contactlist/contactlist.html',
 			restrict: 'E',
 			replace: true,
-			controller: function ($scope, $element, $attrs, $mdSidenav, $mdDialog) {
+			scope: {},
+			controller: function ($scope, $element, $attrs) {
+				$scope.me = Auth.getCurrentUser();
+
+				$scope.pending = $scope.me.pending;
+				socket.syncPending($scope.pending);
+
+				$scope.sent = $scope.me.sent;
+				socket.syncSent($scope.sent);
 
 				$scope.requests = $attrs.requests || false;
 
-				$scope.toggleContactList = function () {
-					$mdSidenav('contact-list').toggle()
-				};
+				//friend request received
+				$scope.$watch('pending.length', function (newVals, oldVals) {
+					if (newVals != oldVals) {
+						$mdToast.show($mdToast.simple().position('top right').textContent('Friend request received.').action('OK'));
+						$scope.$emit('contactListUpdate');
+					}
+				}, true);
+
 			},
+
 			link: function (scope, element, attrs) {
 				scope.requests = attrs.requests || false;
 			}

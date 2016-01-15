@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('chatApp')
-	.controller('LoginCtrl', function ($scope, Auth, showSignup, $location, $window, $mdDialog) {
+	.controller('LoginCtrl', function ($scope, Auth, socket, showSignup, $location, $window, $mdDialog) {
 		$scope.user = {};
 		$scope.errors = {};
 
@@ -27,11 +27,15 @@ angular.module('chatApp')
 					})
 					.then(function () {
 						$mdDialog.cancel();
-						// Logged in, redirect to home
+						// socket.createSocket();
 						$location.path('/dashboard');
+						// Auth.isLoggedInAsync(function (loggedIn) {
+						// 	if (loggedIn) {
+						// 		socket.createRoom(Auth.getCurrentUser()._id);
+						// 	}
+						// });
 					})
 					.catch(function (err) {
-						console.log(err);
 						form[err.field].$setValidity('mongoose', false);
 						$scope.errors.other = err.message;
 					});

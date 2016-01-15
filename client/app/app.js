@@ -46,11 +46,12 @@ angular.module('chatApp', [
 			.icon('person_add', 'assets/svg/person_add.svg')
 			.icon('camera', 'assets/svg/camera.svg')
 			.icon('scribble', 'assets/svg/scribble.svg')
+			.icon('schedule', 'assets/svg/schedule.svg')
 			.icon('emojis-people', 'assets/svg/emojis-people.svg')
 			.icon('emojis-nature', 'assets/svg/emojis-nature.svg')
 			.icon('emojis-objects', 'assets/svg/emojis-objects.svg')
 			.icon('emojis-places', 'assets/svg/emojis-places.svg')
-			.icon('emojis-symbols', 'assets/svg/emojis-symbols.svg')
+			.icon('emojis-symbols', 'assets/svg/emojis-symbols.svg');
 
 		emojifyProvider.setConfig('assets/emojis');
 
