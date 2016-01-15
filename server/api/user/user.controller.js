@@ -178,24 +178,72 @@ exports.isRegistered = function (req, res, next) {
 exports.sendFriendRequest = function (req, res, next) {
 	var to = req.body.to;
 	var from = req.user;
+	//Check if sender is different from receiver
 	if (to != from._id) {
-		User.findById(to, function (err, user) {
-			from.sent.addToSet(user._id)
-			user.pending.addToSet(from._id)
-			user.save(function (err) {
+		//Finds sender and receiver if there is no friend request pending or if they aren't friends.
+		User.find({
+				$or: [{
+					$and: [{
+						'_id': to
+					}, {
+						$and: [{
+							pending: {
+								$ne: from._id
+							}
+						}, {
+							contacts: {
+								$ne: from._id
+							}
+						}, {
+							sent: {
+								$ne: from._id
+							}
+						}]
+					}]
+				}, {
+					$and: [{
+						'_id': from._id
+					}, {
+						$and: [{
+							pending: {
+								$ne: to
+							}
+						}, {
+							contacts: {
+								$ne: to
+							}
+						}, {
+							sent: {
+								$ne: to
+							}
+						}]
+					}]
+				}]
+			},
+			function (err, docs) {
 				if (err) return handleError(res, err);
-				from.save(function (err) {
-					if (err) return handleError(res, err);
-					// user.schema.emit('friendRequest', user, from);
-					res.status(200).send({
-						message: 'Friend request sent successfully.'
-					});
+				//if sender and receiver are found process friend request
+				if (docs.length !== 2) {
+					return res.status(400).send('This user is already your friend or there already is a friend request pending.');
+				} else {
+					to = docs[0];
+					from = docs[1];
+					from.sent.addToSet(to._id);
+					to.pending.addToSet(from._id);
+					to.save(function (err) {
+						if (err) return handleError(res, err);
+						from.save(function (err) {
+							if (err) return handleError(res, err);
+							return res.status(200).send({
+								message: 'Friend request sent successfully.'
+							});
 
-				})
-			});
-		});
+						})
+					});
+				}
+			})
 	} else {
-		res.status(400).send('You can\'t send a friend request to yourself.');
+		return res.status(400).send('You can\'t send a friend request to yourself.');
 	}
 };
 

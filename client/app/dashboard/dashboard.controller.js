@@ -16,9 +16,9 @@ angular.module('chatApp')
 					admin: $scope.me._id,
 					members: [$scope.me._id]
 				}, function (res) {
-					$mdToast.show($mdToast.simple().position('top right').textContent('The group was created successfully.').action('OK'));
+					$mdToast.show($mdToast.simple().position('top right').textContent(res.message).action('OK'));
 				}, function (err) {
-					$mdToast.show($mdToast.simple().position('top right').textContent('Oh no! There was a problem creating the group. Please try again.').action('OK'));
+					$mdToast.show($mdToast.simple().position('top right').textContent(err.data).action('OK'));
 				});
 				$mdDialog.cancel();
 				$scope.submitted = false;

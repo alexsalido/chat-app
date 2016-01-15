@@ -31,7 +31,7 @@ exports.show = function (req, res) {
 exports.create = function (req, res) {
 	Group.create(req.body, function (err, group) {
 		if (err) {
-			return handleError(res, err);
+			return handleError(res, err, 'Oh no! There was a problem creating the group. Please try again.');
 		}
 		User.findById(req.body.admin, function (err, user) {
 			if (err) {
@@ -41,7 +41,7 @@ exports.create = function (req, res) {
 			user.save(function (err) {
 				if (err) return handleError(res, err);
 			});
-			return res.status(201).json(group);
+			return res.status(201).json('The group was created successfully.');
 		});
 	});
 };
@@ -86,6 +86,7 @@ exports.destroy = function (req, res) {
 	});
 };
 
-function handleError(res, err) {
-	return res.status(500).send(err);
-}
+function handleError(res, err, msg) {
+	var message = msg || 'Oh no! An unknown error has occurred, please try again.';
+	return res.status(500).json(message);
+};

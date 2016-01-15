@@ -20,8 +20,8 @@ function onConnect(socket, io) {
 
 	socket.on('friendRequest', function (to, from) {
 		console.log('Friend request sent by user with id [%s]', from);
-		User.findById(to, function (err, to) {
-			User.findById(from, function (err, from) {
+		User.findById(to, 'name email img', function (err, to) {
+			User.findById(from, 'name email img', function (err, from) {
 				socket.emit('friendRequestSent', to);
 				socket.to(to._id).emit('friendRequestReceived', from);
 			});
@@ -47,10 +47,10 @@ module.exports = function (socketio) {
 	// 1. You will need to send the token in `client/components/socket/socket.service.js`
 	//
 	// 2. Require authentication here:
-	// socketio.use(require('socketio-jwt').authorize({
-	//   secret: config.secrets.session,
-	//   handshake: true
-	// }));
+	socketio.use(require('socketio-jwt').authorize({
+	  secret: config.secrets.session,
+	  handshake: true
+	}));
 
 	socketio.on('connection', function (socket) {
 
