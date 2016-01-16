@@ -9,3 +9,7 @@
 .disabled {
 	opacity: 0.4;
 }
+
+.contact-list md-list {
+    padding: 0;
+}

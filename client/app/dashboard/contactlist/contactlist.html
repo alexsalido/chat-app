@@ -1,5 +1,5 @@
 <md-content flex>
-	<md-content flex ng-show="{{requests}}">
+	<md-content flex ng-show="pending.length > 0">
 		<md-list ng-cloak>
 			<md-subheader class="md-primary">Pending requests</md-subheader>
 			<md-list-item ng-repeat="request in pending" ng-click="" class="md-3-line">
@@ -11,18 +11,18 @@
 					</h4>
 				</div>
 				<md-button class="md-icon-button md-exclude">
-					<md-icon md-svg-icon="done" ng-click="handleFriendRequest(request.email, 'accept')" aria-label="Accept Request" class="md-primary green"></md-icon>
+					<md-icon md-svg-icon="done" ng-click="friendRequestAccepted(request._id)" aria-label="Accept Request" class="md-primary green"></md-icon>
 				</md-button>
 				<md-button class="md-icon-button md-exclude">
-					<md-icon md-svg-icon="close" ng-click="handleFriendRequest(request.email, 'reject')" aria-label="Reject Request" class="md-primary red"></md-icon>
+					<md-icon md-svg-icon="close" ng-click="friendRequestRejected(request._id)" aria-label="Reject Request" class="md-primary red"></md-icon>
 				</md-button>
 			</md-list-item>
 		</md-list>
 	</md-content>
-	<md-divider ng-show="{{requests}}"></md-divider>
+	<md-divider ng-show="pending.length > 0"></md-divider>
 	<md-content flex>
 		<md-list ng-cloak>
-			<md-list-item ng-repeat="contact in (contacts | filter:{ online: 'true' }) | filter:contactListSearch | orderBy:'name' track by $index" ng-click="opencontact(contact._id, $event)" class="md-2-line">
+			<md-list-item ng-repeat="contact in (contacts | filter:{ online: 'true' }) | filter: { name: filter } | orderBy:'name' track by $index" ng-click="openChat(contact._id)" class="md-2-line">
 				<img alt="{{ contact.name }}" ng-src="{{contact.img || 'assets/images/profile_gray.png'}}" class="md-avatar object-fit-cover" />
 				<div class="md-list-item-text">
 					<h3>{{ contact.name }}</h3>
@@ -34,7 +34,7 @@
 					</p>
 				</div>
 			</md-list-item>
-			<md-list-item ng-repeat="contact in (contacts | filter:{ online: 'false' }) | filter:contactListSearch | orderBy:'name' track by $index" class="md-2-line disabled">
+			<md-list-item ng-repeat="contact in (contacts | filter:{ online: 'false' }) | filter: { name: filter } | orderBy:'name' track by $index" class="md-2-line disabled">
 				<img alt="{{ contact.name }}" ng-src="{{contact.img || 'assets/images/profile_gray.png'}}" class="md-avatar object-fit-cover" />
 				<div class="md-list-item-text">
 					<h3>{{ contact.name }}</h3>
@@ -46,7 +46,7 @@
 					</p>
 				</div>
 			</md-list-item>
-			<md-list-item ng-repeat="request in sent | filter:contactListSearch | orderBy:'name' track by $index" class="md-2-line disabled">
+			<md-list-item ng-repeat="request in sent | filter: { name: filter } | orderBy:'name' track by $index" class="md-2-line disabled">
 				<img alt="{{ request.name }}" ng-src="{{request.img || 'assets/images/profile_gray.png'}}" class="md-avatar object-fit-cover" />
 				<div class="md-list-item-text">
 					<h3>{{ request.name }}</h3>

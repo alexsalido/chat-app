@@ -33,11 +33,11 @@ var UserSchema = new Schema({
 		type: Schema.Types.ObjectId,
 		ref: 'User'
 	}],
-	sent: [{
+	sentRequests: [{
 		type: Schema.Types.ObjectId,
 		ref: 'User'
 	}],
-	pending: [{
+	pendingRequests: [{
 		type: Schema.Types.ObjectId,
 		ref: 'User'
 	}],
@@ -45,6 +45,10 @@ var UserSchema = new Schema({
 		type: Schema.Types.ObjectId,
 		ref: 'Group'
 	}],
+	online: {
+		type: Boolean,
+		default: true
+	}
 });
 
 /**

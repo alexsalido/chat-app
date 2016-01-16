@@ -40,6 +40,14 @@ angular.module('chatApp')
 				socket.emit('friendRequest', to, from);
 			},
 
+			friendRequestAccepted: function (user) {
+				socket.emit('friendRequest:Accepted', user, Auth.getCurrentUser()._id);
+			},
+
+			friendRequestRejected: function (user) {
+				socket.emit('friendRequest:Rejected', user, Auth.getCurrentUser()._id);
+			},
+
 			/**
 			 * Register listeners to sync an array with updates on a model
 			 *
@@ -90,17 +98,18 @@ angular.module('chatApp')
 			syncSent: function (array, cb) {
 				cb = cb || angular.noop;
 
-				socket.on('friendRequestSent', function (item) {
+				socket.on('sentRequestsUpdated', function (item) {
+
 					var oldItem = _.find(array, {
 						_id: item._id
 					});
 					var index = array.indexOf(oldItem);
 					var event = 'created';
 
-					// replace oldItem if it exists
+					// delete oldItem if it exists
 					// otherwise just add item to the collection
 					if (oldItem) {
-						array.splice(index, 1, item);
+						array.splice(index, 1);
 						event = 'updated';
 					} else {
 						array.push(item);
@@ -112,7 +121,29 @@ angular.module('chatApp')
 
 			syncPending: function (array, cb) {
 				cb = cb || angular.noop;
-				socket.on('friendRequestReceived', function (item) {
+				socket.on('pendingRequestsUpdated', function (item) {
+					var oldItem = _.find(array, {
+						_id: item._id
+					});
+					var index = array.indexOf(oldItem);
+					var event = 'created';
+
+					// delete oldItem if it exists
+					// otherwise just add item to the collection
+					if (oldItem) {
+						array.splice(index, 1);
+						event = 'updated';
+					} else {
+						array.push(item);
+					}
+
+					cb(event, item, array);
+				});
+			},
+
+			syncContacts: function (array, cb) {
+				cb = cb || angular.noop;
+				socket.on('contactsUpdated', function (item) {
 					var oldItem = _.find(array, {
 						_id: item._id
 					});

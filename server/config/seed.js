@@ -76,7 +76,11 @@ User.find({}).remove(function () {
 		name: 'Admin',
 		email: 'admin@admin.com',
 		password: 'admin'
-	}, function () {
+	}, function (err, test, admin) {
+		admin.contacts.addToSet(test._id);
+		admin.save();
+		test.contacts.addToSet(admin._id);
+		test.save();
 		console.log('finished populating users');
 	});
 });

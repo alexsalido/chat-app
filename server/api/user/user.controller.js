@@ -16,8 +16,8 @@ var handleError = function (res, err, msg) {
 	return res.status(500).json(message);
 };
 
-var objectIdFields = 'contacts sent pending groups';
-var insensitiveFields = 'name email img status';
+var objectIdFields = 'contacts sentRequests pendingRequests groups';
+var insensitiveFields = 'name email img status online';
 /**
  * Get list of users
  * restriction: 'admin'
@@ -187,7 +187,7 @@ exports.sendFriendRequest = function (req, res, next) {
 						'_id': to
 					}, {
 						$and: [{
-							pending: {
+							pendingRequests: {
 								$ne: from._id
 							}
 						}, {
@@ -195,7 +195,7 @@ exports.sendFriendRequest = function (req, res, next) {
 								$ne: from._id
 							}
 						}, {
-							sent: {
+							sentRequests: {
 								$ne: from._id
 							}
 						}]
@@ -205,7 +205,7 @@ exports.sendFriendRequest = function (req, res, next) {
 						'_id': from._id
 					}, {
 						$and: [{
-							pending: {
+							pendingRequests: {
 								$ne: to
 							}
 						}, {
@@ -213,7 +213,7 @@ exports.sendFriendRequest = function (req, res, next) {
 								$ne: to
 							}
 						}, {
-							sent: {
+							sentRequests: {
 								$ne: to
 							}
 						}]
@@ -228,8 +228,8 @@ exports.sendFriendRequest = function (req, res, next) {
 				} else {
 					to = docs[0];
 					from = docs[1];
-					from.sent.addToSet(to._id);
-					to.pending.addToSet(from._id);
+					from.sentRequests.addToSet(to._id);
+					to.pendingRequests.addToSet(from._id);
 					to.save(function (err) {
 						if (err) return handleError(res, err);
 						from.save(function (err) {

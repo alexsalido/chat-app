@@ -7,6 +7,7 @@ angular.module('chatApp')
 		$scope.me = Auth.getCurrentUser();
 		$scope.errors = {};
 		$scope.contactListUpdate = false;
+		$scope.contactListSearch = '';
 
 		$scope.createGroup = function (form) {
 			$scope.submitted = true;
@@ -17,12 +18,12 @@ angular.module('chatApp')
 					members: [$scope.me._id]
 				}, function (res) {
 					$mdToast.show($mdToast.simple().position('top right').textContent(res.message).action('OK'));
+					$mdDialog.cancel();
+					$scope.submitted = false;
+					$scope.newGroupName = '';
 				}, function (err) {
 					$mdToast.show($mdToast.simple().position('top right').textContent(err.data).action('OK'));
 				});
-				$mdDialog.cancel();
-				$scope.submitted = false;
-				$scope.newGroupName = '';
 			}
 		};
 
@@ -35,6 +36,7 @@ angular.module('chatApp')
 							$mdToast.show($mdToast.simple().position('top right').textContent(res.message).action('OK'));
 							socket.friendRequest(data._id, $scope.me._id);
 							$mdDialog.cancel();
+							$scope.submitted = false;
 							$scope.newContactEmail = '';
 						}).catch(function (err) {
 							$mdToast.show($mdToast.simple().position('top right').textContent(err.data).action('OK'));
@@ -115,6 +117,10 @@ angular.module('chatApp')
 
 		$scope.$on('contactListUpdate', function () {
 			$scope.contactListUpdate = true;
+		});
+
+		$scope.$on('openChat', function (event, userId) {
+			console.log(userId);
 		});
 		// $scope.openChat = function (_id) {
 		// 	for (var i = 0; i < $scope.chats.length; i++) {

@@ -6,7 +6,7 @@
 
 var config = require('./environment');
 var User = require('../../server/api/user/user.model');
-
+var insensitiveFields = 'name email img status online';
 // When the user disconnects.. perform this
 function onDisconnect(socket) {}
 
@@ -20,13 +20,75 @@ function onConnect(socket, io) {
 
 	socket.on('friendRequest', function (to, from) {
 		console.log('Friend request sent by user with id [%s]', from);
-		User.findById(to, 'name email img', function (err, to) {
-			User.findById(from, 'name email img', function (err, from) {
-				socket.emit('friendRequestSent', to);
-				socket.to(to._id).emit('friendRequestReceived', from);
+		User.findById(to, insensitiveFields, function (err, to) {
+			User.findById(from, insensitiveFields, function (err, from) {
+				socket.emit('sentRequestsUpdated', to);
+				socket.to(to._id).emit('pendingRequestsUpdated', from);
 			});
 		});
-	})
+	});
+
+	socket.on('friendRequest:Accepted', function (user, me) {
+		console.log('Friend request from [%s] accepted by [%s].', user, me);
+
+		User.findOneAndUpdate({
+			_id: user
+		}, {
+			$set: {
+				contacts: me
+			},
+			$pull: {
+				sentRequests: me
+			}
+		}, {
+			select: insensitiveFields
+		}, function (err, user) {
+			User.findOneAndUpdate({
+				_id: me
+			}, {
+				$set: {
+					contacts: user._id
+				},
+				$pull: {
+					pendingRequests: user._id
+				}
+			}, {
+				select: insensitiveFields
+			}, function (err, me) {
+				socket.emit('pendingRequestsUpdated', user);
+				socket.to(user._id).emit('sentRequestsUpdated', me);
+				socket.emit('contactsUpdated', user);
+				socket.to(user._id).emit('contactsUpdated', me);
+			});
+		});
+	});
+
+	socket.on('friendRequest:Rejected', function (user, me) {
+		console.log('Friend request from [%s] rejected by [%s].', user, me);
+
+		User.findOneAndUpdate({
+			_id: user
+		}, {
+			$pull: {
+				sentRequests: me
+			}
+		}, {
+			select: insensitiveFields
+		}, function (err, user) {
+			User.findOneAndUpdate({
+				_id: me
+			}, {
+				$pull: {
+					pendingRequests: user._id
+				}
+			}, {
+				select: insensitiveFields
+			}, function (err, me) {
+				socket.emit('pendingRequestsUpdated', user);
+				socket.to(user._id).emit('sentRequestsUpdated', me);
+			});
+		});
+	});
 
 	// Insert sockets below
 	// require('../api/group/group.socket').register(socket);
@@ -48,8 +110,8 @@ module.exports = function (socketio) {
 	//
 	// 2. Require authentication here:
 	socketio.use(require('socketio-jwt').authorize({
-	  secret: config.secrets.session,
-	  handshake: true
+		secret: config.secrets.session,
+		handshake: true
 	}));
 
 	socketio.on('connection', function (socket) {
