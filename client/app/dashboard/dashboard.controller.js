@@ -119,8 +119,8 @@ angular.module('chatApp')
 			$scope.contactListUpdate = true;
 		});
 
-		$scope.$on('openChat', function (event, userId) {
-			console.log(userId);
+		$scope.$on('contactSelected', function (event, userId) {
+			$scope.$broadcast('openChat', userId);
 		});
 		// $scope.openChat = function (_id) {
 		// 	for (var i = 0; i < $scope.chats.length; i++) {

@@ -15,6 +15,9 @@ router.put('/:id/password', auth.isAuthenticated(), controller.changePassword);
 router.put('/:id/email', auth.isAuthenticated(), controller.changeEmail);
 router.put('/:id/status', auth.isAuthenticated(), controller.changeStatus);
 router.put('/:id/request', auth.isAuthenticated(), controller.sendFriendRequest);
+router.put('/:id/request/accept', auth.isAuthenticated(), controller.acceptFriendRequest);
+router.put('/:id/request/reject', auth.isAuthenticated(), controller.rejectFriendRequest);
+router.put('/:id/contact/delete', auth.isAuthenticated(), controller.deleteContact);
 router.get('/:id', auth.isAuthenticated(), controller.show);
 router.get('/email/:email', auth.isAuthenticated(), controller.isRegistered)
 router.post('/', controller.create);

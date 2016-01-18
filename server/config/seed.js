@@ -77,9 +77,9 @@ User.find({}).remove(function () {
 		email: 'admin@admin.com',
 		password: 'admin'
 	}, function (err, test, admin) {
-		admin.contacts.addToSet(test._id);
+		admin.sentRequests.addToSet(test._id);
 		admin.save();
-		test.contacts.addToSet(admin._id);
+		test.pendingRequests.addToSet(admin._id);
 		test.save();
 		console.log('finished populating users');
 	});

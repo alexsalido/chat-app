@@ -30,31 +30,8 @@ function onConnect(socket, io) {
 
 	socket.on('friendRequest:Accepted', function (user, me) {
 		console.log('Friend request from [%s] accepted by [%s].', user, me);
-
-		User.findOneAndUpdate({
-			_id: user
-		}, {
-			$set: {
-				contacts: me
-			},
-			$pull: {
-				sentRequests: me
-			}
-		}, {
-			select: insensitiveFields
-		}, function (err, user) {
-			User.findOneAndUpdate({
-				_id: me
-			}, {
-				$set: {
-					contacts: user._id
-				},
-				$pull: {
-					pendingRequests: user._id
-				}
-			}, {
-				select: insensitiveFields
-			}, function (err, me) {
+		User.findById(user, insensitiveFields, function (err, user) {
+			User.findById(me, insensitiveFields, function (err, me) {
 				socket.emit('pendingRequestsUpdated', user);
 				socket.to(user._id).emit('sentRequestsUpdated', me);
 				socket.emit('contactsUpdated', user);
@@ -65,27 +42,21 @@ function onConnect(socket, io) {
 
 	socket.on('friendRequest:Rejected', function (user, me) {
 		console.log('Friend request from [%s] rejected by [%s].', user, me);
-
-		User.findOneAndUpdate({
-			_id: user
-		}, {
-			$pull: {
-				sentRequests: me
-			}
-		}, {
-			select: insensitiveFields
-		}, function (err, user) {
-			User.findOneAndUpdate({
-				_id: me
-			}, {
-				$pull: {
-					pendingRequests: user._id
-				}
-			}, {
-				select: insensitiveFields
-			}, function (err, me) {
+		User.findById(user, insensitiveFields, function (err, user) {
+			User.findById(me, insensitiveFields, function (err, me) {
 				socket.emit('pendingRequestsUpdated', user);
 				socket.to(user._id).emit('sentRequestsUpdated', me);
+			});
+		});
+	});
+
+	socket.on('deleteContact', function (user, me) {
+		console.log('[%s] deleted [%s] from their contact list.', me, user);
+
+		User.findById(user, insensitiveFields, function (err, user) {
+			User.findById(me, insensitiveFields, function (err, me) {
+				socket.emit('contactsUpdated', me, 'delete');
+				socket.to(user._id).emit('contactsUpdated', user, 'delete');
 			});
 		});
 	});

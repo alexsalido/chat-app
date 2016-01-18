@@ -161,26 +161,77 @@ angular.module('chatApp')
 			/**
 			 * Sends friend request
 			 */
-			 sendFriendRequest: function (to, callback) {
-				 var cb = callback || angular.noop;
+			sendFriendRequest: function (to, callback) {
+				var cb = callback || angular.noop;
 
- 				return User.sendFriendRequest({
- 					id: currentUser._id
- 				}, {
- 					to: to
- 				}, function (res) {
- 					return cb(res);
- 				}, function (err) {
- 					return cb(err);
- 				}).$promise;
-			 },
+				return User.sendFriendRequest({
+					id: currentUser._id
+				}, {
+					to: to
+				}, function (res) {
+					return cb(res);
+				}, function (err) {
+					return cb(err);
+				}).$promise;
+			},
+
+			/**
+			 * Accept friend request
+			 */
+			acceptFriendRequest: function (from, callback) {
+				var cb = callback || angular.noop;
+
+				return User.acceptFriendRequest({
+					id: currentUser._id
+				}, {
+					from: from
+				}, function (res) {
+					return cb(res);
+				}, function (err) {
+					return cb(err);
+				}).$promise;
+			},
+
+			/**
+			 * Reject friend request
+			 */
+			rejectFriendRequest: function (from, callback) {
+				var cb = callback || angular.noop;
+
+				return User.rejectFriendRequest({
+					id: currentUser._id
+				}, {
+					from: from
+				}, function (res) {
+					return cb(res);
+				}, function (err) {
+					return cb(err);
+				}).$promise;
+			},
+
+			/**
+			 * Delete contact
+			 */
+			deleteContact: function (user, callback) {
+				var cb = callback || angular.noop;
+
+				return User.deleteContact({
+					id: currentUser._id
+				}, {
+					user: user
+				}, function (res) {
+					return cb(res);
+				}, function (err) {
+					return cb(err);
+				}).$promise;
+			},
 
 			/**
 			 * Gets all available info on authenticated user
 			 *
 			 * @return {Object} user
 			 */
-			getCurrentUser: function () {
+				getCurrentUser: function () {
 				return currentUser;
 			},
 

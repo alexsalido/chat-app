@@ -248,6 +248,114 @@ exports.sendFriendRequest = function (req, res, next) {
 };
 
 /**
+ * Accept friend request
+ */
+exports.acceptFriendRequest = function (req, res, next) {
+	var from = req.body.from;
+	var me = req.user;
+
+	User.findOneAndUpdate({
+		_id: from
+	}, {
+		$push: {
+			contacts: me._id
+		},
+		$pull: {
+			sentRequests: me._id
+		}
+	}, {
+		select: insensitiveFields
+	}, function (err, from) {
+		if (err) return handleError(res, err);
+		User.findOneAndUpdate({
+			_id: me._id
+		}, {
+			$push: {
+				contacts: from._id
+			},
+			$pull: {
+				pendingRequests: from._id
+			}
+		}, {
+			select: insensitiveFields
+		}, function (err, me) {
+			if (err) return handleError(res, err);
+			return res.status(200).send({
+				message: 'Friend request accepted successfully.'
+			});
+		});
+	});
+};
+
+/**
+ * Reject friend request
+ */
+exports.rejectFriendRequest = function (req, res, next) {
+	var from = req.body.from;
+	var me = req.user;
+
+	User.findOneAndUpdate({
+		_id: from
+	}, {
+		$pull: {
+			sentRequests: me._id
+		}
+	}, {
+		select: insensitiveFields
+	}, function (err, from) {
+		if (err) return handleError(res, err);
+		User.findOneAndUpdate({
+			_id: me._id
+		}, {
+			$pull: {
+				pendingRequests: from._id
+			}
+		}, {
+			select: insensitiveFields
+		}, function (err, me) {
+			if (err) return handleError(res, err);
+			return res.status(200).send({
+				message: 'Friend request rejected successfully.'
+			});
+		});
+	});
+};
+
+/**
+ * Reject friend request
+ */
+exports.deleteContact = function (req, res, next) {
+	var user = req.body.user;
+	var me = req.user;
+
+	User.findOneAndUpdate({
+		_id: user
+	}, {
+		$pull: {
+			contacts: me._id
+		}
+	}, {
+		select: insensitiveFields
+	}, function (err, user) {
+		if (err) return handleError(res, err);
+		User.findOneAndUpdate({
+			_id: me._id
+		}, {
+			$pull: {
+				contacts: user._id
+			}
+		}, {
+			select: insensitiveFields
+		}, function (err, me) {
+			if (err) return handleError(res, err);
+			return res.status(200).send({
+				message: 'Contact deleted successfully.'
+			});
+		});
+	});
+};
+
+/**
  * Get my info
  */
 exports.me = function (req, res, next) {

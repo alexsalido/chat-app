@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('chatApp')
-	.directive('contactList', function ($mdSidenav, Auth, socket, $mdToast) {
+	.directive('contactList', function ($mdSidenav, Auth, socket, $mdToast, $mdDialog) {
 		return {
 			templateUrl: 'app/dashboard/contactlist/contactlist.html',
 			restrict: 'E',
@@ -23,25 +23,45 @@ angular.module('chatApp')
 
 				$scope.requests = $attrs.requests || false;
 
-				$scope.friendRequestAccepted = function (user){
-					socket.friendRequestAccepted(user);
+				$scope.friendRequestAccepted = function (user) {
+					Auth.acceptFriendRequest(user).then(function () {
+						socket.friendRequestAccepted(user);
+					});
 				};
 
-				$scope.friendRequestRejected = function (user){
-					socket.friendRequestRejected(user);
+				$scope.friendRequestRejected = function (user) {
+					Auth.rejectFriendRequest(user).then(function () {
+						socket.friendRequestRejected(user);
+					});
 				};
 
-				$scope.openChat = function (userId) {
-					$scope.$emit('openChat', userId);
+				$scope.contactSelected = function (userId) {
+					$scope.$emit('contactSelected', userId);
 				};
 
-				function contactsUpdated (event, item, array) {
+				$scope.deleteContact = function (ev, name, id) {
+					var confirm = $mdDialog.confirm()
+						.title('Please confirm action')
+						.textContent('Are you sure you want to remove "' + name + '" from your contact list?')
+						.targetEvent(ev)
+						.ok('Yes')
+						.cancel('No');
+					$mdDialog.show(confirm).then(function () {
+						Auth.deleteContact(id).then(function () {
+							socket.deleteContact(id);
+						});
+					}, function () {
+						$scope.status = 'You decided to keep your debt.';
+					});
+				};
+
+				function contactsUpdated(event, item) {
 					if (event == 'created') {
 						$mdToast.show($mdToast.simple().position('top right').textContent(item.email + ' is now your friend.').action('OK'));
 					}
 				}
 
-				function pendingRequestsUpdated(event, item, array) {
+				function pendingRequestsUpdated(event) {
 					if (event == 'created') {
 						$mdToast.show($mdToast.simple().position('top right').textContent('Friend request received.').action('OK'));
 						$scope.$emit('contactListUpdate');

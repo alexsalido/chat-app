@@ -48,6 +48,10 @@ angular.module('chatApp')
 				socket.emit('friendRequest:Rejected', user, Auth.getCurrentUser()._id);
 			},
 
+			deleteContact: function (user) {
+				socket.emit('deleteContact', user, Auth.getCurrentUser()._id);
+			},
+
 			/**
 			 * Register listeners to sync an array with updates on a model
 			 *
@@ -143,20 +147,24 @@ angular.module('chatApp')
 
 			syncContacts: function (array, cb) {
 				cb = cb || angular.noop;
-				socket.on('contactsUpdated', function (item) {
+				socket.on('contactsUpdated', function (item, event) {
 					var oldItem = _.find(array, {
 						_id: item._id
 					});
 					var index = array.indexOf(oldItem);
-					var event = 'created';
 
-					// replace oldItem if it exists
-					// otherwise just add item to the collection
-					if (oldItem) {
-						array.splice(index, 1, item);
-						event = 'updated';
+					if (event == 'delete') {
+						array.splice(index, 1);
 					} else {
-						array.push(item);
+						// replace oldItem if it exists
+						// otherwise just add item to the collection
+						if (oldItem) {
+							array.splice(index, 1, item);
+							event = 'updated';
+						} else {
+							array.push(item);
+							event = 'created';
+						}
 					}
 
 					cb(event, item, array);

@@ -2,7 +2,7 @@
 
 angular.module('chatApp')
 	.factory('User', function ($resource) {
-		return $resource('/api/users/:id/:controller', {
+		return $resource('/api/users/:id/:controller/:action', {
 			id: '@_id'
 		}, {
 			changePassword: {
@@ -27,6 +27,27 @@ angular.module('chatApp')
 				method: 'PUT',
 				params: {
 					controller: 'request'
+				}
+			},
+			acceptFriendRequest: {
+				method: 'PUT',
+				params: {
+					controller: 'request',
+					action: 'accept'
+				}
+			},
+			rejectFriendRequest: {
+				method: 'PUT',
+				params: {
+					controller: 'request',
+					action: 'reject'
+				}
+			},
+			deleteContact: {
+				method: 'PUT',
+				params: {
+					controller: 'contact',
+					action: 'delete'
 				}
 			},
 			get: {
