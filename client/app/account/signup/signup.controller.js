@@ -10,7 +10,7 @@ angular.module('chatApp')
 			name: {
 				label: 'Name',
 				type: 'text',
-				pattern: /^[A-Z\-']+$/i
+				pattern: /^[A-Z\-\s']+$/i
 			},
 			email: {
 				label: 'Email',

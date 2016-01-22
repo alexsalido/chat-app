@@ -6,6 +6,7 @@ var config = require('../../config/environment');
 var jwt = require('jsonwebtoken');
 
 var Image = require('../image/image.model');
+var Conversation = require('../conversation/conversation.model');
 
 var validationError = function (res, err) {
 	return res.status(422).json(err);
@@ -16,8 +17,8 @@ var handleError = function (res, err, msg) {
 	return res.status(500).json(message);
 };
 
-var objectIdFields = 'contacts sentRequests pendingRequests groups';
-var insensitiveFields = 'name email img status online';
+var objectIdFields = 'contacts sentRequests pendingRequests groups conversations';
+var insensitiveFields = 'name email img status online admin members member messages conversations';
 /**
  * Get list of users
  * restriction: 'admin'
@@ -36,13 +37,9 @@ exports.index = function (req, res) {
  */
 exports.create = function (req, res, next) {
 	var newUser = new User(req.body);
-	newUser.provider = 'local';
-	newUser.role = 'user';
-
 	var filter = {
-		info: 'default/users'
+		info: '/default/users'
 	};
-
 	var options = {
 		limit: 1
 	};
@@ -52,6 +49,8 @@ exports.create = function (req, res, next) {
 	}, options, function (err, image) {
 		if (err) return res.status(500).send(err);
 		newUser.img = image[0].url;
+		newUser.provider = 'local';
+		newUser.role = 'user';
 		newUser.save(function (err, user) {
 			if (err) return handleError(res, err);
 			var token = jwt.sign({
@@ -177,71 +176,76 @@ exports.isRegistered = function (req, res, next) {
  */
 exports.sendFriendRequest = function (req, res, next) {
 	var to = req.body.to;
-	var from = req.user;
+	var me = req.user;
 	//Check if sender is different from receiver
-	if (to != from._id) {
+	if (to != me._id) {
 		//Finds sender and receiver if there is no friend request pending or if they aren't friends.
-		User.find({
-				$or: [{
-					$and: [{
-						'_id': to
-					}, {
-						$and: [{
-							pendingRequests: {
-								$ne: from._id
-							}
-						}, {
-							contacts: {
-								$ne: from._id
-							}
-						}, {
-							sentRequests: {
-								$ne: from._id
-							}
-						}]
-					}]
+		var p1 = User.findOne({
+			$and: [{
+				'_id': to
+			}, {
+				$and: [{
+					pendingRequests: {
+						$ne: me._id
+					}
 				}, {
-					$and: [{
-						'_id': from._id
-					}, {
-						$and: [{
-							pendingRequests: {
-								$ne: to
-							}
-						}, {
-							contacts: {
-								$ne: to
-							}
-						}, {
-							sentRequests: {
-								$ne: to
-							}
-						}]
-					}]
+					contacts: {
+						$ne: me._id
+					}
+				}, {
+					sentRequests: {
+						$ne: me._id
+					}
 				}]
-			},
-			function (err, docs) {
-				if (err) return handleError(res, err);
-				//if sender and receiver are found process friend request
-				if (docs.length !== 2) {
-					return res.status(400).send('This user is already your friend or there already is a friend request pending.');
-				} else {
-					to = docs[0];
-					from = docs[1];
-					from.sentRequests.addToSet(to._id);
-					to.pendingRequests.addToSet(from._id);
-					to.save(function (err) {
-						if (err) return handleError(res, err);
-						from.save(function (err) {
-							if (err) return handleError(res, err);
-							return res.status(200).send({
-								message: 'Friend request sent successfully.'
-							});
+			}]
+		}).exec();
 
-						})
+		var p2 = User.findOne({
+			$and: [{
+				'_id': me._id
+			}, {
+				$and: [{
+					pendingRequests: {
+						$ne: to
+					}
+				}, {
+					contacts: {
+						$ne: to
+					}
+				}, {
+					sentRequests: {
+						$ne: to
+					}
+				}]
+			}]
+		}).exec();
+
+		Promise.all([p1, p2]).then(function (values) {
+			console.log(values);
+			var to = values[0];
+			var me = values[1];
+			if (to && me) {
+				me.sentRequests.addToSet(to._id);
+				to.pendingRequests.addToSet(me._id);
+
+				return Promise.all([me.save(), to.save()]).then(function () {
+					return res.status(200).send({
+						message: 'Friend request sent successfully.'
 					});
-				}
-			})
+				}).catch(function (err) {
+					//something went wrong when saving, rollback changes
+					me.sentRequests.pull(to._id);
+					to.pendingRequests.pull(me._id);
+					me.save();
+					to.save();
+					return handleError(res, err);
+				})
+			} else {
+				return res.status(400).send('This user is already your friend or there already is a friend request pending.');
+			}
+		}).catch(function (err) {
+			return handleError(res, err);
+		});
 	} else {
 		return res.status(400).send('You can\'t send a friend request to yourself.');
 	}
@@ -254,37 +258,48 @@ exports.acceptFriendRequest = function (req, res, next) {
 	var from = req.body.from;
 	var me = req.user;
 
-	User.findOneAndUpdate({
-		_id: from
-	}, {
-		$push: {
-			contacts: me._id
-		},
-		$pull: {
-			sentRequests: me._id
-		}
-	}, {
-		select: insensitiveFields
-	}, function (err, from) {
-		if (err) return handleError(res, err);
-		User.findOneAndUpdate({
-			_id: me._id
-		}, {
-			$push: {
-				contacts: from._id
-			},
-			$pull: {
-				pendingRequests: from._id
-			}
-		}, {
-			select: insensitiveFields
-		}, function (err, me) {
-			if (err) return handleError(res, err);
+	var p1 = User.findById(from).exec();
+	var p2 = User.findById(me).exec();
+	var p3 = Conversation.create({
+		members: [me, from]
+	});
+
+	Promise.all([p1, p2, p3]).then(function (values) {
+		var from = values[0];
+		var me = values[1];
+		var conversation = values[2];
+
+		from.contacts.addToSet(me._id);
+		from.sentRequests.pull(me._id);
+		from.conversations.push(conversation._id);
+
+		me.contacts.addToSet(from._id);
+		me.pendingRequests.pull(from._id);
+		me.conversations.push(conversation._id);
+
+		return Promise.all([from.save(), me.save()]).then(function () {
 			return res.status(200).send({
 				message: 'Friend request accepted successfully.'
 			});
-		});
-	});
+		}).catch(function (err) {
+			//something went wrong, rollback changes
+			from.contacts.pull(me._id);
+			from.sentRequests.addToSet(me._id);
+			from.conversations.pull(conversation._id);
+
+			me.contacts.pull(from._id);
+			me.pendingRequests.addToSet(from._id);
+			from.conversations.pull(conversation._id);
+
+			from.save();
+			me.save();
+
+			return handleError(res, err);
+		})
+
+	}).catch(function (err) {
+		return handleError(res, err);
+	})
 };
 
 /**
@@ -294,31 +309,34 @@ exports.rejectFriendRequest = function (req, res, next) {
 	var from = req.body.from;
 	var me = req.user;
 
-	User.findOneAndUpdate({
-		_id: from
-	}, {
-		$pull: {
-			sentRequests: me._id
-		}
-	}, {
-		select: insensitiveFields
-	}, function (err, from) {
-		if (err) return handleError(res, err);
-		User.findOneAndUpdate({
-			_id: me._id
-		}, {
-			$pull: {
-				pendingRequests: from._id
-			}
-		}, {
-			select: insensitiveFields
-		}, function (err, me) {
-			if (err) return handleError(res, err);
+	var p1 = User.findById(from).exec();
+	var p2 = User.findById(me).exec();
+
+	Promise.all([p1, p2]).then(function (values) {
+		var from = values[0];
+		var me = values[1];
+
+		from.sentRequests.pull(me._id);
+		me.pendingRequests.pull(from._id);
+
+		return Promise.all([from.save(), me.save()]).then(function () {
 			return res.status(200).send({
 				message: 'Friend request rejected successfully.'
 			});
-		});
-	});
+		}).catch(function (err) {
+			//something went wrong, rollback changes
+			from.sentRequests.addToSet(me._id);
+			me.pendingRequests.addToSet(from._id);
+
+			from.save();
+			me.save();
+
+			return handleError(res, err);
+		})
+
+	}).catch(function (err) {
+		return handleError(res, err);
+	})
 };
 
 /**
@@ -328,31 +346,34 @@ exports.deleteContact = function (req, res, next) {
 	var user = req.body.user;
 	var me = req.user;
 
-	User.findOneAndUpdate({
-		_id: user
-	}, {
-		$pull: {
-			contacts: me._id
-		}
-	}, {
-		select: insensitiveFields
-	}, function (err, user) {
-		if (err) return handleError(res, err);
-		User.findOneAndUpdate({
-			_id: me._id
-		}, {
-			$pull: {
-				contacts: user._id
-			}
-		}, {
-			select: insensitiveFields
-		}, function (err, me) {
-			if (err) return handleError(res, err);
+	var p1 = User.findById(user).exec();
+	var p2 = User.findById(me).exec();
+
+	Promise.all([p1, p2]).then(function (values) {
+		var user = values[0];
+		var me = values[1];
+
+		user.contacts.pull(me._id);
+		me.contacts.pull(user._id);
+
+		return Promise.all([user.save(), me.save()]).then(function () {
 			return res.status(200).send({
 				message: 'Contact deleted successfully.'
 			});
-		});
-	});
+		}).catch(function (err) {
+			//something went wrong, rollback changes
+			user.contacts.addToSet(me._id);
+			me.contacts.addToSet(user._id);
+
+			user.save();
+			me.save();
+
+			return handleError(res, err);
+		})
+
+	}).catch(function (err) {
+		return handleError(res, err);
+	})
 };
 
 /**

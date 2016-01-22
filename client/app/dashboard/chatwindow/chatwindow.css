@@ -2,12 +2,12 @@
 	overflow-x: hidden;
 }
 
-#message-box {
+#message-toolbar {
     border: 0px;
     width: 100%;
 }
 
-#message-box textarea {
+#message-box {
     font-size: 0.8em;
     border: 0px;
     width: 100%;

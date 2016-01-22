@@ -8,6 +8,7 @@
 var User = require('../api/user/user.model');
 var Img = require('../api/image/image.model');
 var Group = require('../api/group/group.model');
+var Conversation = require('../api/conversation/conversation.model');
 
 //AWS
 var AWS = require('aws-sdk');
@@ -35,8 +36,8 @@ Img.find({}).remove(function () {
 			data.Contents.forEach(function (currentValue, index, array) {
 				if (index !== 0) {
 					Img.create({
-						url: process.env.BUCKET + currentValue.Key,
-						info: 'default/users'
+						url: process.env.BUCKET_URL + currentValue.Key,
+						info: '/default/users'
 					})
 				}
 			})
@@ -55,8 +56,8 @@ Img.find({}).remove(function () {
 			data.Contents.forEach(function (currentValue, index, array) {
 				if (index !== 0) {
 					Img.create({
-						url: process.env.BUCKET + currentValue.Key,
-						info: 'default/groups'
+						url: process.env.BUCKET_URL + currentValue.Key,
+						info: '/default/groups'
 					})
 				}
 			})
@@ -66,25 +67,50 @@ Img.find({}).remove(function () {
 
 User.find({}).remove(function () {
 	User.create({
-		provider: 'local',
-		name: 'Test',
-		email: 'test@test.com',
-		password: 'test'
-	}, {
-		provider: 'local',
-		role: 'admin',
-		name: 'Admin',
-		email: 'admin@admin.com',
-		password: 'admin'
-	}, function (err, test, admin) {
-		admin.sentRequests.addToSet(test._id);
-		admin.save();
-		test.pendingRequests.addToSet(admin._id);
-		test.save();
-		console.log('finished populating users');
-	});
+			provider: 'local',
+			name: 'Test',
+			email: 'test@test.com',
+			password: 'test'
+		}, {
+			provider: 'local',
+			role: 'admin',
+			name: 'Admin',
+			email: 'admin@admin.com',
+			password: 'admin'
+		}, {
+			provider: 'local',
+			role: 'admin',
+			name: 'Alex',
+			email: 'alexsalidoa@gmail.com',
+			password: '123456'
+		},
+		function (err, test, admin, alex) {
+			admin.contacts.addToSet(test._id, alex._id);
+
+			test.contacts.addToSet(admin._id);
+
+			alex.contacts.addToSet(admin._id);
+
+			Conversation.create({
+				members: [admin._id, test._id]
+			}, {
+				members: [admin._id, alex._id]
+			}).then(function (conv1, conv2) {
+				admin.conversations.push(conv1._id);
+				test.conversations.push(conv1._id);
+				admin.conversations.push(conv2._id);
+				alex.conversations.push(conv2._id);
+				alex.save();
+				test.save();
+				admin.save();
+			});
+			console.log('finished populating users');
+		});
 });
 
 Group.find({}).remove(function () {
 	console.log('Deleted existing groups.');
+});
+Conversation.find({}).remove(function () {
+	console.log('Deleted existing conversations.');
 });

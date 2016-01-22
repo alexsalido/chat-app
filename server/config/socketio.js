@@ -6,6 +6,7 @@
 
 var config = require('./environment');
 var User = require('../../server/api/user/user.model');
+var Conversation = require('../../server/api/conversation/conversation.model');
 var insensitiveFields = 'name email img status online';
 // When the user disconnects.. perform this
 function onDisconnect(socket) {}
@@ -58,6 +59,23 @@ function onConnect(socket, io) {
 				socket.emit('contactsUpdated', me, 'delete');
 				socket.to(user._id).emit('contactsUpdated', user, 'delete');
 			});
+		});
+	});
+
+	socket.on('message:sent', function (room, me, msg) {
+		console.log('Message sent to [%s] from [%s].', room, me);
+		socket.to(room).emit('message:received', me, msg);
+
+		Conversation.findOne({
+			members: {
+				$all: [room, me]
+			}
+		}, function (err, conversation) {
+			conversation.messages.push({
+				text: msg,
+				sentBy: me
+			});
+			conversation.save();
 		});
 	});
 

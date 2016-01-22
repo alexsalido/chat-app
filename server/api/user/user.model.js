@@ -45,6 +45,10 @@ var UserSchema = new Schema({
 		type: Schema.Types.ObjectId,
 		ref: 'Group'
 	}],
+	conversations: [{
+		type: Schema.Types.ObjectId,
+		ref: 'Conversation'
+	}],
 	online: {
 		type: Boolean,
 		default: true

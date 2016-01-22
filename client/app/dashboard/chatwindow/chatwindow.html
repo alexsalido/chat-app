@@ -73,6 +73,9 @@
 		<chat-info></chat-info>
 	</md-sidenav>
 	<md-content flex id="conversation-box">
+		<message class="message-wrapper" ng-repeat="message in conversation.messages" sender="{{message.sentBy}}" receiver="{{me._id}}">
+			<div class="text-wrapper">{{message.text}}</div>
+		</message>
 		<!-- <message class="message-wrapper them">
 			<div class="circle-wrapper">
 				<img class="no-outline" alt="{{activeChat.user.name}}" ng-src="{{activeChat.user.img || 'assets/images/profile_white.png'}}" />
@@ -115,14 +118,14 @@
 				Mauris placerat eleifend leo</div>
 		</message> -->
 	</md-content>
-	<md-toolbar id="message-box">
+	<md-toolbar id="message-toolbar">
 		<div class="md-toolbar-tools">
 			<md-button class="md-icon-button" aria-label="Send Attachment" ng-click="showEmojis($event)">
 				<md-icon md-svg-icon="insert_emoticon"></md-icon>
 			</md-button>
-			<textarea type="text" placeholder="Type a message"></textarea>
+			<textarea id="message-box" type="text" placeholder="Type a message" ng-model="message" ng-keypress="keyPressed(activeChat._id, $event)"></textarea>
 			<span flex></span>
-			<md-button class="md-icon-button" aria-label="Send">
+			<md-button class="md-icon-button" aria-label="Send" ng-click="sendMessage(activeChat._id)" ng-disabled="!message">
 				<md-icon md-svg-icon="send"></md-icon>
 			</md-button>
 		</div>

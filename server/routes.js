@@ -11,6 +11,7 @@ module.exports = function(app) {
 
   // Insert routes below
   app.use('/api/groups', require('./api/group'));
+  app.use('/api/conversations', require('./api/conversation'));
   app.use('/api/image', require('./api/image'));
   app.use('/api/emojis', require('./api/emoji'));
   app.use('/api/things', require('./api/thing'));
