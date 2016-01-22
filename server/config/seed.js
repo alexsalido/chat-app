@@ -96,14 +96,15 @@ User.find({}).remove(function () {
 			}, {
 				members: [admin._id, alex._id]
 			}).then(function (conv1, conv2) {
-				admin.conversations.push(conv1._id);
-				test.conversations.push(conv1._id);
-				admin.conversations.push(conv2._id);
-				alex.conversations.push(conv2._id);
-				alex.save();
-				test.save();
-				admin.save();
+				// admin.conversations.push(conv1._id);
+				// test.conversations.push(conv1._id);
+				// admin.conversations.push(conv2._id);
+				// alex.conversations.push(conv2._id);
+
 			});
+			alex.save();
+			test.save();
+			admin.save();
 			console.log('finished populating users');
 		});
 });

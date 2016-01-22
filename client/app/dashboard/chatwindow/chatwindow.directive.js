@@ -29,12 +29,13 @@ angular.module('chatApp')
 
 				$scope.sendMessage = function (roomId) {
 					socket.sendMessage(roomId, $scope.message);
+
 					$scope.conversation.messages.push({
 						text: $scope.message,
 						sentBy: $scope.me._id
 					});
-					$scope.message = '';
 
+					$scope.message = '';
 				};
 
 				$scope.showEmojis = function (ev) {
@@ -60,6 +61,15 @@ angular.module('chatApp')
 							return true;
 						}
 					});
+
+					if (!$scope.conversation) {
+						//create dummy conversation
+						$scope.conversation = {
+							members: [userId, $scope.me._id],
+							messages: []
+						};
+						$scope.conversations.push($scope.conversation);
+					}
 				});
 			}
 		};

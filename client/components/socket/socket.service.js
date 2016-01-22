@@ -22,9 +22,8 @@ angular.module('chatApp')
 
 			socket.emit('room', id);
 
-			var conversations = Auth.getCurrentUser().conversations;
 			socket.on('message:received', function (from, msg) {
-				_.find(conversations, function (conversation) {
+				_.find(Auth.getCurrentUser().conversations, function (conversation) {
 					if (conversation.members.indexOf(from) != -1) {
 						conversation.messages.push({
 							text: msg,
@@ -170,6 +169,7 @@ angular.module('chatApp')
 			syncConversations: function (array, cb) {
 				cb = cb || angular.noop;
 				socket.on('conversationsUpdated', function (item, event) {
+					console.log(item);
 					var oldItem = _.find(array, {
 						_id: item._id
 					});

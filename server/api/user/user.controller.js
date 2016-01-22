@@ -271,11 +271,11 @@ exports.acceptFriendRequest = function (req, res, next) {
 
 		from.contacts.addToSet(me._id);
 		from.sentRequests.pull(me._id);
-		from.conversations.push(conversation._id);
+		// from.conversations.push(conversation._id);
 
 		me.contacts.addToSet(from._id);
 		me.pendingRequests.pull(from._id);
-		me.conversations.push(conversation._id);
+		// me.conversations.push(conversation._id);
 
 		return Promise.all([from.save(), me.save()]).then(function () {
 			return res.status(200).send({
@@ -285,11 +285,11 @@ exports.acceptFriendRequest = function (req, res, next) {
 			//something went wrong, rollback changes
 			from.contacts.pull(me._id);
 			from.sentRequests.addToSet(me._id);
-			from.conversations.pull(conversation._id);
+			// from.conversations.pull(conversation._id);
 
 			me.contacts.pull(from._id);
 			me.pendingRequests.addToSet(from._id);
-			from.conversations.pull(conversation._id);
+			// from.conversations.pull(conversation._id);
 
 			from.save();
 			me.save();

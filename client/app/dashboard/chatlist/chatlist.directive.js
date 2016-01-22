@@ -10,8 +10,8 @@ angular.module('chatApp')
 			controller: function ($scope) {
 				$scope.me = Auth.getCurrentUser();
 
-				$scope.chats = $scope.me.conversations.concat($scope.me.groups);
-				socket.syncChats($scope.chats);
+				$scope.conversations = $scope.me.conversations.concat($scope.me.groups);
+				socket.syncConversations($scope.conversations);
 
 				// $scope.$on('openChat', function (ev, userId) {
 				// 	// var index = _.find($scope.chats, function (chat, index) {});

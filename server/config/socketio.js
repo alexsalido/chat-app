@@ -66,17 +66,67 @@ function onConnect(socket, io) {
 		console.log('Message sent to [%s] from [%s].', room, me);
 		socket.to(room).emit('message:received', me, msg);
 
-		Conversation.findOne({
+		Conversation.findOneAndUpdate({
 			members: {
 				$all: [room, me]
 			}
+		}, {
+			$push: {
+				messages: {
+					text: msg,
+					sentBy: me
+				}
+			}
+		}, {
+			new: true
 		}, function (err, conversation) {
-			conversation.messages.push({
-				text: msg,
-				sentBy: me
+
+			var p1 = User.findOneAndUpdate({
+				$and: [{
+					_id: room
+				}, {
+					conversations: {
+						$ne: conversation._id
+					}
+				}]
+			}, {
+				$addToSet: {
+					conversations: conversation._id
+				}
+			}).exec();
+
+			var p2 = User.findOneAndUpdate({
+				$and: [{
+					_id: me
+				}, {
+					conversations: {
+						$ne: conversation._id
+					}
+				}]
+			}, {
+				$addToSet: {
+					conversations: conversation._id
+				}
+			}).exec();
+			// var p2 = User.findByIdAndUpdate(me, {
+			// 	$addToSet: {
+			// 		conversations: conversation._id
+			// 	}
+			// }).exec();
+
+			Promise.all([p1, p2]).then(
+				function (values) {
+					if (values[0]) {
+						socket.to(room).emit('conversationsUpdated', conversation);
+					}
+				}
+			).catch(function (err) {
+				//handleError
 			});
-			conversation.save();
 		});
+
+
+
 	});
 
 	// Insert sockets below
