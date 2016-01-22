@@ -67,68 +67,37 @@ function onConnect(socket, io) {
 		socket.to(room).emit('message:received', me, msg);
 
 		Conversation.findOneAndUpdate({
-			members: {
-				$all: [room, me]
-			}
-		}, {
-			$push: {
-				messages: {
-					text: msg,
-					sentBy: me
+				members: {
+					$all: [room, me]
 				}
-			}
-		}, {
-			new: true
-		}, function (err, conversation) {
-
-			var p1 = User.findOneAndUpdate({
-				$and: [{
-					_id: room
-				}, {
-					conversations: {
-						$ne: conversation._id
-					}
-				}]
 			}, {
-				$addToSet: {
-					conversations: conversation._id
-				}
-			}).exec();
-
-			var p2 = User.findOneAndUpdate({
-				$and: [{
-					_id: me
-				}, {
-					conversations: {
-						$ne: conversation._id
-					}
-				}]
-			}, {
-				$addToSet: {
-					conversations: conversation._id
-				}
-			}).exec();
-			// var p2 = User.findByIdAndUpdate(me, {
-			// 	$addToSet: {
-			// 		conversations: conversation._id
-			// 	}
-			// }).exec();
-
-			Promise.all([p1, p2]).then(
-				function (values) {
-					if (values[0]) {
-						socket.to(room).emit('conversationsUpdated', conversation);
+				$push: {
+					messages: {
+						text: msg,
+						sentBy: me
 					}
 				}
-			).catch(function (err) {
-				//handleError
+			},
+			function (err) {
+				if (err) console.log('Error saving message [%s] from [%s] to [%s]', msg, me, room);
 			});
-		});
-
-
-
 	});
 
+	socket.on('conversation:new', function (user, me) {
+		Conversation.findOne({
+			members: {
+				$all: [user, me]
+			}
+		}, function (err, conversation) {
+			User.findByIdAndUpdate(me, {
+				$addToSet: {
+					conversations: conversation._id
+				}
+			}, function (err) {
+				socket.emit('conversationsUpdated', conversation);
+			})
+		});
+	});
 	// Insert sockets below
 	// require('../api/group/group.socket').register(socket);
 	// require('../api/image/image.socket').register(socket);

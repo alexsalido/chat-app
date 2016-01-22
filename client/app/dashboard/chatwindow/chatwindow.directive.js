@@ -63,6 +63,7 @@ angular.module('chatApp')
 					});
 
 					if (!$scope.conversation) {
+						socket.createConversation(userId);
 						//create dummy conversation
 						$scope.conversation = {
 							members: [userId, $scope.me._id],

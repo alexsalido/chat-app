@@ -23,8 +23,9 @@ angular.module('chatApp')
 			socket.emit('room', id);
 
 			socket.on('message:received', function (from, msg) {
-				_.find(Auth.getCurrentUser().conversations, function (conversation) {
-					if (conversation.members.indexOf(from) != -1) {
+
+				var convExists = _.find(Auth.getCurrentUser().conversations, function (conversation) {
+					if (conversation.members.indexOf(from) !== -1) {
 						conversation.messages.push({
 							text: msg,
 							sentBy: from
@@ -32,6 +33,10 @@ angular.module('chatApp')
 						return true;
 					}
 				});
+
+				if (!convExists) {
+					socket.emit('conversation:new', from, Auth.getCurrentUser()._id);
+				}
 			});
 		}
 
@@ -42,6 +47,10 @@ angular.module('chatApp')
 
 			createRoom: function (id) {
 				socket.emit('room', id);
+			},
+
+			createConversation: function (user) {
+				socket.emit('conversation:new', user, Auth.getCurrentUser()._id);
 			},
 
 			disconnect: function () {
@@ -169,7 +178,6 @@ angular.module('chatApp')
 			syncConversations: function (array, cb) {
 				cb = cb || angular.noop;
 				socket.on('conversationsUpdated', function (item, event) {
-					console.log(item);
 					var oldItem = _.find(array, {
 						_id: item._id
 					});
