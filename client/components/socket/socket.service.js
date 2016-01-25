@@ -175,9 +175,11 @@ angular.module('chatApp')
 				});
 			},
 
-			syncConversations: function (array, cb) {
+			syncConversations: function (array, cb, scope) {
 				cb = cb || angular.noop;
 				socket.on('conversationsUpdated', function (item, event) {
+					item.members.splice(item.members.indexOf(Auth.getCurrentUser()._id), 1);
+
 					var oldItem = _.find(array, {
 						_id: item._id
 					});

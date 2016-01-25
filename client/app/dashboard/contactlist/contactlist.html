@@ -22,7 +22,7 @@
 	<md-divider ng-show="pending.length > 0"></md-divider>
 	<md-content flex>
 		<md-list ng-cloak>
-			<md-list-item ng-repeat="contact in (contacts | filter:{ online: 'true' }) | filter: { name: filter } | orderBy:'name' track by $index" ng-click="contactSelected(contact._id)" class="md-2-line">
+			<md-list-item ng-repeat="contact in (contacts | filter:{ online: 'true' }) | filter: { name: filter } | orderBy:'name' track by $index" ng-click="contactSelected(contact)" class="md-2-line">
 				<img alt="{{ contact.name }}" ng-src="{{contact.img}}" class="md-avatar object-fit-cover" />
 				<div class="md-list-item-text">
 					<h3>{{ contact.name }}</h3>

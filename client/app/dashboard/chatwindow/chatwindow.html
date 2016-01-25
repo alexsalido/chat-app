@@ -1,22 +1,22 @@
 <md-content flex layout="column" id="chat-box">
 	<md-toolbar>
 		<div class="md-toolbar-tools">
-			<md-button class="md-icon-button" aria-label="Show Sidenav" ng-click="toggleLeftToolbar()" hide-gt-sm>
+			<md-button class="md-icon-button" aria-label="Show Sidenav" ng-click="toggleSidenav('left-toolbar')" hide-gt-sm>
 				<md-icon md-svg-icon="more_horiz"></md-icon>
 			</md-button>
 			<div class="round-img-container">
-				<img ng-src="{{activeChat.user.img || activeChat.img || 'assets/images/profile_white.png'}}" alt="{{activeChat.user.name}}">
+				<img ng-src="{{ activeConv.img }}" alt="{{activeConv.name}}">
 			</div>
-			<md-list ng-click="toggleContactInfo()" class="no-outline clickable" style="width: 60%;">
+			<md-list ng-click="toggleSidenav('contact-info')" class="no-outline clickable" style="width: 60%;">
 				<md-list-item class="md-3-line" style="text-overflow: ellipsis;">
 					<div class="md-list-item-text">
-						<h3 style="color:white;">{{activeChat.user.name || activeChat.name}}</h3>
+						<h3 style="color:white;">{{ activeConv.name}}</h3>
 						<h4 style="color:white;">
-							<span ng-if="!activeChat.group">
-								<span class="online" ng-show="activeChat.user.online">online</span>
-								<span class="offline" ng-show="!activeChat.user.online">offline</span>
+							<span ng-if="!activeConv.members">
+								<span class="online" ng-show="activeConv.online">online</span>
+								<span class="offline" ng-show="!activeConv.online">offline</span>
 							</span>
-							<span ng-repeat="member in activeChat.members track by $index">{{member.name}}{{$last ? '' : ', '}}
+							<span ng-repeat="member in activeConv.members track by $index">{{member.name}}{{$last ? '' : ', '}}
 							</span>
 						</h4>
 					</div>
@@ -45,15 +45,15 @@
 						</md-button>
 					</md-menu-item>
 					<md-menu-item>
-						<md-button ng-click="toggleContactInfo()" aria-label="Information">
-							<span ng-if="activeChat.group">Group info</span>
-							<span ng-if="!activeChat.group">Contact info</span>
+						<md-button ng-click="toggleSidenav('contact-info')" aria-label="Information">
+							<span ng-if="activeConv.members">Group info</span>
+							<span ng-if="!activeConv.members">Contact info</span>
 						</md-button>
 					</md-menu-item>
 					<md-menu-item>
 						<md-button ng-click="deleteChat()" aria-label="Delete">
-							<span ng-if="activeChat.group">Exit group</span>
-							<span ng-if="!activeChat.group">Delete chat</span>
+							<span ng-if="activeConv.members">Exit group</span>
+							<span ng-if="!activeConv.members">Delete chat</span>
 						</md-button>
 					</md-menu-item>
 				</md-menu-content>
@@ -63,11 +63,11 @@
 	<md-sidenav flex="100" class="md-sidenav-right width-45" md-component-id="contact-info" layout="column">
 		<md-toolbar>
 			<div class="md-toolbar-tools">
-				<md-button ng-click="toggleContactInfo()" class="md-icon-button">
+				<md-button ng-click="toggleSidenav('contact-info')" class="md-icon-button">
 					<md-icon md-svg-src="assets/svg/close.svg" aria-label="Close Contact Info"></md-icon>
 				</md-button>
-				<h1 ng-if="!activeChat.group" class="md-toolbar-tools">Contact info</h1>
-				<h1 ng-if="activeChat.group" class="md-toolbar-tools">Group info</h1>
+				<h1 ng-if="!activeConv.members" class="md-toolbar-tools">Contact info</h1>
+				<h1 ng-if="activeConv.members" class="md-toolbar-tools">Group info</h1>
 			</div>
 		</md-toolbar>
 		<chat-info></chat-info>
@@ -78,7 +78,7 @@
 		</message>
 		<!-- <message class="message-wrapper them">
 			<div class="circle-wrapper">
-				<img class="no-outline" alt="{{activeChat.user.name}}" ng-src="{{activeChat.user.img || 'assets/images/profile_white.png'}}" />
+				<img class="no-outline" alt="{{activeConv.user.name}}" ng-src="{{activeConv.user.img || 'assets/images/profile_white.png'}}" />
 			</div>
 			<div class="text-wrapper">Hello!</div>
 		</message>
@@ -123,9 +123,9 @@
 			<md-button class="md-icon-button" aria-label="Send Attachment" ng-click="showEmojis($event)">
 				<md-icon md-svg-icon="insert_emoticon"></md-icon>
 			</md-button>
-			<textarea id="message-box" type="text" placeholder="Type a message" ng-model="message" ng-keypress="keyPressed(activeChat._id, $event)"></textarea>
+			<textarea id="message-box" type="text" placeholder="Type a message" ng-model="message" ng-keypress="keyPressed(activeConv._id, $event)"></textarea>
 			<span flex></span>
-			<md-button class="md-icon-button" aria-label="Send" ng-click="sendMessage(activeChat._id)" ng-disabled="!message">
+			<md-button class="md-icon-button" aria-label="Send" ng-click="sendMessage(activeConv._id)" ng-disabled="!message">
 				<md-icon md-svg-icon="send"></md-icon>
 			</md-button>
 		</div>

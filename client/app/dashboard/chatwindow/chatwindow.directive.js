@@ -9,15 +9,10 @@ angular.module('chatApp')
 			scope: {},
 			controller: function ($scope) {
 				$scope.me = Auth.getCurrentUser();
-				$scope.contacts = $scope.me.contacts;
-
-				$scope.conversations = $scope.me.conversations;
-				socket.syncConversations($scope.conversations);
-
 				$scope.activeTabIndex = 0;
 
-				$scope.toggleContactInfo = function () {
-					$mdSidenav('contact-info').toggle();
+				$scope.toggleSidenav = function (id) {
+					$mdSidenav(id).toggle();
 				};
 
 				$scope.keyPressed = function (roomId, event) {
@@ -50,27 +45,10 @@ angular.module('chatApp')
 					});
 				};
 
-				$scope.$on('openChat', function (ev, userId) {
-
-					$scope.activeChat = _.find($scope.contacts, {
-						_id: userId
-					});
-
-					$scope.conversation = _.find($scope.conversations, function (conversation) {
-						if (conversation.members.indexOf(userId) !== -1) {
-							return true;
-						}
-					});
-
-					if (!$scope.conversation) {
-						socket.createConversation(userId);
-						//create dummy conversation
-						$scope.conversation = {
-							members: [userId, $scope.me._id],
-							messages: []
-						};
-						$scope.conversations.push($scope.conversation);
-					}
+				$scope.$on('openConv', function (ev, user, conversation) {
+					$scope.activeConv = user;
+					$scope.conversation = conversation;
+					$scope.toggleSidenav('left-toolbar'); //only executed if displayed in small window
 				});
 			}
 		};

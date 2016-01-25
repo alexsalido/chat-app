@@ -231,7 +231,7 @@ angular.module('chatApp')
 			 *
 			 * @return {Object} user
 			 */
-				getCurrentUser: function () {
+			getCurrentUser: function () {
 				return currentUser;
 			},
 

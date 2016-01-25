@@ -4,7 +4,7 @@
 		<md-sidenav flex="100" class="md-sidenav-left contact-list width-100" md-component-id="contact-list" layout="column">
 			<md-toolbar>
 				<div class="md-toolbar-tools">
-					<md-button class="md-icon-button" aria-label="Close Contact List" ng-click="toggleContactList()">
+					<md-button class="md-icon-button" aria-label="Close Contact List" ng-click="toggleSidenav('contact-list')">
 						<md-icon md-svg-icon="back"></md-icon>
 					</md-button>
 					<h1>Contacts</h1>
@@ -24,7 +24,7 @@
 					<img class="round-img no-outline clickable" alt="{{user.name}}" ng-click="toggleSidenav('profile-info')" ng-src="{{ user.img }}" />
 				</div>
 				<span flex></span>
-				<md-button class="md-icon-button" aria-label="Contacts" ng-click="toggleContactList()">
+				<md-button class="md-icon-button" aria-label="Contacts" ng-click="toggleSidenav('contact-list')">
 					<md-icon md-svg-icon="contacts" ng-class="{ 'notification': contactListUpdate }"></md-icon>
 				</md-button>
 				<md-menu md-position-mode="target target">

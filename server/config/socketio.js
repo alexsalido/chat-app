@@ -98,6 +98,7 @@ function onConnect(socket, io) {
 			})
 		});
 	});
+
 	// Insert sockets below
 	// require('../api/group/group.socket').register(socket);
 	// require('../api/image/image.socket').register(socket);

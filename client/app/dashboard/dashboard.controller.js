@@ -49,16 +49,6 @@ angular.module('chatApp')
 			}
 		};
 
-		$scope.toggleLeftToolbar = function () {
-			$mdSidenav('left-toolbar').toggle();
-		};
-
-		$scope.toggleSidenav = function (id) {
-			if (id == 'profile-info') {
-				$mdSidenav('profile-info').toggle();
-			}
-		};
-
 		$scope.showSettingsDialog = function (type, ev) {
 			$mdDialog.show({
 				controller: 'SettingsCtrl',
@@ -94,9 +84,8 @@ angular.module('chatApp')
 			});
 		};
 
-		$scope.toggleContactList = function () {
-			$scope.contactListUpdate = false;
-			$mdSidenav('contact-list').toggle();
+		$scope.toggleSidenav = function (id) {
+			$mdSidenav(id).toggle();
 		};
 
 		$scope.cancel = function () {
@@ -119,8 +108,13 @@ angular.module('chatApp')
 			$scope.contactListUpdate = true;
 		});
 
-		$scope.$on('contactSelected', function (event, userId) {
-			$scope.$broadcast('openChat', userId);
+		$scope.$on('contactSelected', function (event, user) {
+			// $scope.$broadcast('openChat', userId);
+			$scope.$broadcast('newConversation', user);
+		});
+
+		$scope.$on('convSelected', function (event, user, conversation) {
+			$scope.$broadcast('openConv', user, conversation);
 		});
 		// $scope.openChat = function (_id) {
 		// 	for (var i = 0; i < $scope.chats.length; i++) {

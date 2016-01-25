@@ -36,6 +36,7 @@ angular.module('chatApp')
 				};
 
 				$scope.contactSelected = function (userId) {
+					$mdSidenav('contact-list').toggle();
 					$scope.$emit('contactSelected', userId);
 				};
 
