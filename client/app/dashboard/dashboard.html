@@ -63,12 +63,12 @@
 		</md-content>
 	</md-sidenav>
 	<md-content flex-gt-sm="70" flex="100" class="right-toolbar" layout="column" ng-cloak>
-		<!-- <md-toolbar ng-if="!chats.length > 0">
+		<md-toolbar ng-show="!me.conversations.length > 0">
 			<div class="md-toolbar-tools">
 				<h2 class="md-flex">Welcome</h2>
 			</div>
-		</md-toolbar> -->
-		<!-- <md-content ng-if="!chats.length > 0" ng-include="'app/dashboard/views/welcome.html'" flex layout-padding></md-content> -->
-		<chat-window></chat-window>
+		</md-toolbar>
+		<md-content ng-show="!me.conversations.length > 0" ng-include="'app/dashboard/views/welcome.html'" flex layout-padding></md-content>
+		<chat-window ng-show="me.conversations.length > 0"></chat-window>
 	</md-content>
 </div>

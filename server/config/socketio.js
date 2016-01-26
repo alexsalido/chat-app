@@ -99,6 +99,22 @@ function onConnect(socket, io) {
 		});
 	});
 
+	socket.on('conversation:delete', function (user, me) {
+		Conversation.findOne({
+			members: {
+				$all: [user, me]
+			}
+		}, function (err, conversation) {
+			User.findByIdAndUpdate(me, {
+				$pull: {
+					conversations: conversation._id
+				}
+			}, function (err) {
+				socket.emit('conversationsUpdated', conversation);
+			})
+		});
+	});
+
 	// Insert sockets below
 	// require('../api/group/group.socket').register(socket);
 	// require('../api/image/image.socket').register(socket);

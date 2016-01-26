@@ -116,6 +116,7 @@ angular.module('chatApp')
 		$scope.$on('convSelected', function (event, user, conversation) {
 			$scope.$broadcast('openConv', user, conversation);
 		});
+
 		// $scope.openChat = function (_id) {
 		// 	for (var i = 0; i < $scope.chats.length; i++) {
 		// 		if ($scope.chats[i]._id === _id) {

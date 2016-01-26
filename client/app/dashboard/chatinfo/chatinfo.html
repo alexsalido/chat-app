@@ -2,23 +2,23 @@
 	<div class="no-padding">
 		<!-- containing element to fall to when position relative -->
 		<div layout-align="center center" class="chat-photo">
-			<div class="image-overlay" ng-click="" ng-show="activeChat.group">
+			<div class="image-overlay" ng-click="" ng-show="activeChat.members">
 				<md-icon md-svg-icon="camera" class="s48"></md-icon>
 				<p>
 					Click here to change photo
 				</p>
 			</div>
-			<img ng-src="{{ activeChat.user.img || activeChat.img }}" alt="{{ activeChat.user.img || activeChat.img }}">
+			<img ng-src="{{ activeChat.img }}" alt="{{ activeChat.img }}">
 		</div>
 	</div>
-	<div ng-if="!activeChat.group">
+	<div ng-if="!activeChat.members">
 		<h4>Status</h4>
-		<h5>{{ activeChat.user.status }}</h5>
+		<h5>{{ activeChat.status }}</h5>
 		<h4>Email</h4>
-		<h5>{{ activeChat.user.email }}</h5>
+		<h5>{{ activeChat.email }}</h5>
 	</div>
 	<!-- shown if active chat is a group-->
-	<form name="groupNameForm" class="group-name no-padding" ng-if="activeChat.group">
+	<form name="groupNameForm" class="group-name no-padding" ng-if="activeChat.members">
 		<md-input-container class="md-block">
 			<label>Name</label>
 			<input md-maxlength="20" name="status" ng-model="activeChat.name" required>
@@ -28,7 +28,7 @@
 			</div>
 		</md-input-container>
 	</form>
-	<md-list ng-if="activeChat.group">
+	<md-list ng-if="activeChat.members">
 		<md-subheader>Members
 			<md-icon md-svg-icon="person_add" aria-label="Add Participant" class="md-primary gray clickable" ng-click="showContactList($event)" hide-gt-xs></md-icon>
 		</md-subheader>
@@ -40,11 +40,11 @@
 			</p>
 		</md-list-item>
 	</md-list>
-	<md-divider class="no-padding" ng-if="activeChat.group"></md-divider>
-	<md-content flex ng-if="activeChat.group">
+	<md-divider class="no-padding" ng-if="activeChat.members"></md-divider>
+	<md-content flex ng-if="activeChat.members">
 		<md-list ng-cloak>
 			<md-list-item ng-repeat="member in activeChat.members" class="md-2-line no-padding">
-				<img alt="{{ member.name }}" ng-src="{{member.img || 'assets/images/profile_gray.png'}}" class="md-avatar object-fit-cover" />
+				<img alt="{{ member.name }}" ng-src="{{ member.img }}" class="md-avatar object-fit-cover" />
 				<div class="md-list-item-text">
 					<h3>{{member.name}}</h3>
 					<p>
@@ -60,8 +60,8 @@
 			</md-list-item>
 		</md-list>
 	</md-content>
-	<md-button ng-click="deleteChat('contact-info')" class="md-raised md-warn" aria-label="Delete Chat" hide-xs>
-		<span ng-if="activeChat.group">EXIT GROUP</span>
-		<span ng-if="!activeChat.group">DELETE CHAT</span>
+	<md-button ng-click="deleteChat()" class="md-raised md-warn" aria-label="Delete Chat" hide-xs>
+		<span ng-if="activeChat.members">EXIT GROUP</span>
+		<span ng-if="!activeChat.members">DELETE CONVERSATION</span>
 	</md-button>
 </md-content>

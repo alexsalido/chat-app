@@ -18,7 +18,7 @@ var handleError = function (res, err, msg) {
 };
 
 var objectIdFields = 'contacts sentRequests pendingRequests groups conversations';
-var insensitiveFields = 'name email img status online admin members member messages conversations';
+var insensitiveFields = 'name email img status online admin members messages';
 /**
  * Get list of users
  * restriction: 'admin'

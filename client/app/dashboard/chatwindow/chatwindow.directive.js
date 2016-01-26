@@ -9,7 +9,6 @@ angular.module('chatApp')
 			scope: {},
 			controller: function ($scope) {
 				$scope.me = Auth.getCurrentUser();
-				$scope.activeTabIndex = 0;
 
 				$scope.toggleSidenav = function (id) {
 					$mdSidenav(id).toggle();
@@ -45,7 +44,15 @@ angular.module('chatApp')
 					});
 				};
 
+				$scope.deleteConv = function (id) {
+					socket.deleteConversation($scope.activeConv._id);
+					if (id) {
+						$mdSidenav(id).toggle();
+					}
+				};
+
 				$scope.$on('openConv', function (ev, user, conversation) {
+					console.log(user, conversation);
 					$scope.activeConv = user;
 					$scope.conversation = conversation;
 					$scope.toggleSidenav('left-toolbar'); //only executed if displayed in small window

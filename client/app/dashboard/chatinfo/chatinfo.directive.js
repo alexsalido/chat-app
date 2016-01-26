@@ -6,8 +6,11 @@ angular.module('chatApp')
 			templateUrl: 'app/dashboard/chatinfo/chatinfo.html',
 			restrict: 'EA',
 			replace: true,
+			scope: {
+				activeChat: '=src',
+				deleteChat: '&delete'
+			},
 			controller: function ($scope) {
-
 				// $scope.selected = [];
 				//
 				// $scope.contactsClone = $scope.contacts.slice();

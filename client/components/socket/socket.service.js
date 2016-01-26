@@ -53,6 +53,10 @@ angular.module('chatApp')
 				socket.emit('conversation:new', user, Auth.getCurrentUser()._id);
 			},
 
+			deleteConversation: function (user) {
+				socket.emit('conversation:delete', user, Auth.getCurrentUser()._id);
+			},
+
 			disconnect: function () {
 				socket.disconnect();
 			},
@@ -149,54 +153,24 @@ angular.module('chatApp')
 				});
 			},
 
-			syncChats: function (array, cb) {
-				cb = cb || angular.noop;
-				socket.on('chatsUpdated', function (item, event) {
-					var oldItem = _.find(array, {
-						_id: item._id
-					});
-					var index = array.indexOf(oldItem);
-
-					if (event == 'delete') {
-						array.splice(index, 1);
-					} else {
-						// replace oldItem if it exists
-						// otherwise just add item to the collection
-						if (oldItem) {
-							array.splice(index, 1, item);
-							event = 'updated';
-						} else {
-							array.push(item);
-							event = 'created';
-						}
-					}
-
-					cb(event, item, array);
-				});
-			},
-
 			syncConversations: function (array, cb, scope) {
 				cb = cb || angular.noop;
 				socket.on('conversationsUpdated', function (item, event) {
+
 					item.members.splice(item.members.indexOf(Auth.getCurrentUser()._id), 1);
 
 					var oldItem = _.find(array, {
 						_id: item._id
 					});
+
 					var index = array.indexOf(oldItem);
 
-					if (event == 'delete') {
+					if (oldItem) {
 						array.splice(index, 1);
+						event = 'deleted';
 					} else {
-						// replace oldItem if it exists
-						// otherwise just add item to the collection
-						if (oldItem) {
-							array.splice(index, 1, item);
-							event = 'updated';
-						} else {
-							array.push(item);
-							event = 'created';
-						}
+						array.push(item);
+						event = 'created';
 					}
 
 					cb(event, item, array);
