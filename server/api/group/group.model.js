@@ -5,6 +5,7 @@ var mongoose = require('mongoose'),
 
 var GroupSchema = new Schema({
 	name: String,
+	img: String,
 	admin: {
 		type: Schema.Types.ObjectId,
 		ref: 'User'
@@ -15,11 +16,14 @@ var GroupSchema = new Schema({
 	}],
 	messages: [{
 		text: String,
-		postedBy: {
+		sentBy: {
 			type: Schema.Types.ObjectId,
 			ref: 'User'
 		},
-		date: Date
+		date: {
+			type: Date,
+			default: new Date().toUTCString()
+		}
 	}]
 });
 

@@ -11,37 +11,36 @@
 			<img ng-src="{{ activeChat.img }}" alt="{{ activeChat.img }}">
 		</div>
 	</div>
-	<div ng-if="!activeChat.members">
+	<div ng-show="!activeChat.members">
 		<h4>Status</h4>
 		<h5>{{ activeChat.status }}</h5>
 		<h4>Email</h4>
 		<h5>{{ activeChat.email }}</h5>
 	</div>
 	<!-- shown if active chat is a group-->
-	<form name="groupNameForm" class="group-name no-padding" ng-if="activeChat.members">
+	<form name="groupNameForm" class="group-name no-padding" ng-show="activeChat.members">
 		<md-input-container class="md-block">
 			<label>Name</label>
-			<input md-maxlength="20" name="status" ng-model="activeChat.name" required>
-			<div ng-messages="groupNameForm.status.$error">
-				<div ng-message="md-maxlength">The group's name has to be less than 20 characters long.</div>
+			<input md-maxlength="30" name="name" ng-model="activeChat.name" maxlength="30">
+			<div ng-messages="groupNameForm.name.$error">
+				<div ng-message="md-maxlength">The group's name has to be less than 30 characters long.</div>
 				<div ng-message="required">The group's name can't be empty.</div>
 			</div>
 		</md-input-container>
 	</form>
-	<md-list ng-if="activeChat.members">
+	<md-list ng-show="activeChat.members">
 		<md-subheader>Members
-			<md-icon md-svg-icon="person_add" aria-label="Add Participant" class="md-primary gray clickable" ng-click="showContactList($event)" hide-gt-xs></md-icon>
+			<md-icon md-svg-icon="person_add" aria-label="Add Participant" class="md-primary gray clickable" ng-click="showContactList($event)" ng-show=" activeChat.admin == me._id" hide-gt-xs></md-icon>
 		</md-subheader>
-
-		<md-list-item ng-click="showContactList($event)" class="no-padding" hide-xs>
+		<md-list-item ng-click="showContactList($event)" class="no-padding" ng-show="activeChat.admin == me._id" hide-xs>
 			<md-icon md-svg-icon="person_add" aria-label="Add Participant" class="md-primary gray"></md-icon>
 			<p>
 				Add participant
 			</p>
 		</md-list-item>
 	</md-list>
-	<md-divider class="no-padding" ng-if="activeChat.members"></md-divider>
-	<md-content flex ng-if="activeChat.members">
+	<md-divider class="no-padding" ng-show="activeChat.members"></md-divider>
+	<md-content flex ng-show="activeChat.members">
 		<md-list ng-cloak>
 			<md-list-item ng-repeat="member in activeChat.members" class="md-2-line no-padding">
 				<img alt="{{ member.name }}" ng-src="{{ member.img }}" class="md-avatar object-fit-cover" />
@@ -54,14 +53,14 @@
 				<md-button class="md-icon-button md-exclude">
 					<md-icon md-svg-icon="add" ng-click="" aria-label="Add" class="md-primary gray"></md-icon>
 				</md-button>
-				<md-button class="md-icon-button md-exclude">
+				<md-button class="md-icon-button md-exclude" ng-show="activeChat.admin == me._id">
 					<md-icon md-svg-icon="close" ng-click="" aria-label="Remove" class="md-primary red"></md-icon>
 				</md-button>
 			</md-list-item>
 		</md-list>
 	</md-content>
 	<md-button ng-click="deleteChat()" class="md-raised md-warn" aria-label="Delete Chat" hide-xs>
-		<span ng-if="activeChat.members">EXIT GROUP</span>
-		<span ng-if="!activeChat.members">DELETE CONVERSATION</span>
+		<span ng-show="activeChat.members">EXIT GROUP</span>
+		<span ng-show="!activeChat.members">DELETE CONVERSATION</span>
 	</md-button>
 </md-content>

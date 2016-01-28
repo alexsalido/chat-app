@@ -7,6 +7,7 @@
 var config = require('./environment');
 var User = require('../../server/api/user/user.model');
 var Conversation = require('../../server/api/conversation/conversation.model');
+var Group = require('../../server/api/group/group.model');
 var insensitiveFields = 'name email img status online';
 // When the user disconnects.. perform this
 function onDisconnect(socket) {}
@@ -53,7 +54,6 @@ function onConnect(socket, io) {
 
 	socket.on('deleteContact', function (user, me) {
 		console.log('[%s] deleted [%s] from their contact list.', me, user);
-
 		User.findById(user, insensitiveFields, function (err, user) {
 			User.findById(me, insensitiveFields, function (err, me) {
 				socket.emit('contactsUpdated', me, 'delete');
@@ -62,25 +62,40 @@ function onConnect(socket, io) {
 		});
 	});
 
-	socket.on('message:sent', function (room, me, msg) {
+	socket.on('message:sent', function (room, me, msg, toGroup) {
 		console.log('Message sent to [%s] from [%s].', room, me);
-		socket.to(room).emit('message:received', me, msg);
-
-		Conversation.findOneAndUpdate({
-				members: {
-					$all: [room, me]
-				}
-			}, {
+		if (toGroup) {
+			socket.to(room).emit('message:received', me, msg, room);
+			Group.findByIdAndUpdate(room, {
 				$push: {
 					messages: {
 						text: msg,
 						sentBy: me
 					}
 				}
-			},
-			function (err) {
+			}, function (err) {
 				if (err) console.log('Error saving message [%s] from [%s] to [%s]', msg, me, room);
 			});
+		} else {
+			socket.to(room).emit('message:received', me, msg);
+			Conversation.findOneAndUpdate({
+					members: {
+						$all: [room, me]
+					}
+				}, {
+					$push: {
+						messages: {
+							text: msg,
+							sentBy: me
+						}
+					}
+				}, {
+					new: true
+				},
+				function (err, conversation) {
+					if (err) console.log('Error saving message [%s] from [%s] to [%s]', msg, me, room);
+				});
+		}
 	});
 
 	socket.on('conversation:new', function (user, me) {
@@ -88,7 +103,7 @@ function onConnect(socket, io) {
 			members: {
 				$all: [user, me]
 			}
-		}, function (err, conversation) {
+		}).populate('members').exec(function (err, conversation) {
 			User.findByIdAndUpdate(me, {
 				$addToSet: {
 					conversations: conversation._id
@@ -104,7 +119,7 @@ function onConnect(socket, io) {
 			members: {
 				$all: [user, me]
 			}
-		}, function (err, conversation) {
+		}).populate('members').exec(function (err, conversation) {
 			User.findByIdAndUpdate(me, {
 				$pull: {
 					conversations: conversation._id
@@ -112,6 +127,34 @@ function onConnect(socket, io) {
 			}, function (err) {
 				socket.emit('conversationsUpdated', conversation);
 			})
+		});
+	});
+
+	//Create/join room for group
+	socket.on('group', function (id) {
+		console.info('ROOM [%s] CREATED FOR GROUP', id);
+		socket.join(id);
+	});
+
+	socket.on('group:added', function (id, participant) {
+		console.log('[%s] ADDED TO GROUP [%s]', participant, id);
+		var p1 = Group.findById(id).populate('members').exec();
+		var p2 = User.findByIdAndUpdate(participant, {
+			$addToSet: {
+				groups: id
+			}
+		}).exec();
+
+		Promise.all([p1, p2]).then(function (values) {
+			if (values[0] && values[1]) {
+				io.sockets.to(participant).emit('groupsUpdated', values[0]);
+				for (var socketId in io.nsps['/'].adapter.rooms[participant].sockets) {
+					var _socket = io.sockets.connected[socketId];
+					_socket.join(id);
+				}
+			}
+		}).catch(function (err) {
+			console.log(err);
 		});
 	});
 
@@ -149,8 +192,8 @@ module.exports = function (socketio) {
 
 		//Create room
 		socket.on('room', function (id) {
-			socket.join(id);
 			console.info('ROOM [%s] CREATED', id);
+			socket.join(id);
 		});
 
 		// Call onDisconnect.

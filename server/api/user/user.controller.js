@@ -7,6 +7,7 @@ var jwt = require('jsonwebtoken');
 
 var Image = require('../image/image.model');
 var Conversation = require('../conversation/conversation.model');
+var Group = require('../conversation/conversation.model');
 
 var validationError = function (res, err) {
 	return res.status(422).json(err);
@@ -24,9 +25,7 @@ var insensitiveFields = 'name email img status online admin members messages';
  * restriction: 'admin'
  */
 exports.index = function (req, res) {
-	User.find({}, '-salt -hashedPassword', function (err, users) {
-		if (err) return res.status(500).send(err);
-	}).populate(objectIdFields, insensitiveFields).exec(function (err, users) {
+	User.find({}, '-salt -hashedPassword').populate(objectIdFields, insensitiveFields).exec(function (err, users) {
 		if (err) return handleError(res, err);
 		res.status(200).json(users);
 	});
@@ -221,7 +220,6 @@ exports.sendFriendRequest = function (req, res, next) {
 		}).exec();
 
 		Promise.all([p1, p2]).then(function (values) {
-			console.log(values);
 			var to = values[0];
 			var me = values[1];
 			if (to && me) {
@@ -385,8 +383,37 @@ exports.me = function (req, res, next) {
 		_id: userId
 	}, '-salt -hashedPassword').populate(objectIdFields, insensitiveFields).exec(function (err, user) {
 		if (err) return next(err);
+
 		if (!user) return res.status(401).send('Unauthorized');
-		res.json(user);
+
+		var p1 = new Promise(function (resolve, reject) {
+			Group.populate(user.groups, {
+				path: 'members',
+				select: insensitiveFields
+			}, function (err, user) {
+				if (err) {
+					return reject(err);
+				}
+				return resolve(user);
+			});
+		});
+		var p2 = new Promise(function (resolve, reject) {
+			Conversation.populate(user.conversations, {
+				path: 'members',
+				select: insensitiveFields
+			}, function (err, user) {
+				if (err) {
+					return reject(err);
+				}
+				resolve(user);
+			});
+		});
+
+		Promise.all([p1, p2]).then(function (values) {
+			res.json(user);
+		}).catch(function (err) {
+			if (err) return next(err);
+		})
 	});
 };
 

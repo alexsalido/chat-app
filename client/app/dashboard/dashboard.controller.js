@@ -21,6 +21,9 @@ angular.module('chatApp')
 					$mdDialog.cancel();
 					$scope.submitted = false;
 					$scope.newGroupName = '';
+					// $scope.$broadcast('convList:newGroup', res.group);
+					socket.createGroup(res.group._id);
+					socket.addedParticipants(res.group._id, [$scope.me._id])
 				}, function (err) {
 					$mdToast.show($mdToast.simple().position('top right').textContent(err.data).action('OK'));
 				});
@@ -108,9 +111,8 @@ angular.module('chatApp')
 			$scope.contactListUpdate = true;
 		});
 
-		$scope.$on('contactSelected', function (event, user) {
-			// $scope.$broadcast('openChat', userId);
-			$scope.$broadcast('newConversation', user);
+		$scope.$on('contactList:selected', function (event, user) {
+			$scope.$broadcast('convList:new', user);
 		});
 
 		$scope.$on('convSelected', function (event, user, conversation) {

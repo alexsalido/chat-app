@@ -22,21 +22,42 @@ angular.module('chatApp')
 
 			socket.emit('room', id);
 
-			socket.on('message:received', function (from, msg) {
+			socket.on('message:received', function (from, msg, groupId) {
 
-				var convExists = _.find(Auth.getCurrentUser().conversations, function (conversation) {
-					if (conversation.members.indexOf(from) !== -1) {
-						conversation.messages.push({
-							text: msg,
-							sentBy: from
+				if (!!groupId) {
+					var group = _.find(Auth.getCurrentUser().groups, {
+						_id: groupId
+					})
+
+					group.messages.push({
+						text: msg,
+						sentBy: from
+					});
+				} else {
+					var conversation = _.find(Auth.getCurrentUser().conversations, function (conversation) {
+
+						var hasUser = _.find(conversation.members, {
+							_id: from
 						});
-						return true;
-					}
-				});
 
-				if (!convExists) {
-					socket.emit('conversation:new', from, Auth.getCurrentUser()._id);
+						if (hasUser) {
+							conversation.messages.push({
+								text: msg,
+								sentBy: from
+							});
+							return true;
+						}
+					});
+
+					if (!conversation) {
+						socket.emit('conversation:new', from, Auth.getCurrentUser()._id);
+					}
 				}
+			});
+
+			//join groups' rooms
+			_.forEach(Auth.getCurrentUser().groups, function (group) {
+				socket.emit('group', group._id);
 			});
 		}
 
@@ -45,8 +66,18 @@ angular.module('chatApp')
 
 			createSocket: createSocket,
 
+			addedParticipants: function (id, participants) {
+				participants.forEach(function (participant) {
+					socket.emit('group:added', id, participant);
+				});
+			},
+
 			createRoom: function (id) {
 				socket.emit('room', id);
+			},
+
+			createGroup: function (id) {
+				socket.emit('group', id);
 			},
 
 			createConversation: function (user) {
@@ -77,8 +108,8 @@ angular.module('chatApp')
 				socket.emit('deleteContact', user, Auth.getCurrentUser()._id);
 			},
 
-			sendMessage: function (room, msg) {
-				socket.emit('message:sent', room, Auth.getCurrentUser()._id, msg);
+			sendMessage: function (room, msg, toGroup) {
+				socket.emit('message:sent', room, Auth.getCurrentUser()._id, msg, toGroup);
 			},
 
 			syncSent: function (array, cb) {
@@ -153,11 +184,36 @@ angular.module('chatApp')
 				});
 			},
 
+			syncGroups: function (array, cb, scope) {
+				cb = cb || angular.noop;
+				socket.on('groupsUpdated', function (item, event) {
+
+					var oldItem = _.find(array, {
+						_id: item._id
+					});
+
+					var index = array.indexOf(oldItem);
+
+					if (oldItem) {
+						array.splice(index, 1);
+						event = 'deleted';
+					} else {
+						array.push(item);
+						event = 'created';
+					}
+
+					cb(event, item, array);
+				});
+			},
+
 			syncConversations: function (array, cb, scope) {
 				cb = cb || angular.noop;
 				socket.on('conversationsUpdated', function (item, event) {
 
-					item.members.splice(item.members.indexOf(Auth.getCurrentUser()._id), 1);
+					//Filter current user from the conversation's members
+					item.members.splice(item.members.indexOf(_.find(item.members, {
+						_id: Auth.getCurrentUser()._id
+					})), 1);
 
 					var oldItem = _.find(array, {
 						_id: item._id

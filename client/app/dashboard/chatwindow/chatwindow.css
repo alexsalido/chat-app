@@ -1,5 +1,5 @@
 #chat-box {
-	overflow-x: hidden;
+    overflow-x: hidden;
 }
 
 #message-toolbar {
@@ -18,30 +18,30 @@
 }
 
 message {
-	display: block;
+    display: block;
 }
 
 .message-wrapper {
     position: relative;
     overflow: hidden;
-	margin: 0.5em
+    margin: 0.5em
 }
 
 .message-wrapper .circle-wrapper {
-	margin: 1em 0.5em 1em 0.5em;
+    margin: 1em 0.5em 1em 0.5em;
     border-radius: 50%;
-	width: 3em;
-	height: 3em;
+    width: 3em;
+    height: 3em;
 }
+
 .message-wrapper img {
-	border-radius: 50%;
-	width: 100%;
-	height: 100%;
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
 }
 
 .message-wrapper .text-wrapper {
-	margin: 0.5em 1em;
-    padding: 1em;
+    margin: 0.5em 1em;
     min-height: 1em;
     box-shadow: 0px 1px 0px 0px rgba(50, 50, 50, 0.3);
     border-radius: 2px;
@@ -74,19 +74,30 @@ message {
 
 .message-wrapper.me .circle-wrapper,
 .message-wrapper.me .text-wrapper {
-    background: rgb(228,228,228);
+    background: rgb(228, 228, 228);
     float: right;
     color: #333333;
 }
 
 .message-wrapper.me .text-wrapper {
-    background: rgb(228,228,228);
+    background: rgb(228, 228, 228);
 }
 
 .message-wrapper.me .text-wrapper:before {
     border-width: 10px 10px 0 0;
-    border-color: rgb(228,228,228) transparent transparent transparent;
+    border-color: rgb(228, 228, 228) transparent transparent transparent;
     position: absolute;
     top: 0;
     right: -9px;
+}
+
+.message-wrapper .text-wrapper .sender {
+    font-size: 70%;
+	font-weight: bold;
+	padding: 0.5em 0 0 1em;
+	text-align: left;
+}
+
+.message-wrapper .text-wrapper .text {
+    padding: 1em;
 }

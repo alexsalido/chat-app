@@ -13,69 +13,77 @@ angular.module('chatApp')
 				$scope.conversations = $scope.me.conversations;
 				socket.syncConversations($scope.conversations, conversationsUpdated);
 
-				$scope.activeConvs = [];
+				$scope.groups = $scope.me.groups;
+				socket.syncGroups($scope.groups, groupsUpdated);
 
+				$scope.activeConvs = [].concat($scope.me.groups);
+
+				//populate activeConvs
 				$scope.conversations.forEach(function (conversation) {
-					conversation.members.splice(conversation.members.indexOf($scope.me._id), 1);
+					//Filter myself from the conversation's members
+					conversation.members.splice(conversation.members.indexOf(_.find(conversation.members, {
+						_id: $scope.me._id
+					})), 1);
 
-					addToActiveConvs(conversation.members[0]);
-
+					$scope.activeConvs.unshift(conversation.members[0]);
 				});
 
 				$scope.convSelected = function (user) {
-					var conversation = _.find($scope.conversations, function (conversation) {
-						if (conversation.members.indexOf(user._id) !== -1) {
-							return true;
-						}
-					});
+					if (!user.members) {
+						//is a user
+						var conversation = _.find($scope.conversations, function (conversation) {
+							if (conversation.members[0]._id === user._id) {
+								return true;
+							}
+						});
 
-					if (!conversation) {
-						_user = user;
-						socket.createConversation(user._id);
+						if (!conversation) {
+							socket.createConversation(user._id);
+						} else {
+							$scope.$emit('convSelected', user, conversation);
+						}
 					} else {
-						$scope.$emit('convSelected', user, conversation);
+						//is a group
+						$scope.$emit('convSelected', user, user);
 					}
 				};
 
-				//**	 **//
-				// Functions  //
-				//**	 **//
-				function addToActiveConvs(id) {
-					var contact = _.find($scope.me.contacts, {
-						_id: id
-					});
-
-					if (contact) {
-						$scope.activeConvs.unshift(contact);
-					}
-				}
-
-				var _user; //auxilary variable to avoid getting user information from contacts
+				//**	   **//
+				// Functions //
+				//**	   **//
 				function conversationsUpdated(event, conversation) {
 					if (event == 'created') {
-						addToActiveConvs(conversation.members[0]);
-						$scope.$emit('convSelected', _user, conversation);
-
+						$scope.activeConvs.unshift(conversation.members[0]);
+						$scope.convSelected(conversation.members[0]);
 					} else if (event == 'deleted') {
-						var target = _.find($scope.activeConvs, {
-							_id: conversation.members[0]
-						});
-
-						var index = $scope.activeConvs.indexOf(target);
-
-						$scope.activeConvs.splice(index, 1);
+						//delete conversation from activeConvs
+						$scope.activeConvs.splice($scope.activeConvs.indexOf(_.find($scope.activeConvs, {
+							_id: conversation.members[0]._id
+						})), 1);
 						if ($scope.activeConvs.length > 0) {
 							$scope.convSelected($scope.activeConvs[0]);
 						}
 					}
 				}
 
+				function groupsUpdated(event, group) {
+					if (event == 'created') {
+						$scope.activeConvs.unshift(group);
+						$scope.$emit('convSelected', group, group);
+					}
+				}
+
 				//**	 **//
 				// Events  //
 				//**	 **//
-
-				$scope.$on('newConversation', function (event, user) {
+				$scope.$on('convList:new', function (event, user) {
 					$scope.convSelected(user);
+				});
+
+				$scope.$on('convList:newGroup', function (event, group) {
+					$scope.$emit('convSelected', group, group);
+					$scope.activeConvs.unshift(group);
+					$scope.me.groups.push(group);
 				});
 
 				//trigger default state
@@ -83,7 +91,6 @@ angular.module('chatApp')
 					setTimeout($scope.convSelected, 0, $scope.activeConvs[0]);
 				}
 
-			},
-			link: function (scope, element, attrs) {}
+			}
 		};
 	});

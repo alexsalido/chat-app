@@ -73,50 +73,7 @@
 		<chat-info src="activeConv" delete="deleteConv('contact-info')"></chat-info>
 	</md-sidenav>
 	<md-content flex id="conversation-box">
-		<message class="message-wrapper" ng-repeat="message in conversation.messages" sender="{{message.sentBy}}" receiver="{{me._id}}">
-			<div class="text-wrapper">{{message.text}}</div>
-		</message>
-		<!-- <message class="message-wrapper them">
-			<div class="circle-wrapper">
-				<img class="no-outline" alt="{{activeConv.user.name}}" ng-src="{{activeConv.user.img || 'assets/images/profile_white.png'}}" />
-			</div>
-			<div class="text-wrapper">Hello!</div>
-		</message>
-		<message class="message-wrapper them">
-			<div class="circle-wrapper">
-			</div>
-			<div class="text-wrapper">Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est.
-				Mauris placerat eleifend leo</div>
-		</message>
-		<message class="message-wrapper me">
-			<div class="circle-wrapper">
-			</div>
-			<div class="text-wrapper">Hello!</div>
-		</message>
-		<message class="message-wrapper me">
-			<div class="circle-wrapper">
-			</div>
-			<div class="text-wrapper">Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est.
-				Mauris placerat eleifend leo</div>
-		</message>
-		<message class="message-wrapper them">
-			<div class="circle-wrapper">
-			</div>
-			<div class="text-wrapper">Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est.
-				Mauris placerat eleifend leo</div>
-		</message>
-		<message class="message-wrapper them">
-			<div class="circle-wrapper">
-			</div>
-			<div class="text-wrapper">Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est.
-				Mauris placerat eleifend leo</div>
-		</message>
-		<message class="message-wrapper them">
-			<div class="circle-wrapper">
-			</div>
-			<div class="text-wrapper">Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est.
-				Mauris placerat eleifend leo</div>
-		</message> -->
+		<message class="message-wrapper" ng-repeat="message in conversation.messages" sender="{{message.sentBy}}" receiver="{{me._id}}" text="{{message.text}}" members="activeConv.members"></message>
 	</md-content>
 	<md-toolbar id="message-toolbar">
 		<div class="md-toolbar-tools">

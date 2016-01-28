@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('chatApp')
-	.directive('chatWindow', function ($mdSidenav, $mdBottomSheet, Auth, socket, messages) {
+	.directive('chatWindow', function (Auth, socket, Group, $mdSidenav, $mdBottomSheet) {
 		return {
 			templateUrl: 'app/dashboard/chatwindow/chatwindow.html',
 			restrict: 'E',
@@ -22,7 +22,7 @@ angular.module('chatApp')
 				};
 
 				$scope.sendMessage = function (roomId) {
-					socket.sendMessage(roomId, $scope.message);
+					socket.sendMessage(roomId, $scope.message, !!$scope.activeConv.members);
 
 					$scope.conversation.messages.push({
 						text: $scope.message,
@@ -51,8 +51,7 @@ angular.module('chatApp')
 					}
 				};
 
-				$scope.$on('openConv', function (ev, user, conversation) {
-					console.log(user, conversation);
+				$scope.$on('openConv', function (event, user, conversation) {
 					$scope.activeConv = user;
 					$scope.conversation = conversation;
 					$scope.toggleSidenav('left-toolbar'); //only executed if displayed in small window

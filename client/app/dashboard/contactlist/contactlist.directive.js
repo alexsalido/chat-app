@@ -35,9 +35,9 @@ angular.module('chatApp')
 					});
 				};
 
-				$scope.contactSelected = function (userId) {
+				$scope.contactSelected = function (user) {
 					$mdSidenav('contact-list').toggle();
-					$scope.$emit('contactSelected', userId);
+					$scope.$emit('contactList:selected', user);
 				};
 
 				$scope.deleteContact = function (ev, name, id) {
@@ -51,9 +51,7 @@ angular.module('chatApp')
 						Auth.deleteContact(id).then(function () {
 							socket.deleteContact(id);
 						});
-					}, function () {
-						$scope.status = 'You decided to keep your debt.';
-					});
+					}, function () {});
 				};
 
 				function contactsUpdated(event, item) {
