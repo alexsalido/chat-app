@@ -72,7 +72,7 @@
 		</md-toolbar>
 		<chat-info src="activeConv" delete="deleteConv('contact-info')" kick="kick(id)"></chat-info>
 	</md-sidenav>
-	<md-content flex id="conversation-box">
+	<md-content flex id="conversation-box" scroll-to-bottom="conversation.messages">
 		<message class="message-wrapper" ng-repeat="message in conversation.messages" sender="{{message.sentBy}}" receiver="{{me._id}}" text="{{message.text}}" members="activeConv.members"></message>
 	</md-content>
 	<md-toolbar id="message-toolbar">

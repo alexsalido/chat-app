@@ -115,6 +115,11 @@ angular.module('chatApp')
 			$scope.$broadcast('convList:new', user);
 		});
 
+		$scope.$on('contactList:updated', function (event, user) {
+			$scope.$broadcast('convWindow:update', user);
+			$scope.$broadcast('convList:update', user);
+		});
+
 		$scope.$on('convSelected', function (event, user, conversation) {
 			$scope.$broadcast('openConv', user, conversation);
 		});

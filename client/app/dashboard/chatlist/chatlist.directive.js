@@ -98,6 +98,18 @@ angular.module('chatApp')
 					$scope.me.groups.push(group);
 				});
 
+
+				$scope.$on('convList:update', function (event, user) {
+					var target = _.find($scope.activeConvs, {
+						_id: user._id
+					});
+
+					if (target) {
+						var index = $scope.activeConvs.indexOf(target);
+						$scope.activeConvs.splice(index, 1, user);
+					}
+				});
+
 				//trigger default state
 				if ($scope.activeConvs.length > 0) {
 					setTimeout($scope.convSelected, 0, $scope.activeConvs[0]);

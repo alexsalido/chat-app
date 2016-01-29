@@ -55,8 +55,10 @@ angular.module('chatApp')
 				};
 
 				function contactsUpdated(event, item) {
-					if (event == 'created') {
+					if (event === 'created') {
 						$mdToast.show($mdToast.simple().position('top right').textContent(item.email + ' is now your friend.').action('OK'));
+					} else if (event === 'updated') {
+						$scope.$emit('contactList:updated', item);
 					}
 				}
 

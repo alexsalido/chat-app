@@ -22,14 +22,16 @@ angular.module('chatApp')
 				};
 
 				$scope.sendMessage = function (roomId) {
-					socket.sendMessage(roomId, $scope.message, !!$scope.activeConv.members);
+					if (!!$scope.message && ($scope.activeConv.online || !!$scope.activeConv.members)) {
+						socket.sendMessage(roomId, $scope.message, !!$scope.activeConv.members);
 
-					$scope.conversation.messages.push({
-						text: $scope.message,
-						sentBy: $scope.me._id
-					});
+						$scope.conversation.messages.push({
+							text: $scope.message,
+							sentBy: $scope.me._id
+						});
 
-					$scope.message = '';
+						$scope.message = '';
+					}
 				};
 
 				$scope.showEmojis = function (ev) {
@@ -62,6 +64,12 @@ angular.module('chatApp')
 					$scope.activeConv = user;
 					$scope.conversation = conversation;
 					$scope.toggleSidenav('left-toolbar'); //only executed if displayed in small window
+				});
+
+				$scope.$on('convWindow:update', function (event, user) {
+					if (user._id === $scope.activeConv._id) {
+						$scope.activeConv = user;
+					}
 				});
 			}
 		};

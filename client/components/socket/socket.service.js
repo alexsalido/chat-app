@@ -100,24 +100,24 @@ angular.module('chatApp')
 				socket.disconnect();
 			},
 
-			friendRequest: function (to, from) {
-				socket.emit('friendRequest', to, from);
+			friendRequest: function (to) {
+				socket.emit('friendRequest:sent', to);
 			},
 
 			friendRequestAccepted: function (user) {
-				socket.emit('friendRequest:Accepted', user, Auth.getCurrentUser()._id);
+				socket.emit('friendRequest:accepted', user);
 			},
 
 			friendRequestRejected: function (user) {
-				socket.emit('friendRequest:Rejected', user, Auth.getCurrentUser()._id);
+				socket.emit('friendRequest:rejected', user);
 			},
 
 			deleteContact: function (user) {
-				socket.emit('deleteContact', user, Auth.getCurrentUser()._id);
+				socket.emit('contact:delete', user);
 			},
 
 			sendMessage: function (room, msg, toGroup) {
-				socket.emit('message:sent', room, Auth.getCurrentUser()._id, msg, toGroup);
+				socket.emit('message:sent', room, msg, toGroup);
 			},
 
 			syncSent: function (array, cb) {
@@ -169,6 +169,7 @@ angular.module('chatApp')
 			syncContacts: function (array, cb) {
 				cb = cb || angular.noop;
 				socket.on('contactsUpdated', function (item, event) {
+
 					var oldItem = _.find(array, {
 						_id: item._id
 					});
