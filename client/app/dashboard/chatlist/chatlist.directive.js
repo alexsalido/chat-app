@@ -52,10 +52,10 @@ angular.module('chatApp')
 				// Functions //
 				//**	   **//
 				function conversationsUpdated(event, conversation) {
-					if (event == 'created') {
+					if (event === 'created') {
 						$scope.activeConvs.unshift(conversation.members[0]);
 						$scope.convSelected(conversation.members[0]);
-					} else if (event == 'deleted') {
+					} else if (event === 'deleted') {
 						//delete conversation from activeConvs
 						$scope.activeConvs.splice($scope.activeConvs.indexOf(_.find($scope.activeConvs, {
 							_id: conversation.members[0]._id
@@ -67,8 +67,20 @@ angular.module('chatApp')
 				}
 
 				function groupsUpdated(event, group) {
-					if (event == 'created') {
+					if (event === 'created') {
 						$scope.activeConvs.unshift(group);
+						$scope.$emit('convSelected', group, group);
+					} else if (event === 'deleted') {
+						$scope.activeConvs.splice($scope.activeConvs.indexOf(_.find($scope.activeConvs, {
+							_id: group._id
+						})), 1);
+						if ($scope.activeConvs.length > 0) {
+							$scope.convSelected($scope.activeConvs[0]);
+						}
+					} else if (event === 'updated') {
+						$scope.activeConvs.splice($scope.activeConvs.indexOf(_.find($scope.activeConvs, {
+							_id: group._id
+						})), 1, group);
 						$scope.$emit('convSelected', group, group);
 					}
 				}

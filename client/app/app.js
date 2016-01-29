@@ -47,6 +47,8 @@ angular.module('chatApp', [
 			.icon('camera', 'assets/svg/camera.svg')
 			.icon('scribble', 'assets/svg/scribble.svg')
 			.icon('schedule', 'assets/svg/schedule.svg')
+			.icon('admin', 'assets/svg/admin.svg')
+			.icon('menu', 'assets/svg/menu.svg')
 			.icon('emojis-people', 'assets/svg/emojis-people.svg')
 			.icon('emojis-nature', 'assets/svg/emojis-nature.svg')
 			.icon('emojis-objects', 'assets/svg/emojis-objects.svg')

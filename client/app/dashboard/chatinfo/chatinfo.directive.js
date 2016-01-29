@@ -8,7 +8,8 @@ angular.module('chatApp')
 			replace: true,
 			scope: {
 				activeChat: '=src',
-				deleteChat: '&delete'
+				deleteChat: '&delete',
+				kick: '&kick'
 			},
 			controller: function ($scope) {
 				$scope.me = Auth.getCurrentUser();
@@ -48,7 +49,6 @@ angular.module('chatApp')
 					var newParticipants = [];
 
 					$scope.selected.forEach(function (value) {
-						console.log(value);
 						newParticipants.push(value._id);
 					});
 

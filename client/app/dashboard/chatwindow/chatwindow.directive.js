@@ -45,10 +45,17 @@ angular.module('chatApp')
 				};
 
 				$scope.deleteConv = function (id) {
-					socket.deleteConversation($scope.activeConv._id);
-					if (id) {
-						$mdSidenav(id).toggle();
+					$mdSidenav(id).toggle();
+
+					if (!!$scope.activeConv.members) {
+						socket.exitGroup($scope.activeConv._id);
+					} else {
+						socket.deleteConversation($scope.activeConv._id);
 					}
+				};
+
+				$scope.kick = function (id) {
+					socket.kick($scope.activeConv._id, id);
 				};
 
 				$scope.$on('openConv', function (event, user, conversation) {

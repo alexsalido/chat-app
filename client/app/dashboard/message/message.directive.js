@@ -13,8 +13,11 @@ angular.module('chatApp')
 				var me = attrs.receiver;
 
 				scope.text = attrs.text;
-				
-				if (sender === me) {
+
+				if (!!!sender) {
+					element.addClass('server');
+				}
+				else if (sender === me) {
 					element.addClass('me');
 				} else {
 					element.addClass('them');

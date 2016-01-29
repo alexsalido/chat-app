@@ -103,7 +103,7 @@ function onConnect(socket, io) {
 			members: {
 				$all: [user, me]
 			}
-		}).populate('members').exec(function (err, conversation) {
+		}).populate('members', insensitiveFields).exec(function (err, conversation) {
 			User.findByIdAndUpdate(me, {
 				$addToSet: {
 					conversations: conversation._id
@@ -119,7 +119,7 @@ function onConnect(socket, io) {
 			members: {
 				$all: [user, me]
 			}
-		}).populate('members').exec(function (err, conversation) {
+		}).populate('members', insensitiveFields).exec(function (err, conversation) {
 			User.findByIdAndUpdate(me, {
 				$pull: {
 					conversations: conversation._id
@@ -138,7 +138,7 @@ function onConnect(socket, io) {
 
 	socket.on('group:added', function (id, participant) {
 		console.log('[%s] ADDED TO GROUP [%s]', participant, id);
-		var p1 = Group.findById(id).populate('members').exec();
+		var p1 = Group.findById(id).populate('members', insensitiveFields).exec();
 		var p2 = User.findByIdAndUpdate(participant, {
 			$addToSet: {
 				groups: id
@@ -152,6 +152,80 @@ function onConnect(socket, io) {
 					var _socket = io.sockets.connected[socketId];
 					_socket.join(id);
 				}
+			}
+		}).catch(function (err) {
+			console.log(err);
+		});
+	});
+
+	socket.on('group:exit', function (id, participant) {
+		console.info('User [%s] has left group [%s].', participant, id);
+		var p1 = Group.findByIdAndUpdate(id, {
+			$pull: {
+				members: participant
+			}
+		}, {
+			new: true
+		}).populate('members', insensitiveFields).exec();
+		var p2 = User.findByIdAndUpdate(participant, {
+			$pull: {
+				groups: id
+			}
+		}).exec();
+
+		Promise.all([p1, p2]).then(function (values) {
+			var group = values[0];
+			var participant = values[1]
+
+			if (group && participant) {
+				socket.emit('groupsUpdated', group, 'delete');
+
+				//if group doesn't have any members, delete it
+				if (group.members.length === 0) {
+					console.info('Group [%s] has been deleted.', group._id);
+					group.remove();
+				}
+				//if user that left is the admin, assign another admin
+				if (group.admin.equals(participant._id) && group.members.length > 0) {
+					group.admin = group.members[0]._id
+					group.save();
+				}
+
+				socket.to(id).emit('groupsUpdated', group);
+				socket.to(id).emit('message:received', null, participant.email + ' left the group.', id);
+				socket.leave(id);
+			}
+		}).catch(function (err) {
+			console.log(err);
+		});
+	});
+
+	socket.on('group:kicked', function (id, participant) {
+		console.info('User [%s] has been kicked out of group [%s].', participant, id);
+
+		var p1 = Group.findByIdAndUpdate(id, {
+			$pull: {
+				members: participant
+			}
+		}, {
+			new: true
+		}).populate('members', insensitiveFields).exec();
+		var p2 = User.findByIdAndUpdate(participant, {
+			$pull: {
+				groups: id
+			}
+		}).exec();
+
+		Promise.all([p1, p2]).then(function (values) {
+			if (values[0] && values[1]) {
+				socket.to(participant).emit('groupsUpdated', values[0], 'delete');
+				for (var socketId in io.nsps['/'].adapter.rooms[participant].sockets) {
+					var _socket = io.sockets.connected[socketId];
+					_socket.leave(id);
+				}
+				socket.to(id).emit('groupsUpdated', values[0]); //notify everyone in the group
+				socket.emit('groupsUpdated', values[0]); //notify myself
+				socket.to(id).emit('message:received', null, values[1].email + ' was kicked from the group.', id);
 			}
 		}).catch(function (err) {
 			console.log(err);

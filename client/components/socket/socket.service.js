@@ -88,6 +88,14 @@ angular.module('chatApp')
 				socket.emit('conversation:delete', user, Auth.getCurrentUser()._id);
 			},
 
+			exitGroup: function (id) {
+				socket.emit('group:exit', id, Auth.getCurrentUser()._id);
+			},
+
+			kick: function (group, id) {
+				socket.emit('group:kicked', group, id, Auth.getCurrentUser()._id);
+			},
+
 			disconnect: function () {
 				socket.disconnect();
 			},
@@ -194,12 +202,20 @@ angular.module('chatApp')
 
 					var index = array.indexOf(oldItem);
 
-					if (oldItem) {
+					if (event == 'delete') {
 						array.splice(index, 1);
 						event = 'deleted';
 					} else {
-						array.push(item);
-						event = 'created';
+						// replace oldItem if it exists
+						// otherwise just add item to the collection
+						if (oldItem) {
+							console.log(oldItem);
+							array.splice(index, 1, item);
+							event = 'updated';
+						} else {
+							array.push(item);
+							event = 'created';
+						}
 					}
 
 					cb(event, item, array);

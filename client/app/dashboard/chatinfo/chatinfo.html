@@ -42,19 +42,20 @@
 	<md-divider class="no-padding" ng-show="activeChat.members"></md-divider>
 	<md-content flex ng-show="activeChat.members">
 		<md-list ng-cloak>
-			<md-list-item ng-repeat="member in activeChat.members" class="md-2-line no-padding">
+			<md-list-item ng-repeat="member in activeChat.members" class="md-3-line no-padding">
 				<img alt="{{ member.name }}" ng-src="{{ member.img }}" class="md-avatar object-fit-cover" />
 				<div class="md-list-item-text">
 					<h3>{{member.name}}</h3>
 					<p>
 						{{member.email}}
 					</p>
+					<md-icon md-svg-icon="admin" aria-label="Add" class="md-primary gray" ng-show="activeChat.admin == member._id"></md-icon>
 				</div>
-				<md-button class="md-icon-button md-exclude">
+				<md-button class="md-icon-button md-exclude" ng-show="me._id != member._id">
 					<md-icon md-svg-icon="add" ng-click="" aria-label="Add" class="md-primary gray"></md-icon>
 				</md-button>
-				<md-button class="md-icon-button md-exclude" ng-show="activeChat.admin == me._id">
-					<md-icon md-svg-icon="close" ng-click="" aria-label="Remove" class="md-primary red"></md-icon>
+				<md-button class="md-icon-button md-exclude" ng-show="activeChat.admin == me._id && me._id != member._id">
+					<md-icon md-svg-icon="close" ng-click="kick({id:member._id})" aria-label="Remove" class="md-primary red"></md-icon>
 				</md-button>
 			</md-list-item>
 		</md-list>
