@@ -70,6 +70,15 @@ function onConnect(socket, io) {
 		});
 	});
 
+	socket.on('user:email', function () {
+		User.findById(id, function (err, user) {
+			if (err) return console.info('Couldn\'t notify [%s]\'s contacts of email change.', id);
+			user.contacts.forEach(function (contact) {
+				socket.to(contact).emit('contactsUpdated', user);
+			});
+		});
+	});
+
 	socket.on('friendRequest:sent', function (to) {
 		console.info('Friend request sent to [%s] from [%s]', to, id);
 

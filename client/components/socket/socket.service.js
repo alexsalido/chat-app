@@ -125,6 +125,8 @@ angular.module('chatApp')
 					socket.emit('user:img');
 				} else if (action === 'status') {
 					socket.emit('user:status');
+				} else if (action === 'email') {
+					socket.emit('user:email');
 				}
 			},
 

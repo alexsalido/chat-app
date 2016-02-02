@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('chatApp')
-	.controller('SettingsCtrl', function ($scope, User, Auth, type, $mdDialog, $mdToast) {
+	.controller('SettingsCtrl', function ($scope, User, Auth, type, socket, $mdDialog, $mdToast) {
 		$scope.errors = {};
 
 		$scope.type = type;
@@ -9,13 +9,13 @@ angular.module('chatApp')
 		$scope.saveChanges = function (form, type) {
 			$scope.submitted = true;
 			if (form.$valid) {
-				if (type == 'password') {
+				if (type === 'password') {
 					Auth.changePassword($scope.user.current, $scope.user.password)
 						.then(function (res) {
 							$mdToast.show($mdToast.simple().position('top right').textContent(res.message).action('OK'));
 							$scope.cancel();
 						})
-						.catch(function () {
+						.catch(function (err) {
 							if (err.status === 500) {
 								$mdToast.show($mdToast.simple().position('top right').textContent(err.data).action('OK'));
 							} else {
@@ -24,10 +24,11 @@ angular.module('chatApp')
 								$scope.message = '';
 							}
 						});
-				} else if (type == 'email') {
+				} else if (type === 'email') {
 					Auth.changeEmail($scope.user.current, $scope.user.email)
 						.then(function (res) {
 							$mdToast.show($mdToast.simple().position('top right').textContent(res.message).action('OK'));
+							socket.userUpdate('email');
 							$scope.cancel();
 						})
 						.catch(function (err) {
