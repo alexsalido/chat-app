@@ -51,10 +51,19 @@ function onConnect(socket, io) {
 		console.info('[%s] %s', socket.address, JSON.stringify(data, null, 2));
 	});
 
-	socket.on('user:img', function (url) {
+	socket.on('user:img', function () {
 		User.findById(id, function (err, user) {
 			if (err) return console.info('Couldn\'t notify [%s]\'s contacts of img change.', id);
 			user.img = user.img + '?' + Date.now(); //attach a dummy querystring to force browser to download image as the url never changes
+			user.contacts.forEach(function (contact) {
+				socket.to(contact).emit('contactsUpdated', user);
+			});
+		});
+	});
+
+	socket.on('user:status', function () {
+		User.findById(id, function (err, user) {
+			if (err) return console.info('Couldn\'t notify [%s]\'s contacts of status change.', id);
 			user.contacts.forEach(function (contact) {
 				socket.to(contact).emit('contactsUpdated', user);
 			});

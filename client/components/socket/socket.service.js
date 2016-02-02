@@ -123,6 +123,8 @@ angular.module('chatApp')
 			userUpdate: function (action) {
 				if (action === 'img') {
 					socket.emit('user:img');
+				} else if (action === 'status') {
+					socket.emit('user:status');
 				}
 			},
 
