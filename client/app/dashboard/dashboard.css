@@ -2,11 +2,8 @@
     max-height: 100vh;
 	min-height: 100vh;
     margin: 0 auto;
-    /*top: 1em;*/
     position: relative;
 }
-
-div.right-toolbar {}
 
 .left-toolbar {
     border-right: 1px solid darkgray;
