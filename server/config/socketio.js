@@ -200,7 +200,15 @@ function onConnect(socket, io) {
 			members: {
 				$all: [user, id]
 			}
-		}).populate('members', insensitiveFields).exec(function (err, conversation) {
+		}).populate({
+			path: 'members',
+			select: insensitiveFields,
+			match: {
+				_id: {
+					$ne: id
+				}
+			}
+		}).exec(function (err, conversation) {
 			User.findByIdAndUpdate(id, {
 				$addToSet: {
 					conversations: conversation._id
@@ -216,7 +224,15 @@ function onConnect(socket, io) {
 			members: {
 				$all: [user, id]
 			}
-		}).populate('members', insensitiveFields).exec(function (err, conversation) {
+		}).populate({
+			path: 'members',
+			select: insensitiveFields,
+			match: {
+				_id: {
+					$ne: id
+				}
+			}
+		}).exec(function (err, conversation) {
 			User.findByIdAndUpdate(id, {
 				$pull: {
 					conversations: conversation._id

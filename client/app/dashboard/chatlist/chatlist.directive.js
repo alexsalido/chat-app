@@ -48,13 +48,8 @@ angular.module('chatApp')
 
 				$scope.activeConvs = [].concat($scope.me.groups);
 
-				//populate activeConvs
+				// //populate activeConvs
 				$scope.conversations.forEach(function (conversation) {
-					//Filter myself from the conversation's members
-					conversation.members.splice(conversation.members.indexOf(_.find(conversation.members, {
-						_id: $scope.me._id
-					})), 1);
-
 					$scope.activeConvs.unshift(conversation.members[0]);
 				});
 

@@ -414,7 +414,12 @@ exports.me = function (req, res, next) {
 		var p2 = new Promise(function (resolve, reject) {
 			Conversation.populate(user.conversations, {
 				path: 'members',
-				select: insensitiveFields
+				select: insensitiveFields,
+				match: {
+					_id: {
+						$ne: userId
+					}
+				}
 			}, function (err, user) {
 				if (err) {
 					return reject(err);

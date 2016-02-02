@@ -5,6 +5,7 @@ angular.module('chatApp')
 
 		$scope.user = Auth.getCurrentUser();
 		$scope.me = Auth.getCurrentUser();
+		console.log($scope.me);
 		$scope.errors = {};
 		$scope.contactListUpdate = false;
 		$scope.contactListSearch = '';

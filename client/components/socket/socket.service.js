@@ -242,12 +242,6 @@ angular.module('chatApp')
 					} else {
 						// replace oldItem if it exists
 						// otherwise just add item to the collection
-
-						//Filter current user from the conversation's members
-						item.members.splice(item.members.indexOf(_.find(item.members, {
-							_id: Auth.getCurrentUser()._id
-						})), 1);
-
 						if (oldItem) {
 							array[index] = item;
 							event = 'updated';
