@@ -7,7 +7,7 @@
 			<h1>Profile</h1>
 		</div>
 	</md-toolbar>
-	<md-content layout-padding class="profile-info">
+	<md-content flex layout-padding class="profile-info">
 		<div layout-align="center center" class="profile-photo">
 			<div id="profile-image-overlay" class="image-overlay" ng-click="changeProfileImage()">
 				<md-icon md-svg-icon="camera" class="s48"></md-icon>
@@ -21,8 +21,11 @@
 			<img ng-src="{{me.img}}" alt="{{me.name}}">
 			<input type="file" id="profile-upload" nv-file-select uploader="uploader" accept="image/*" class="display-none" />
 		</div>
-
 		<form name="statusForm">
+			<md-input-container class="md-block">
+				<label>Email</label>
+				<input name="email" ng-model="dummyEmail" disabled="disabled">
+			</md-input-container>
 			<md-input-container class="md-block">
 				<label>Status</label>
 				<input md-maxlength="30" name="status" ng-model="dummyStatus" maxlength="30">

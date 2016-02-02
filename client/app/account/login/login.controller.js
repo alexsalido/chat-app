@@ -27,13 +27,7 @@ angular.module('chatApp')
 					})
 					.then(function () {
 						$mdDialog.cancel();
-						// socket.createSocket();
 						$location.path('/dashboard');
-						// Auth.isLoggedInAsync(function (loggedIn) {
-						// 	if (loggedIn) {
-						// 		socket.createRoom(Auth.getCurrentUser()._id);
-						// 	}
-						// });
 					})
 					.catch(function (err) {
 						form[err.field].$setValidity('mongoose', false);

@@ -61,7 +61,6 @@ angular.module('chatApp')
 					};
 				};
 
-
 				$scope.toggleProfileInfo = function () {
 					$mdSidenav('profile-info').close();
 				};
@@ -80,6 +79,12 @@ angular.module('chatApp')
 							$mdToast.show($mdToast.simple().position('top right').textContent(err.data).action('OK'));
 						});
 						$scope.me.status = $scope.dummyStatus;
+					}
+				});
+
+				$scope.$watch('me.email', function (newVals) {
+					if (newVals) {
+						$scope.dummyEmail = newVals;
 					}
 				});
 			}

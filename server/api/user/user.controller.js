@@ -46,12 +46,12 @@ exports.create = function (req, res, next) {
 	Image.findRandom(filter, {
 		url: 1
 	}, options, function (err, image) {
-		if (err) return res.status(500).send(err);
+		if (err) return handleError(res, err);
 		newUser.img = image[0].url;
 		newUser.provider = 'local';
 		newUser.role = 'user';
 		newUser.save(function (err, user) {
-			if (err) return handleError(res, err);
+			if (err) return validationError(res, err);
 			var token = jwt.sign({
 				_id: user._id
 			}, config.secrets.session, {
@@ -96,10 +96,11 @@ exports.changePassword = function (req, res, next) {
 	var oldPass = String(req.body.oldPassword);
 	var newPass = String(req.body.newPassword);
 	User.findById(userId, function (err, user) {
+		if (err) return handleError(res, err, 'Oh no! There was a problem changing your password. Please try again.');
 		if (user.authenticate(oldPass)) {
 			user.password = newPass;
 			user.save(function (err) {
-				if (err) return handleError(res, err, 'Oh no! There was a problem changing your password. Please try again.');
+				if (err) return validationError(res, err);
 				res.status(200).send({
 					message: 'Your password was changed successfully.'
 				});
@@ -118,10 +119,11 @@ exports.changeEmail = function (req, res, next) {
 	var pass = String(req.body.password);
 	var newEmail = String(req.body.newEmail);
 	User.findById(userId, function (err, user) {
+		if (err) return handleError(res, err, 'Oh no! There was a problem changing your email. Please try again.');
 		if (user.authenticate(pass)) {
 			user.email = newEmail;
 			user.save(function (err) {
-				if (err) return handleError(res, err, 'Oh no! There was a problem changing your email. Please try again.');
+				if (err) return validationError(res, err);
 				res.status(200).send({
 					message: 'Your email was changed successfully.'
 				});

@@ -14,28 +14,27 @@
 			<div layout="column">
 				<md-input-container flex>
 					<label>Verify Password</label>
-					<input name="current" type="password" ng-model="user.current" mongoose-error required autofocus/>
-					<div ng-messages="settingsForm.current.$error">
+					<input name="currentPassword" type="password" ng-model="currentPassword" mongoose-error required autofocus/>
+					<div ng-messages="settingsForm.currentPassword.$error">
 						<div ng-message="required">This is required.</div>
 						<div ng-message="mongoose" ng-show="submitted">{{errors.other}}</div>
 					</div>
 				</md-input-container>
 				<md-input-container flex>
 					<label>New {{type}}</label>
-					<input name="{{type}}" type="{{type}}" ng-model="user[type]" mongoose-error required/>
+					<input name="{{type}}" type="{{type}}" ng-model="new" mongoose-error required/>
 					<div ng-messages="settingsForm[type].$error">
 						<div ng-message="required">This is required.</div>
 						<div ng-if="value.type == 'email'" ng-message="email">Invalid email.</div>
-						<div ng-message="mongoose" ng-show="submitted">{{errors.other}}</div>
+						<div ng-message="mongoose">{{errors[type]}}</div>
 					</div>
 				</md-input-container>
 				<md-input-container flex>
 					<label>Confirmation</label>
-					<input name="confirmation" type="{{type}}" ng-model="user.confirmation" mongoose-error required compare-to="user[type]" />
+					<input name="confirmation" type="{{type}}" ng-model="confirmation" mongoose-error required compare-to="new" />
 					<div ng-messages="settingsForm.confirmation.$error">
 						<div ng-message="required">This is required.</div>
 						<div ng-if="type == 'email'" ng-message="email">Invalid email.</div>
-						<div ng-message="mongoose" ng-show="submitted">{{errors.other}}</div>
 						<div ng-message="compareTo">Confirmation doesn't match.</div>
 					</div>
 				</md-input-container>
