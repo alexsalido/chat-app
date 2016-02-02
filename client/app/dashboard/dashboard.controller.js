@@ -21,9 +21,8 @@ angular.module('chatApp')
 					$mdDialog.cancel();
 					$scope.submitted = false;
 					$scope.newGroupName = '';
-					// $scope.$broadcast('convList:newGroup', res.group);
 					socket.createGroup(res.group._id);
-					socket.addedParticipants(res.group._id, [$scope.me._id])
+					socket.addedParticipants(res.group._id, [$scope.me._id]);
 				}, function (err) {
 					$mdToast.show($mdToast.simple().position('top right').textContent(err.data).action('OK'));
 				});
@@ -120,118 +119,13 @@ angular.module('chatApp')
 			$scope.$broadcast('convList:update', user);
 		});
 
+		$scope.$on('contactList:deleted', function (event, user) {
+			$scope.$broadcast('convList:deleted', user);
+		});
+
 		$scope.$on('convSelected', function (event, user, conversation) {
 			$scope.$broadcast('openConv', user, conversation);
 		});
-
-		// $scope.openChat = function (_id) {
-		// 	for (var i = 0; i < $scope.chats.length; i++) {
-		// 		if ($scope.chats[i]._id === _id) {
-		// 			$scope.chats[i].newMessage = false;
-		// 			$scope.activeChat = $scope.chats[i];
-		// 		}
-		// 	}
-		// };
-		//
-		// $scope.addMember = function () {};
-
-		//Fake contacts
-		// $scope.contacts = [{
-		// 	_id: 1,
-		// 	name: 'Joe Perkins',
-		// 	username: 'theperks',
-		// 	email: 'perks@foobar.com',
-		// 	img: 'assets/images/profile_2.jpg',
-		// 	newMessage: false,
-		// 	active: false,
-		// 	online: true,
-		// 	status: 'Shooting some Jedi',
-		// }, {
-		// 	_id: 2,
-		// 	name: 'Mark Johnson',
-		// 	username: 'marksman',
-		// 	email: 'mark@foobar.com',
-		// 	img: '/assets/images/profile_3.jpg',
-		// 	newMessage: true,
-		// 	active: false,
-		// 	online: true,
-		// 	status: 'Just standing there',
-		// }, {
-		// 	_id: 3,
-		// 	name: 'Peter Carlson',
-		// 	username: 'pita',
-		// 	email: 'pita@foobar.com',
-		// 	img: '/assets/images/profile_4.jpg',
-		// 	newMessage: false,
-		// 	active: false,
-		// 	online: true,
-		// 	status: 'Speaking with Darth Vader',
-		// }];
-
-		//Fake chats
-		// $scope.chats = [{
-		// 	_id: 1,
-		// 	user: $scope.contacts[0],
-		// 	newMessage: false,
-		// 	active: false,
-		// 	online: true,
-		// 	status: 'Shooting some Jedi'
-		// }, {
-		// 	_id: 2,
-		// 	user: $scope.contacts[1],
-		// 	newMessage: true,
-		// 	active: false,
-		// 	online: true,
-		// 	status: 'Just standing there'
-		// }, {
-		// 	_id: 3,
-		// 	user: $scope.contacts[2],
-		// 	newMessage: false,
-		// 	active: false,
-		// 	online: true,
-		// 	status: 'Speaking with Darth Vader'
-		// }, {
-		// 	_id: 4,
-		// 	name: 'Stormtroopers',
-		// 	members: [$scope.contacts[0], $scope.contacts[2]],
-		// 	group: true,
-		// 	img: '/assets/images/group_1.jpg',
-		// 	newMessage: true,
-		// 	active: false
-		// }];
-
-		// $scope.activeChat = $scope.chats[0];
-
-		// $scope.$watch('activeChat', function (newVal, oldVal) {
-		// 	oldVal.active = false;
-		// 	newVal.active = true;
-		// });
-		//
-		//
-		// $scope.pending = [{
-		// 	name: 'Chewbacca',
-		// 	email: 'chewie@foobar.com',
-		// 	img: '/assets/images/profile_5.jpg',
-		// }];
-
-		// $scope.handleFriendRequest = function (email, action) {
-		// 	console.log(email, action);
-		// };
-		//
-		// $scope.deleteChat = function (sidenav) {
-		// 	if (sidenav) {
-		// 		$mdSidenav(sidenav).close();
-		// 	}
-		// 	var _id = $scope.activeChat._id;
-		// 	console.log(_id);
-		// 	for (var i = 0; i < $scope.chats.length; i++) {
-		// 		if ($scope.chats[i]._id === _id) {
-		// 			$scope.activeChat.active = true;
-		// 			$scope.chats.splice(i, 1);
-		// 			$scope.activeChat = $scope.chats[i + 1];
-		// 		}
-		// 	}
-		// };
 
 		// $scope.showScribbleDialog = function (ev) {
 		// 	$mdDialog.show({
@@ -257,5 +151,4 @@ angular.module('chatApp')
 		// 	});
 		// };
 		//
-
 	});

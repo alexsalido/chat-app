@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('chatApp')
-	.directive('profile', function ($mdSidenav, Auth, FileUploader, $cookieStore, $mdToast) {
+	.directive('profile', function ($mdSidenav, Auth, FileUploader, $cookieStore, $mdToast, socket) {
 		return {
 			templateUrl: 'app/dashboard/profile/profile.html',
 			restrict: 'E',
@@ -57,6 +57,7 @@ angular.module('chatApp')
 						imageOverlay.toggleClass('display-none');
 						progressOverlay.toggleClass('display-none');
 						$mdToast.show($mdToast.simple().position('top right').textContent('Your profile image was changed successfully.').action('OK'));
+						socket.userUpdate('img');
 					};
 				};
 
@@ -73,7 +74,9 @@ angular.module('chatApp')
 					return $mdSidenav('profile-info').isOpen();
 				}, function () {
 					if ($scope.statusForm.$valid && $scope.me.status !== $scope.dummyStatus) {
-						Auth.changeStatus($scope.dummyStatus).catch(function (err) {
+						Auth.changeStatus($scope.dummyStatus).then(function () {
+							socket.userUpdate('status');
+						}).catch(function (err) {
 							$mdToast.show($mdToast.simple().position('top right').textContent(err.data).action('OK'));
 						});
 						$scope.me.status = $scope.dummyStatus;

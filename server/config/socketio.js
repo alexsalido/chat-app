@@ -19,10 +19,12 @@ function onDisconnect(socket) {
 	}, {
 		new: true
 	}, function (err, user) {
-		if (err) console.info('User [%s] online status couldn\'t be changed', id);
-		user.contacts.forEach(function (contact) {
-			socket.to(contact).emit('contactsUpdated', user);
-		});
+		if (err) return console.info('User [%s] online status couldn\'t be changed', id);
+		if (user) {
+			user.contacts.forEach(function (contact) {
+				socket.to(contact).emit('contactsUpdated', user);
+			});
+		}
 	});
 }
 
@@ -37,14 +39,44 @@ function onConnect(socket, io) {
 	}, {
 		new: true
 	}, function (err, user) {
-		if (err) console.info('User [%s] online status couldn\'t be changed', id);
-		user.contacts.forEach(function (contact) {
-			socket.to(contact).emit('contactsUpdated', user);
-		});
+		if (err) return console.info('User [%s] online status couldn\'t be changed', id);
+		if (user) {
+			user.contacts.forEach(function (contact) {
+				socket.to(contact).emit('contactsUpdated', user);
+			});
+		}
 	});
 	// When the client emits 'info', this listens and executes
 	socket.on('info', function (data) {
 		console.info('[%s] %s', socket.address, JSON.stringify(data, null, 2));
+	});
+
+	socket.on('user:img', function () {
+		User.findById(id, function (err, user) {
+			if (err) return console.info('Couldn\'t notify [%s]\'s contacts of img change.', id);
+			user.img = user.img + '?' + Date.now(); //attach a dummy querystring to force browser to download image as the url never changes
+			user.contacts.forEach(function (contact) {
+				socket.to(contact).emit('contactsUpdated', user);
+			});
+		});
+	});
+
+	socket.on('user:status', function () {
+		User.findById(id, function (err, user) {
+			if (err) return console.info('Couldn\'t notify [%s]\'s contacts of status change.', id);
+			user.contacts.forEach(function (contact) {
+				socket.to(contact).emit('contactsUpdated', user);
+			});
+		});
+	});
+
+	socket.on('user:email', function () {
+		User.findById(id, function (err, user) {
+			if (err) return console.info('Couldn\'t notify [%s]\'s contacts of email change.', id);
+			user.contacts.forEach(function (contact) {
+				socket.to(contact).emit('contactsUpdated', user);
+			});
+		});
 	});
 
 	socket.on('friendRequest:sent', function (to) {
@@ -65,7 +97,7 @@ function onConnect(socket, io) {
 	});
 
 	socket.on('friendRequest:accepted', function (from) {
-		console.log('Friend request from [%s] accepted by [%s].', from, id);
+		console.info('Friend request from [%s] accepted by [%s].', from, id);
 
 		var p1 = User.findById(id, insensitiveFields).exec();
 		var p2 = User.findById(from, insensitiveFields).exec();
@@ -105,14 +137,22 @@ function onConnect(socket, io) {
 
 		var p1 = User.findById(id, insensitiveFields).exec();
 		var p2 = User.findById(user, insensitiveFields).exec();
+		var p3 = Conversation.findOne({
+			members: {
+				$all: [id, user]
+			}
+		}).exec();
 
-		Promise.all([p1, p2]).then(function (values) {
+		Promise.all([p1, p2, p3]).then(function (values) {
 			var me = values[0];
 			var user = values[1];
+			var conversation = values[2];
 
-			if (me && user) {
+			if (me && user && conversation) {
 				socket.emit('contactsUpdated', user, 'delete');
 				socket.to(user._id).emit('contactsUpdated', me, 'delete');
+				socket.emit('conversationsUpdated', conversation, 'delete');
+				socket.to(user._id).emit('conversationsUpdated', conversation, 'delete');
 			}
 		});
 	});
@@ -182,7 +222,7 @@ function onConnect(socket, io) {
 					conversations: conversation._id
 				}
 			}, function (err) {
-				socket.emit('conversationsUpdated', conversation);
+				socket.emit('conversationsUpdated', conversation, 'delete');
 			})
 		});
 	});
@@ -211,30 +251,32 @@ function onConnect(socket, io) {
 				}
 			}
 		}).catch(function (err) {
-			console.log(err);
+			console.info(err);
 		});
 	});
 
-	socket.on('group:exit', function (id, participant) {
-		console.info('User [%s] has left group [%s].', participant, id);
-		var p1 = Group.findByIdAndUpdate(id, {
+	socket.on('group:exit', function (groupId) {
+		console.info('User [%s] has left group [%s].', id, groupId);
+
+		var p1 = Group.findByIdAndUpdate(groupId, {
 			$pull: {
-				members: participant
+				members: id
 			}
 		}, {
 			new: true
 		}).populate('members', insensitiveFields).exec();
-		var p2 = User.findByIdAndUpdate(participant, {
+
+		var p2 = User.findByIdAndUpdate(id, {
 			$pull: {
-				groups: id
+				groups: groupId
 			}
 		}).exec();
 
 		Promise.all([p1, p2]).then(function (values) {
 			var group = values[0];
-			var participant = values[1]
+			var user = values[1]
 
-			if (group && participant) {
+			if (group && user) {
 				socket.emit('groupsUpdated', group, 'delete');
 
 				//if group doesn't have any members, delete it
@@ -243,24 +285,27 @@ function onConnect(socket, io) {
 					group.remove();
 				}
 				//if user that left is the admin, assign another admin
-				if (group.admin.equals(participant._id) && group.members.length > 0) {
+				if (group.admin.equals(user._id) && group.members.length > 0) {
 					group.admin = group.members[0]._id
 					group.save();
 				}
 
-				socket.to(id).emit('groupsUpdated', group);
-				socket.to(id).emit('message:received', null, participant.email + ' left the group.', id);
-				socket.leave(id);
+				socket.to(groupId).emit('groupsUpdated', group);
+				socket.to(groupId).emit('message:received', null, user.email + ' left the group.', groupId);
+				socket.leave(groupId);
 			}
 		}).catch(function (err) {
-			console.log(err);
+			console.info(err);
 		});
 	});
 
-	socket.on('group:kicked', function (id, participant) {
-		console.info('User [%s] has been kicked out of group [%s].', participant, id);
+	socket.on('group:kicked', function (groupId, participant) {
+		console.info('User [%s] has been kicked out of group [%s].', participant, groupId);
 
-		var p1 = Group.findByIdAndUpdate(id, {
+		var p1 = Group.findOneAndUpdate({
+			_id: groupId,
+			admin: id
+		}, {
 			$pull: {
 				members: participant
 			}
@@ -270,23 +315,28 @@ function onConnect(socket, io) {
 
 		var p2 = User.findByIdAndUpdate(participant, {
 			$pull: {
-				groups: id
+				groups: groupId
 			}
 		}).exec();
 
 		Promise.all([p1, p2]).then(function (values) {
-			if (values[0] && values[1]) {
-				socket.to(participant).emit('groupsUpdated', values[0], 'delete');
-				for (var socketId in io.nsps['/'].adapter.rooms[participant].sockets) {
-					var _socket = io.sockets.connected[socketId];
-					_socket.leave(id);
+			var group = values[0];
+			var user = values[1];
+			if (group && user) {
+				//if user is currently online, notify him of changes
+				if (user.online) {
+					socket.to(participant).emit('groupsUpdated', group, 'delete');
+					for (var socketId in io.nsps['/'].adapter.rooms[participant].sockets) {
+						var _socket = io.sockets.connected[socketId];
+						_socket.leave(groupId);
+					}
 				}
-				socket.to(id).emit('groupsUpdated', values[0]); //notify everyone in the group
-				socket.emit('groupsUpdated', values[0]); //notify myself
-				socket.to(id).emit('message:received', null, values[1].email + ' was kicked from the group.', id);
+				socket.to(groupId).emit('groupsUpdated', group); //notify everyone in the group
+				socket.emit('groupsUpdated', group); //notify admin
+				socket.to(groupId).emit('message:received', null, user.email + ' was kicked from the group.', groupId);
 			}
 		}).catch(function (err) {
-			console.log(err);
+			console.info(err);
 		});
 	});
 
@@ -314,11 +364,6 @@ module.exports = function (socketio) {
 		handshake: true
 	}));
 
-	// socketio.use(function(socket, next) {
-	// 	console.log(socket.decoded_token);
-	// 	next();
-	// });
-
 	socketio.on('connection', function (socket) {
 
 		socket.address = socket.request.connection.remoteAddress + ':' + socket.request.connection.remotePort;
@@ -342,7 +387,7 @@ module.exports = function (socketio) {
 
 		// Call onConnect.
 		onConnect(socket, socketio);
-		console.log(socketio.engine.clientsCount + ' clients connected to socket.');
+		console.info(socketio.engine.clientsCount + ' clients connected to socket.');
 		console.info('[%s] CONNECTED', socket.address);
 	});
 };
