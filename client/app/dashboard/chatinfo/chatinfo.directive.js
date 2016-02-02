@@ -15,28 +15,30 @@ angular.module('chatApp')
 				$scope.me = Auth.getCurrentUser();
 				$scope.contacts = $scope.me.contacts;
 
-				if ($scope.activeChat) {
-					$scope.dummyGroupName = $scope.activeChat.name;
-				}
-
 				$scope.$watch(function () {
 					return $mdSidenav('contact-info').isOpen();
-				}, function () {
-					if ($scope.groupNameForm.$valid && $scope.activeChat.name != $scope.dummyGroupName && $scope.activeChat.members) {
+				}, function (newVal) {
+					if ($scope.groupNameForm.$valid && $scope.activeChat.name !== $scope.dummyName && $scope.activeChat.members) {
 						var current = $scope.activeChat;
 						Group.update({
 							id: current._id
 						}, {
-							name: current.name
+							name: $scope.dummyName
 						}, function () { //success
-							$scope.dummyGroupName = current.name;
+							current.name = $scope.dummyName;
 						}, function () { //error
 							$mdToast.show($mdToast.simple().position('top right').textContent('There was an error updating the group\'s name. Please try again.').action('OK'));
-							current.name = $scope.dummyGroupName;
+							$scope.dummyName = current.name;
 						});
 					}
 				});
 
+				$scope.$watch('activeChat', function (newVal) {
+					if (newVal) {
+						$scope.dummyName = newVal.name;
+					}
+				}, true);
+				//
 				//**	             **//
 				// Adding participants //
 				//**	   	         **//

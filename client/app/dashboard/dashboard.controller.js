@@ -2,10 +2,8 @@
 
 angular.module('chatApp')
 	.controller('DashboardCtrl', function ($scope, $location, Auth, Group, $mdSidenav, $mdDialog, $mdBottomSheet, $mdToast, socket) {
-
-		$scope.user = Auth.getCurrentUser();
 		$scope.me = Auth.getCurrentUser();
-		console.log($scope.me);
+
 		$scope.errors = {};
 		$scope.contactListUpdate = false;
 		$scope.contactListSearch = '';

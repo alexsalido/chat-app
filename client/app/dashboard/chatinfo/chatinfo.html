@@ -20,7 +20,7 @@
 	<form name="groupNameForm" class="group-name no-padding" ng-show="activeChat.members">
 		<md-input-container class="md-block">
 			<label>Name</label>
-			<input md-maxlength="30" name="name" ng-model="activeChat.name" maxlength="30">
+			<input md-maxlength="30" name="name" ng-model="dummyName" maxlength="30">
 			<div ng-messages="groupNameForm.name.$error">
 				<div ng-message="md-maxlength">The group's name has to be less than 30 characters long.</div>
 				<div ng-message="required">The group's name can't be empty.</div>
