@@ -120,6 +120,10 @@ angular.module('chatApp')
 			$scope.$broadcast('convList:update', user);
 		});
 
+		$scope.$on('contactList:deleted', function(event, user) {
+			$scope.$broadcast('convList:deleted', user);
+		});
+
 		$scope.$on('convSelected', function (event, user, conversation) {
 			$scope.$broadcast('openConv', user, conversation);
 		});

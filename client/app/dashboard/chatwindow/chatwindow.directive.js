@@ -48,7 +48,6 @@ angular.module('chatApp')
 
 				$scope.deleteConv = function (id) {
 					$mdSidenav(id).toggle();
-
 					if (!!$scope.activeConv.members) {
 						socket.exitGroup($scope.activeConv._id);
 					} else {

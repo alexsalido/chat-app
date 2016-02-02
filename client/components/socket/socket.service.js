@@ -27,7 +27,7 @@ angular.module('chatApp')
 				if (!!groupId) {
 					var group = _.find(Auth.getCurrentUser().groups, {
 						_id: groupId
-					})
+					});
 
 					group.messages.push({
 						text: msg,
@@ -81,19 +81,19 @@ angular.module('chatApp')
 			},
 
 			createConversation: function (user) {
-				socket.emit('conversation:new', user, Auth.getCurrentUser()._id);
+				socket.emit('conversation:new', user);
 			},
 
 			deleteConversation: function (user) {
-				socket.emit('conversation:delete', user, Auth.getCurrentUser()._id);
+				socket.emit('conversation:delete', user);
 			},
 
-			exitGroup: function (id) {
-				socket.emit('group:exit', id, Auth.getCurrentUser()._id);
+			exitGroup: function (groupId) {
+				socket.emit('group:exit', groupId);
 			},
 
-			kick: function (group, id) {
-				socket.emit('group:kicked', group, id, Auth.getCurrentUser()._id);
+			kick: function (group, userId) {
+				socket.emit('group:kicked', group, userId);
 			},
 
 			disconnect: function () {
@@ -120,11 +120,16 @@ angular.module('chatApp')
 				socket.emit('message:sent', room, msg, toGroup);
 			},
 
+			userUpdate: function (action) {
+				if (action === 'img') {
+					socket.emit('user:img');
+				}
+			},
+
 			syncSent: function (array, cb) {
 				cb = cb || angular.noop;
 
 				socket.on('sentRequestsUpdated', function (item) {
-
 					var oldItem = _.find(array, {
 						_id: item._id
 					});
@@ -157,7 +162,7 @@ angular.module('chatApp')
 					// otherwise just add item to the collection
 					if (oldItem) {
 						array.splice(index, 1);
-						event = 'updated';
+						event = 'deleted';
 					} else {
 						array.push(item);
 					}
@@ -169,49 +174,44 @@ angular.module('chatApp')
 			syncContacts: function (array, cb) {
 				cb = cb || angular.noop;
 				socket.on('contactsUpdated', function (item, event) {
-
 					var oldItem = _.find(array, {
 						_id: item._id
 					});
 					var index = array.indexOf(oldItem);
 
-					if (event == 'delete') {
+					if (event === 'delete') {
 						array.splice(index, 1);
 					} else {
 						// replace oldItem if it exists
 						// otherwise just add item to the collection
 						if (oldItem) {
-							array.splice(index, 1, item);
+							array[index] = item;
 							event = 'updated';
 						} else {
 							array.push(item);
 							event = 'created';
 						}
 					}
-
 					cb(event, item, array);
 				});
 			},
 
-			syncGroups: function (array, cb, scope) {
+			syncGroups: function (array, cb) {
 				cb = cb || angular.noop;
 				socket.on('groupsUpdated', function (item, event) {
-
 					var oldItem = _.find(array, {
 						_id: item._id
 					});
-
 					var index = array.indexOf(oldItem);
 
-					if (event == 'delete') {
+					if (event === 'delete') {
 						array.splice(index, 1);
 						event = 'deleted';
 					} else {
 						// replace oldItem if it exists
 						// otherwise just add item to the collection
 						if (oldItem) {
-							console.log(oldItem);
-							array.splice(index, 1, item);
+							array[index] = item;
 							event = 'updated';
 						} else {
 							array.push(item);
@@ -223,29 +223,35 @@ angular.module('chatApp')
 				});
 			},
 
-			syncConversations: function (array, cb, scope) {
+			syncConversations: function (array, cb) {
 				cb = cb || angular.noop;
 				socket.on('conversationsUpdated', function (item, event) {
-
-					//Filter current user from the conversation's members
-					item.members.splice(item.members.indexOf(_.find(item.members, {
-						_id: Auth.getCurrentUser()._id
-					})), 1);
-
 					var oldItem = _.find(array, {
 						_id: item._id
 					});
 
 					var index = array.indexOf(oldItem);
 
-					if (oldItem) {
+					if (event === 'delete') {
 						array.splice(index, 1);
 						event = 'deleted';
 					} else {
-						array.push(item);
-						event = 'created';
-					}
+						// replace oldItem if it exists
+						// otherwise just add item to the collection
 
+						//Filter current user from the conversation's members
+						item.members.splice(item.members.indexOf(_.find(item.members, {
+							_id: Auth.getCurrentUser()._id
+						})), 1);
+
+						if (oldItem) {
+							array[index] = item;
+							event = 'updated';
+						} else {
+							array.push(item);
+							event = 'created';
+						}
+					}
 					cb(event, item, array);
 				});
 			}

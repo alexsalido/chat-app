@@ -346,13 +346,22 @@ exports.deleteContact = function (req, res, next) {
 
 	var p1 = User.findById(user).exec();
 	var p2 = User.findById(me).exec();
+	var p3 = Conversation.find({
+		members: {
+			$all: [user, me]
+		}
+	}).exec();
 
-	Promise.all([p1, p2]).then(function (values) {
+	Promise.all([p1, p2, p3]).then(function (values) {
 		var user = values[0];
 		var me = values[1];
+		var conv = values[2];
 
 		user.contacts.pull(me._id);
 		me.contacts.pull(user._id);
+
+		user.conversations.splice(user.conversations.indexOf(conv._id), 1);
+		me.conversations.splice(me.conversations.indexOf(conv._id), 1);
 
 		return Promise.all([user.save(), me.save()]).then(function () {
 			return res.status(200).send({
@@ -362,6 +371,9 @@ exports.deleteContact = function (req, res, next) {
 			//something went wrong, rollback changes
 			user.contacts.addToSet(me._id);
 			me.contacts.addToSet(user._id);
+
+			user.conversations.push(conv._id);
+			me.conversations.push(conv._id);
 
 			user.save();
 			me.save();
