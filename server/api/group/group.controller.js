@@ -39,6 +39,9 @@ exports.create = function (req, res) {
 		limit: 1
 	};
 
+	//Step1: Get random Image
+	//Step2: Create Group
+	//Step3: Add group to User
 	Image.findRandom(filter, {
 		url: 1
 	}, options, function (err, image) {
@@ -48,10 +51,20 @@ exports.create = function (req, res) {
 			if (err) {
 				return handleError(res, err, 'Oh no! There was a problem creating the group. Please try again.');
 			}
-			return res.status(201).json({
-				message: 'The group was created successfully.',
-				group: group
-			});
+			User.findByIdAndUpdate(group.admin, {
+				$addToSet: {
+					groups: group._id
+				}
+			}, function (err) {
+				if (err) {
+					group.remove();
+					return handleError(res, err, 'Oh no! There was a problem creating the group. Please try again.');
+				}
+				return res.status(201).json({
+					message: 'The group was created successfully.',
+					group: group
+				});
+			})
 		});
 	});
 };
@@ -94,6 +107,105 @@ exports.destroy = function (req, res) {
 			return res.status(204).send('No Content');
 		});
 	});
+};
+
+//Add participant(s) to group
+exports.addParticipants = function (req, res) {
+	var groupId = req.params.id;
+	var userIds = req.body.users;
+
+	var p1 = Group.findByIdAndUpdate(groupId, {
+		$addToSet: {
+			members: {
+				$each: userIds
+			}
+		}
+	}, {
+		new: true
+	}).exec();
+
+	var promises = [p1];
+
+	userIds.forEach(function (userId) {
+		var p = User.findByIdAndUpdate(userId, {
+			$addToSet: {
+				groups: groupId
+			}
+		}).exec();
+		promises.push(p);
+	});
+
+	Promise.all(promises).then(function (values) {
+		return res.status(200).json({
+			message: 'Participants added successfully.',
+		});
+	}).catch(function (err) {
+		if (err) {
+			return handleError(res, err);
+		}
+	});
+};
+
+//Remove participant from group
+exports.removeParticipant = function (req, res) {
+	var groupId = req.params.id;
+	var userId = req.body.user;
+
+	var p1 = Group.findByIdAndUpdate(groupId, {
+		$pull: {
+			members: userId
+		}
+	}, {
+		new: true
+	}).exec();
+
+	var p2 = User.findByIdAndUpdate(userId, {
+		$pull: {
+			groups: groupId
+		}
+	}).exec();
+
+	Promise.all([p1, p2]).then(function (values) {
+		var group = values[0];
+		var user = values[1];
+
+		if (group && user) {
+			if (group.members.length === 0) {
+				//No members in group, time to delete it
+				group.remove();
+			} else if (group.admin.equals(user._id)) {
+				//if admin left, appoint a new one
+				group.admin = group.members[0];
+				group.save();
+			}
+			return res.status(200).json({
+				message: 'Group left successfully.',
+			});
+		}
+	}).catch(function (err) {
+		if (err) {
+			return handleError(res, err);
+		}
+	});
+};
+
+exports.message = function (req, res) {
+	var groupId = req.params.id;
+	var msg = req.body.msg;
+
+	Group.findByIdAndUpdate(groupId, {
+		$push: {
+			messages: {
+				text: msg.text,
+				sentBy: msg.sentBy
+			}
+		}
+	}, function (err) {
+		if (err) return handleError(res, err, 'Sorry, there was a problem saving one of your messages.');
+		return res.status(200).json({
+			message: 'Message saved successfully.',
+		});
+	})
 };
 
 function handleError(res, err, msg) {

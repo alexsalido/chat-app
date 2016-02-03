@@ -31,5 +31,4 @@ function onFriendRequest(socket, to, from, cb) {
 	console.log('Notified friend request');
 	socket.to(from._id).emit('user:friendRequestSent', to);
 	socket.to(to._id).emit('user:friendRequestReceived', from);
-
 }

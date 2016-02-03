@@ -5,6 +5,13 @@ angular.module('chatApp')
 		return $resource('/api/users/:id/:controller/:action', {
 			id: '@_id'
 		}, {
+			addGroup: {
+				method: 'PUT',
+				params: {
+					controller: 'group',
+					action: 'add'
+				}
+			},
 			changePassword: {
 				method: 'PUT',
 				params: {

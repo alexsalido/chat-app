@@ -51,7 +51,7 @@ var UserSchema = new Schema({
 	}],
 	online: {
 		type: Boolean,
-		default: true
+		default: false
 	}
 });
 

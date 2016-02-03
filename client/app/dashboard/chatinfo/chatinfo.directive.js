@@ -17,8 +17,8 @@ angular.module('chatApp')
 
 				$scope.$watch(function () {
 					return $mdSidenav('contact-info').isOpen();
-				}, function (newVal) {
-					if ($scope.groupNameForm.$valid && $scope.activeChat.name !== $scope.dummyName && $scope.activeChat.members) {
+				}, function () {
+					if ($scope.groupNameForm.$valid && $scope.groupNameForm.$dirty && $scope.activeChat.name !== $scope.dummyName) {
 						var current = $scope.activeChat;
 						Group.update({
 							id: current._id
@@ -26,6 +26,7 @@ angular.module('chatApp')
 							name: $scope.dummyName
 						}, function () { //success
 							current.name = $scope.dummyName;
+							socket.groupUpdate('name', current._id);
 						}, function () { //error
 							$mdToast.show($mdToast.simple().position('top right').textContent('There was an error updating the group\'s name. Please try again.').action('OK'));
 							$scope.dummyName = current.name;
@@ -38,7 +39,7 @@ angular.module('chatApp')
 						$scope.dummyName = newVal.name;
 					}
 				}, true);
-				//
+
 				//**	             **//
 				// Adding participants //
 				//**	   	         **//
@@ -54,16 +55,17 @@ angular.module('chatApp')
 						newParticipants.push(value._id);
 					});
 
-					Group.update({
+					Group.addParticipants({
 						id: current._id
 					}, {
-						members: current.members.concat($scope.selected)
-					}, function (group) { //success
-						socket.addedParticipants(group._id, newParticipants);
+						users: newParticipants
+					}, function (res) { //success
+						socket.addedParticipants(current._id, newParticipants);
 						current.members = current.members.concat($scope.selected);
 						$scope.close();
-					}, function () { //error
-						console.log('error');
+						$mdToast.show($mdToast.simple().position('top right').textContent(res.message).action('OK'));
+					}, function (err) { //error
+						$mdToast.show($mdToast.simple().position('top right').textContent(err.data).action('OK'));
 					});
 				};
 

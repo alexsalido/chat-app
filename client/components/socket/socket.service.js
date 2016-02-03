@@ -130,6 +130,13 @@ angular.module('chatApp')
 				}
 			},
 
+			groupUpdate: function (action, groupId) {
+				if (action === 'img') {
+
+				} else if (action === 'name') {
+					socket.emit('group:name', groupId);
+				}
+			},
 			syncSent: function (array, cb) {
 				cb = cb || angular.noop;
 
@@ -222,7 +229,6 @@ angular.module('chatApp')
 							event = 'created';
 						}
 					}
-
 					cb(event, item, array);
 				});
 			},

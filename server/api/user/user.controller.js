@@ -89,6 +89,32 @@ exports.destroy = function (req, res) {
 };
 
 /**
+ * Add group to user
+ */
+
+exports.addGroup = function (req, res) {
+	var userId = req.user._id;
+	var groupId = req.body.group;
+	User.findByIdAndUpdate(userId, {
+		$addToSet: {
+			groups: groupId
+		}
+	}, function (err) {
+		if (err) return handleError(res, err);
+		return res.status(200).send('OK');
+	});
+};
+
+/**
+ * Delete group from user
+ */
+
+exports.deleteGroup = function (req, res) {
+	var userId = req.user._id;
+
+};
+
+/**
  * Change a users password
  */
 exports.changePassword = function (req, res, next) {

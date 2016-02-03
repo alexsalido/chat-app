@@ -46,6 +46,7 @@ function onConnect(socket, io) {
 			});
 		}
 	});
+
 	// When the client emits 'info', this listens and executes
 	socket.on('info', function (data) {
 		console.info('[%s] %s', socket.address, JSON.stringify(data, null, 2));
@@ -160,7 +161,6 @@ function onConnect(socket, io) {
 	socket.on('message:sent', function (room, msg, toGroup) {
 		console.info('Message sent to [%s] from [%s].', room, id);
 
-
 		if (toGroup) {
 			socket.to(room).emit('message:received', id, msg, room);
 			Group.findByIdAndUpdate(room, {
@@ -249,44 +249,44 @@ function onConnect(socket, io) {
 		socket.join(id);
 	});
 
+	socket.on('group:name', function (groupId) {
+		Group.findById(groupId).populate('members', insensitiveFields).exec(function (err, group) {
+			if (err) return console.info('Error occured');
+			socket.to(groupId).emit('groupsUpdated', group);
+			socket.to(groupId).emit('message:received', null, 'Group\'s name changed', groupId);
+		});
+	});
+
 	socket.on('group:added', function (id, participant) {
 		console.info('[%s] ADDED TO GROUP [%s]', participant, id);
 		var p1 = Group.findById(id).populate('members', insensitiveFields).exec();
-		var p2 = User.findByIdAndUpdate(participant, {
-			$addToSet: {
-				groups: id
-			}
-		}).exec();
+		var p2 = User.findById(participant).exec();
 
 		Promise.all([p1, p2]).then(function (values) {
-			if (values[0] && values[1]) {
-				io.sockets.to(participant).emit('groupsUpdated', values[0]);
-				for (var socketId in io.nsps['/'].adapter.rooms[participant].sockets) {
-					var _socket = io.sockets.connected[socketId];
-					_socket.join(id);
+			var group = values[0];
+			var user = values[1];
+
+			if (group && user) {
+				io.in(id).emit('groupsUpdated', group);
+				io.in(id).emit('message:received', null, user.email + ' has been added.', group._id);
+
+				//if user is online, notify them they've been added
+				if (user.online) {
+					for (var socketId in io.nsps['/'].adapter.rooms[participant].sockets) {
+						var _socket = io.sockets.connected[socketId];
+						_socket.join(id);
+					}
+					io.sockets.to(participant).emit('groupsUpdated', group);
 				}
 			}
-		}).catch(function (err) {
-			console.info(err);
 		});
 	});
 
 	socket.on('group:exit', function (groupId) {
 		console.info('User [%s] has left group [%s].', id, groupId);
 
-		var p1 = Group.findByIdAndUpdate(groupId, {
-			$pull: {
-				members: id
-			}
-		}, {
-			new: true
-		}).populate('members', insensitiveFields).exec();
-
-		var p2 = User.findByIdAndUpdate(id, {
-			$pull: {
-				groups: groupId
-			}
-		}).exec();
+		var p1 = Group.findById(groupId).populate('members', insensitiveFields).exec();
+		var p2 = User.findById(id).exec();
 
 		Promise.all([p1, p2]).then(function (values) {
 			var group = values[0];
@@ -294,50 +294,26 @@ function onConnect(socket, io) {
 
 			if (group && user) {
 				socket.emit('groupsUpdated', group, 'delete');
-
-				//if group doesn't have any members, delete it
-				if (group.members.length === 0) {
-					console.info('Group [%s] has been deleted.', group._id);
-					group.remove();
-				}
-				//if user that left is the admin, assign another admin
-				if (group.admin.equals(user._id) && group.members.length > 0) {
-					group.admin = group.members[0]._id
-					group.save();
-				}
-
 				socket.to(groupId).emit('groupsUpdated', group);
 				socket.to(groupId).emit('message:received', null, user.email + ' left the group.', groupId);
 				socket.leave(groupId);
 			}
-		}).catch(function (err) {
-			console.info(err);
 		});
 	});
 
 	socket.on('group:kicked', function (groupId, participant) {
 		console.info('User [%s] has been kicked out of group [%s].', participant, groupId);
 
-		var p1 = Group.findOneAndUpdate({
+		var p1 = Group.findOne({
 			_id: groupId,
 			admin: id
-		}, {
-			$pull: {
-				members: participant
-			}
-		}, {
-			new: true
 		}).populate('members', insensitiveFields).exec();
-
-		var p2 = User.findByIdAndUpdate(participant, {
-			$pull: {
-				groups: groupId
-			}
-		}).exec();
+		var p2 = User.findById(participant).exec();
 
 		Promise.all([p1, p2]).then(function (values) {
 			var group = values[0];
 			var user = values[1];
+
 			if (group && user) {
 				//if user is currently online, notify him of changes
 				if (user.online) {
@@ -347,12 +323,9 @@ function onConnect(socket, io) {
 						_socket.leave(groupId);
 					}
 				}
-				socket.to(groupId).emit('groupsUpdated', group); //notify everyone in the group
-				socket.emit('groupsUpdated', group); //notify admin
-				socket.to(groupId).emit('message:received', null, user.email + ' was kicked from the group.', groupId);
+				io.in(groupId).emit('groupsUpdated', group); //notify everyone in the group
+				io.in(groupId).emit('message:received', null, user.email + ' was kicked from the group.', groupId);
 			}
-		}).catch(function (err) {
-			console.info(err);
 		});
 	});
 

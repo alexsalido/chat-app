@@ -18,6 +18,8 @@ router.put('/:id/request', auth.isAuthenticated(), controller.sendFriendRequest)
 router.put('/:id/request/accept', auth.isAuthenticated(), controller.acceptFriendRequest);
 router.put('/:id/request/reject', auth.isAuthenticated(), controller.rejectFriendRequest);
 router.put('/:id/contact/delete', auth.isAuthenticated(), controller.deleteContact);
+router.put('/:id/group/add', auth.isAuthenticated(), controller.addGroup);
+router.put('/:id/group/delete', auth.isAuthenticated(), controller.deleteGroup);
 router.get('/:id', auth.isAuthenticated(), controller.show);
 router.get('/email/:email', auth.isAuthenticated(), controller.isRegistered)
 router.post('/', controller.create);

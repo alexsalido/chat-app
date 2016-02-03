@@ -22,48 +22,48 @@ var s3 = new AWS.S3({
 	apiVersion: '2006-03-01'
 });
 
-Img.find({}).remove(function () {
-
-	s3.listObjects({
-		Bucket: 'tm-chatapp',
-		Prefix: 'default/users'
-	}, function (err, data) {
-		if (err) {
-			console.log('Unsuccessful request to default user images');
-			console.log(err, err.stack);
-		} else {
-			console.log('Successful request to default user images');
-			data.Contents.forEach(function (currentValue, index, array) {
-				if (index !== 0) {
-					Img.create({
-						url: process.env.BUCKET_URL + currentValue.Key,
-						info: '/default/users'
-					})
-				}
-			})
-		}
-	});
-
-	s3.listObjects({
-		Bucket: 'tm-chatapp',
-		Prefix: 'default/groups'
-	}, function (err, data) {
-		if (err) {
-			console.log('Unsuccessful request to default group images');
-			console.log(err, err.stack);
-		} else {
-			console.log('Successful request to default group images');
-			data.Contents.forEach(function (currentValue, index, array) {
-				if (index !== 0) {
-					Img.create({
-						url: process.env.BUCKET_URL + currentValue.Key,
-						info: '/default/groups'
-					})
-				}
-			})
-		}
-	});
-})
+// Img.find({}).remove(function () {
+//
+// 	s3.listObjects({
+// 		Bucket: 'tm-chatapp',
+// 		Prefix: 'default/users'
+// 	}, function (err, data) {
+// 		if (err) {
+// 			console.log('Unsuccessful request to default user images');
+// 			console.log(err, err.stack);
+// 		} else {
+// 			console.log('Successful request to default user images');
+// 			data.Contents.forEach(function (currentValue, index, array) {
+// 				if (index !== 0) {
+// 					Img.create({
+// 						url: process.env.BUCKET_URL + currentValue.Key,
+// 						info: '/default/users'
+// 					})
+// 				}
+// 			})
+// 		}
+// 	});
+//
+// 	s3.listObjects({
+// 		Bucket: 'tm-chatapp',
+// 		Prefix: 'default/groups'
+// 	}, function (err, data) {
+// 		if (err) {
+// 			console.log('Unsuccessful request to default group images');
+// 			console.log(err, err.stack);
+// 		} else {
+// 			console.log('Successful request to default group images');
+// 			data.Contents.forEach(function (currentValue, index, array) {
+// 				if (index !== 0) {
+// 					Img.create({
+// 						url: process.env.BUCKET_URL + currentValue.Key,
+// 						info: '/default/groups'
+// 					})
+// 				}
+// 			})
+// 		}
+// 	});
+// })
 
 User.find({}).remove(function () {
 	User.create({

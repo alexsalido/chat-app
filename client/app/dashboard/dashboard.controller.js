@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('chatApp')
-	.controller('DashboardCtrl', function ($scope, $location, Auth, Group, $mdSidenav, $mdDialog, $mdBottomSheet, $mdToast, socket) {
+	.controller('DashboardCtrl', function ($scope, $location, Auth, Group, User, $mdSidenav, $mdDialog, $mdBottomSheet, $mdToast, socket) {
 		$scope.me = Auth.getCurrentUser();
 
 		$scope.errors = {};
