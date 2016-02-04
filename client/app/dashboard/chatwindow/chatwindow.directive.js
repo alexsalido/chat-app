@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('chatApp')
-	.directive('chatWindow', function (Auth, socket, Group, Conversation, $mdSidenav, $mdBottomSheet, $mdToast) {
+	.directive('chatWindow', function (Auth, socket, Group, Conversation, $mdSidenav, $mdBottomSheet, $mdToast, $mdDialog) {
 		return {
 			templateUrl: 'app/dashboard/chatwindow/chatwindow.html',
 			restrict: 'E',
@@ -9,10 +9,6 @@ angular.module('chatApp')
 			scope: {},
 			controller: function ($scope) {
 				$scope.me = Auth.getCurrentUser();
-
-				$scope.toggleSidenav = function (id) {
-					$mdSidenav(id).toggle();
-				};
 
 				$scope.keyPressed = function (roomId, event) {
 					if (event.which === 13 && !event.shiftKey) {
@@ -56,18 +52,6 @@ angular.module('chatApp')
 					}
 				};
 
-				$scope.showEmojis = function (ev) {
-					var element = document.getElementById('chat-box');
-					$mdBottomSheet.show({
-						templateUrl: 'app/dashboard/views/emojis.html',
-						parent: element,
-						scope: $scope,
-						preserveScope: true,
-						clickOutsideToClose: true,
-						targetEvent: ev
-					});
-				};
-
 				$scope.deleteConv = function (id) {
 					$mdSidenav(id).toggle();
 					if (!!$scope.activeConv.members) {
@@ -107,6 +91,36 @@ angular.module('chatApp')
 					});
 				};
 
+				$scope.toggleSidenav = function (id) {
+					$mdSidenav(id).toggle();
+				};
+
+				$scope.showEmojis = function (ev) {
+					var element = document.getElementById('chat-box');
+					$mdBottomSheet.show({
+						templateUrl: 'app/dashboard/views/emojis.html',
+						parent: element,
+						scope: $scope,
+						preserveScope: true,
+						clickOutsideToClose: true,
+						targetEvent: ev
+					});
+				};
+
+				$scope.showScribbleDialog = function (ev) {
+					$mdDialog.show({
+						scope: $scope,
+						preserveScope: true,
+						templateUrl: 'app/dashboard/views/scribble.html',
+						parent: angular.element(document.body),
+						targetEvent: ev,
+						clickOutsideToClose: true,
+					});
+				};
+
+				//|**	 **|//
+				//| Events |//
+				//|**	 **|//
 
 				$scope.$on('openConv', function (event, user, conversation) {
 					$scope.activeConv = user;

@@ -40,16 +40,16 @@ angular.module('chatApp')
 					$scope.$emit('contactList:selected', user);
 				};
 
-				$scope.deleteContact = function (ev, name, id) {
+				$scope.deleteContact = function (event, contact) {
 					var confirm = $mdDialog.confirm()
 						.title('Please confirm action')
-						.textContent('Are you sure you want to remove "' + name + '" from your contact list?')
-						.targetEvent(ev)
+						.textContent('Are you sure you want to remove "' + contact.name + '" from your contact list?')
+						.targetEvent(event)
 						.ok('Yes')
 						.cancel('No');
 					$mdDialog.show(confirm).then(function () {
-						Auth.deleteContact(id).then(function () {
-							socket.deleteContact(id);
+						Auth.deleteContact(contact._id).then(function () {
+							socket.deleteContact(contact._id);
 						});
 					}, function () {});
 				};
@@ -60,12 +60,12 @@ angular.module('chatApp')
 					} else if (event === 'updated') {
 						$scope.$emit('contactList:updated', item);
 					} else if (event === 'deleted') {
-						$scope.$emit('contactList:deleted', item);
+						// $scope.$emit('contactList:deleted', item);
 					}
 				}
 
 				function pendingRequestsUpdated(event) {
-					if (event == 'created') {
+					if (event === 'created') {
 						$mdToast.show($mdToast.simple().position('top right').textContent('Friend request received.').action('OK'));
 						$scope.$emit('contactListUpdate');
 					}

@@ -7,7 +7,8 @@
 			<h1>Add participants</h1>
 		</div>
 	</md-toolbar>
-	<div> <!-- dummy containing element -->
+	<div>
+		<!-- dummy containing element -->
 		<md-content class="md-padding autocomplete" layout="column">
 			<md-contact-chips ng-model="selected" md-contacts="querySearch($query)" md-contact-name="name" md-contact-image="img" md-contact-email="email" md-require-match="true" md-highlight-flags="i" filter-selected="true" placeholder="Type to add participants">
 			</md-contact-chips>
@@ -15,12 +16,13 @@
 	</div>
 	<md-content>
 		<md-list flex>
-			<md-list-item ng-repeat="contact in contactsClone | orderBy: 'name' track by $index" class="md-2-line" ng-if="selected.indexOf(contact) < 0 && activeChat.members.indexOf(contact) < 0">
+			<md-list-item ng-repeat="contact in contactsClone | orderBy: 'name' track by $index" class="md-2-line" ng-if="selected.indexOf(contact) < 0 &&
+			notAMember(contact)" ng-click="addToChip(contact)">
 				<img alt="{{ contact.name }}" ng-src="{{ contact.img }}" class="md-avatar" />
 				<div class="md-list-item-text">
 					<h3>{{ contact.name }}</h3>
 					<h4>
-						{{contact.status}}
+						{{contact.email}}
 					</h4>
 				</div>
 			</md-list-item>

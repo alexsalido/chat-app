@@ -202,6 +202,7 @@ angular.module('chatApp')
 
 					if (event === 'delete') {
 						array.splice(index, 1);
+						event = 'deleted';
 					} else {
 						// replace oldItem if it exists
 						// otherwise just add item to the collection

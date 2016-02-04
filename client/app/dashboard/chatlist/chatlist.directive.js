@@ -17,9 +17,15 @@ angular.module('chatApp')
 						$scope.convSelected(conversation.members[0]);
 					} else if (event === 'deleted') {
 						//delete conversation from activeConvs
-						$scope.activeConvs.splice($scope.activeConvs.indexOf(_.find($scope.activeConvs, {
+						var target = _.find($scope.activeConvs, {
 							_id: conversation.members[0]._id
-						})), 1);
+						});
+
+						if (target) {
+							var index = $scope.activeConvs.indexOf(target);
+							$scope.activeConvs.splice(index, 1);
+						}
+
 						if ($scope.activeConvs.length > 0) {
 							$scope.convSelected($scope.activeConvs[0]);
 						}
@@ -32,9 +38,17 @@ angular.module('chatApp')
 						$scope.activeConvs.unshift(group);
 						$scope.$emit('convSelected', group, group);
 					} else if (event === 'deleted') {
-						$scope.activeConvs.splice($scope.activeConvs.indexOf(_.find($scope.activeConvs, {
+						console.log(event, group);
+						//delete group from activeConvs
+						var target = _.find($scope.activeConvs, {
 							_id: group._id
-						})), 1);
+						});
+
+						if (target) {
+							var index = $scope.activeConvs.indexOf(target);
+							$scope.activeConvs.splice(index, 1);
+						}
+
 						if ($scope.activeConvs.length > 0) {
 							$scope.convSelected($scope.activeConvs[0]);
 						}
@@ -107,16 +121,17 @@ angular.module('chatApp')
 					}
 				});
 
-				$scope.$on('convList:delete', function (user) {
-					var target = _.find($scope.activeConvs, {
-						_id: user._id
-					});
+				// $scope.$on('convList:deleted', function (event, user) {
+				// 	var target = _.find($scope.activeConvs, {
+				// 		_id: user._id
+				// 	});
+				//
+				// 	if (target) {
+				// 		var index = $scope.activeConvs.indexOf(target);
+				// 		$scope.activeConvs.splice(index, 1);
+				// 	}
+				// });
 
-					if (target) {
-						var index = $scope.activeConvs.indexOf(target);
-						$scope.activeConvs.splice(index, 1);
-					}
-				});
 				//trigger default state
 				if ($scope.activeConvs.length > 0) {
 					setTimeout($scope.convSelected, 0, $scope.activeConvs[0]);

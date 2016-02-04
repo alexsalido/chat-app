@@ -50,9 +50,9 @@
 					</p>
 					<md-icon md-svg-icon="admin" aria-label="Add" class="md-primary gray" ng-show="activeChat.admin == member._id"></md-icon>
 				</div>
-				<!-- <md-button class="md-icon-button md-exclude" ng-show="me._id != member._id">
-					<md-icon md-svg-icon="add" ng-click="" aria-label="Add" class="md-primary gray"></md-icon>
-				</md-button> -->
+				<md-button class="md-icon-button md-exclude" ng-show="me._id != member._id && notAContact(member)">
+					<md-icon md-svg-icon="add" ng-click="sendFriendRequest(member)" aria-label="Add" class="md-primary gray"></md-icon>
+				</md-button>
 				<md-button class="md-icon-button md-exclude" ng-show="activeChat.admin == me._id && me._id != member._id">
 					<md-icon md-svg-icon="close" ng-click="kick({id:member._id})" aria-label="Remove" class="md-primary red"></md-icon>
 				</md-button>

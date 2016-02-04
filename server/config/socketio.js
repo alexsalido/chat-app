@@ -17,11 +17,14 @@ function onDisconnect(socket) {
 	User.findByIdAndUpdate(id, {
 		online: false
 	}, {
+		select: insensitiveFields + ' contacts', //get contacts
 		new: true
 	}, function (err, user) {
 		if (err) return console.info('User [%s] online status couldn\'t be changed', id);
 		if (user) {
-			user.contacts.forEach(function (contact) {
+			var contacts = user.contacts;
+			delete user.contacts; //delete contacts from user object
+			contacts.forEach(function (contact) {
 				socket.to(contact).emit('contactsUpdated', user);
 			});
 		}
@@ -37,11 +40,14 @@ function onConnect(socket, io) {
 	User.findByIdAndUpdate(id, {
 		online: true
 	}, {
+		select: insensitiveFields + ' contacts',
 		new: true
 	}, function (err, user) {
 		if (err) return console.info('User [%s] online status couldn\'t be changed', id);
 		if (user) {
-			user.contacts.forEach(function (contact) {
+			var contacts = user.contacts;
+			delete user.contacts; //delete contacts from user object
+			contacts.forEach(function (contact) {
 				socket.to(contact).emit('contactsUpdated', user);
 			});
 		}
@@ -53,7 +59,7 @@ function onConnect(socket, io) {
 	});
 
 	socket.on('user:img', function () {
-		User.findById(id, function (err, user) {
+		User.findById(id, insensitiveFields, function (err, user) {
 			if (err) return console.info('Couldn\'t notify [%s]\'s contacts of img change.', id);
 			user.img = user.img + '?' + Date.now(); //attach a dummy querystring to force browser to download image as the url never changes
 			user.contacts.forEach(function (contact) {
@@ -63,7 +69,7 @@ function onConnect(socket, io) {
 	});
 
 	socket.on('user:status', function () {
-		User.findById(id, function (err, user) {
+		User.findById(id, insensitiveFields, function (err, user) {
 			if (err) return console.info('Couldn\'t notify [%s]\'s contacts of status change.', id);
 			user.contacts.forEach(function (contact) {
 				socket.to(contact).emit('contactsUpdated', user);
@@ -72,7 +78,7 @@ function onConnect(socket, io) {
 	});
 
 	socket.on('user:email', function () {
-		User.findById(id, function (err, user) {
+		User.findById(id, insensitiveFields, function (err, user) {
 			if (err) return console.info('Couldn\'t notify [%s]\'s contacts of email change.', id);
 			user.contacts.forEach(function (contact) {
 				socket.to(contact).emit('contactsUpdated', user);
@@ -142,18 +148,40 @@ function onConnect(socket, io) {
 			members: {
 				$all: [id, user]
 			}
+		}).populate({
+			path: 'members',
+			select: insensitiveFields,
+			match: {
+				_id: {
+					$ne: id
+				}
+			}
+		}).exec();
+		var p4 = Conversation.findOne({
+			members: {
+				$all: [id, user]
+			}
+		}).populate({
+			path: 'members',
+			select: insensitiveFields,
+			match: {
+				_id: {
+					$ne: user
+				}
+			}
 		}).exec();
 
-		Promise.all([p1, p2, p3]).then(function (values) {
+		Promise.all([p1, p2, p3, p4]).then(function (values) {
 			var me = values[0];
 			var user = values[1];
-			var conversation = values[2];
+			var conversationId = values[2];
+			var conversationUser = values[3];
 
-			if (me && user && conversation) {
+			if (me && user && conversationId && conversationUser) {
 				socket.emit('contactsUpdated', user, 'delete');
 				socket.to(user._id).emit('contactsUpdated', me, 'delete');
-				socket.emit('conversationsUpdated', conversation, 'delete');
-				socket.to(user._id).emit('conversationsUpdated', conversation, 'delete');
+				socket.emit('conversationsUpdated', conversationId, 'delete');
+				socket.to(user._id).emit('conversationsUpdated', conversationUser, 'delete');
 			}
 		});
 	});
@@ -251,14 +279,20 @@ function onConnect(socket, io) {
 
 		Promise.all([p1, p2]).then(function (values) {
 			var group = values[0];
-			var user = values[1]
+			var user = values[1];
 
 			if (group && user) {
 				socket.emit('groupsUpdated', group, 'delete');
 				socket.to(groupId).emit('groupsUpdated', group);
 				socket.to(groupId).emit('message:received', null, user.email + ' left the group.', groupId);
 				socket.leave(groupId);
+			} else if (!group && user) { //if group was removed from DB
+				socket.emit('groupsUpdated', {
+					_id: groupId
+				}, 'delete');
 			}
+		}).catch(function (err) {
+			console.log(err);
 		});
 	});
 

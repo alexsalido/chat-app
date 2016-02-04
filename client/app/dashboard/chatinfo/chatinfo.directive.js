@@ -15,6 +15,29 @@ angular.module('chatApp')
 				$scope.me = Auth.getCurrentUser();
 				$scope.contacts = $scope.me.contacts;
 
+				$scope.notAContact = function (user) {
+					var contact = _.find($scope.me.contacts, {
+						_id: user._id
+					});
+					return !!!contact;
+				};
+
+				$scope.sendFriendRequest = function (user) {
+					Auth.isRegistered(user.email)
+						.then(function (data) {
+							Auth.sendFriendRequest(data._id).then(function (res) {
+								$mdToast.show($mdToast.simple().position('top right').textContent(res.message).action('OK'));
+								socket.friendRequest(data._id, $scope.me._id);
+							}).catch(function (err) {
+								$mdToast.show($mdToast.simple().position('top right').textContent(err.data).action('OK'));
+							});
+						});
+				};
+
+				//|**	   **|//
+				//| Watchers |//
+				//|**	   **|//
+
 				$scope.$watch(function () {
 					return $mdSidenav('contact-info').isOpen();
 				}, function () {
@@ -40,9 +63,9 @@ angular.module('chatApp')
 					}
 				}, true);
 
-				//**	             **//
-				// Adding participants //
-				//**	   	         **//
+				//|**	              **|//
+				//| Adding participants |//
+				//|**	   	          **|//
 
 				$scope.selected = [];
 				$scope.contactsClone = $scope.contacts.slice();
@@ -78,6 +101,17 @@ angular.module('chatApp')
 				$scope.close = function () {
 					$mdDialog.cancel();
 					$scope.selected = [];
+				};
+
+				$scope.addToChip = function (user) {
+					$scope.selected.push(user);
+				};
+
+				$scope.notAMember = function (user) {
+					var member = _.find($scope.activeChat.members, {
+						_id: user._id
+					});
+					return !!!member;
 				};
 
 				$scope.showContactList = function (ev) {
