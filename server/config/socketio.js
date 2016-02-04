@@ -163,16 +163,6 @@ function onConnect(socket, io) {
 
 		if (toGroup) {
 			socket.to(room).emit('message:received', id, msg, room);
-			Group.findByIdAndUpdate(room, {
-				$push: {
-					messages: {
-						text: msg,
-						sentBy: id
-					}
-				}
-			}, function (err) {
-				if (err) console.info('Error saving message [%s] from [%s] to [%s]', msg, id, room);
-			});
 		} else {
 			socket.to(room).emit('message:received', id, msg);
 			Conversation.findOneAndUpdate({
