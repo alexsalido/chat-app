@@ -79,10 +79,6 @@ angular.module('chatApp')
 					}
 				};
 
-				// $scope.kick = function (id) {
-				// 	socket.kick($scope.activeConv._id, id);
-				// };
-
 				$scope.kick = function (id) {
 					Group.removeParticipant({
 						id: $scope.activeConv._id
