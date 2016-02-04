@@ -63,7 +63,16 @@ angular.module('chatApp')
 						});
 
 						if (!conversation) {
-							socket.createConversation(user._id);
+							Conversation.addToUser({
+								id: $scope.me._id
+							}, {
+								users: [$scope.me._id, user._id]
+							}, function () {
+								socket.createConversation(user._id);
+							}, function (err) {
+								console.log(err);
+							});
+
 						} else {
 							$scope.$emit('convSelected', user, conversation);
 						}

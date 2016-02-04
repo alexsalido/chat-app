@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('chatApp')
-	.directive('chatWindow', function (Auth, socket, Group, $mdSidenav, $mdBottomSheet, $mdToast) {
+	.directive('chatWindow', function (Auth, socket, Group, Conversation, $mdSidenav, $mdBottomSheet, $mdToast) {
 		return {
 			templateUrl: 'app/dashboard/chatwindow/chatwindow.html',
 			restrict: 'E',
@@ -34,6 +34,14 @@ angular.module('chatApp')
 
 						if (!!$scope.activeConv.online) {
 							//save message to conversation
+							Conversation.message({
+								id: $scope.activeConv._id
+							}, {
+								msg: message,
+								users: [$scope.me._id, $scope.activeConv._id]
+							}, function () {}, function (err) {
+								$mdToast.show($mdToast.simple().position('top right').textContent(err.data).action('OK'));
+							});
 						} else if (!!$scope.activeConv.members) {
 							//save message to group
 							Group.message({
@@ -44,7 +52,6 @@ angular.module('chatApp')
 								$mdToast.show($mdToast.simple().position('top right').textContent(err.data).action('OK'));
 							});
 						}
-
 						$scope.message = '';
 					}
 				};
@@ -75,7 +82,15 @@ angular.module('chatApp')
 							$mdToast.show($mdToast.simple().position('top right').textContent(err.data).action('OK'));
 						});
 					} else {
-						socket.deleteConversation($scope.activeConv._id);
+						Conversation.deleteFromUser({
+							id: $scope.me._id
+						}, {
+							users: [$scope.me._id, $scope.activeConv._id]
+						}, function (res) {
+							socket.deleteConversation($scope.activeConv._id);
+						}, function (err) {
+
+						});
 					}
 				};
 
@@ -100,7 +115,7 @@ angular.module('chatApp')
 				});
 
 				$scope.$on('convWindow:update', function (event, user) {
-					if (user._id === $scope.activeConv._id) {
+					if (!!$scope.activeConv && user._id === $scope.activeConv._id) {
 						$scope.activeConv = user;
 					}
 				});

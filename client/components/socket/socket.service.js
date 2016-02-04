@@ -2,7 +2,7 @@
 'use strict';
 
 angular.module('chatApp')
-	.factory('socket', function (socketFactory, Auth) {
+	.factory('socket', function (socketFactory, Auth, Conversation) {
 
 		var socket;
 
@@ -29,10 +29,12 @@ angular.module('chatApp')
 						_id: groupId
 					});
 
-					group.messages.push({
-						text: msg,
-						sentBy: from
-					});
+					if (group) {
+						group.messages.push({
+							text: msg,
+							sentBy: from
+						});
+					}
 				} else {
 					var conversation = _.find(Auth.getCurrentUser().conversations, function (conversation) {
 
@@ -50,7 +52,15 @@ angular.module('chatApp')
 					});
 
 					if (!conversation) {
-						socket.emit('conversation:new', from, Auth.getCurrentUser()._id);
+						Conversation.addToUser({
+							id: Auth.getCurrentUser()._id
+						}, {
+							users: [Auth.getCurrentUser()._id, from]
+						}, function () {
+							socket.emit('conversation:new', from);
+						}, function (err) {
+							console.log(err);
+						});
 					}
 				}
 			});

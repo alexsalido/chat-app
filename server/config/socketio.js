@@ -165,23 +165,6 @@ function onConnect(socket, io) {
 			socket.to(room).emit('message:received', id, msg, room);
 		} else {
 			socket.to(room).emit('message:received', id, msg);
-			Conversation.findOneAndUpdate({
-					members: {
-						$all: [room, id]
-					}
-				}, {
-					$push: {
-						messages: {
-							text: msg,
-							sentBy: id
-						}
-					}
-				}, {
-					new: true
-				},
-				function (err, conversation) {
-					if (err) console.info('Error saving message [%s] from [%s] to [%s]', msg, id, room);
-				});
 		}
 	});
 
@@ -199,13 +182,7 @@ function onConnect(socket, io) {
 				}
 			}
 		}).exec(function (err, conversation) {
-			User.findByIdAndUpdate(id, {
-				$addToSet: {
-					conversations: conversation._id
-				}
-			}, function (err) {
-				socket.emit('conversationsUpdated', conversation);
-			})
+			socket.emit('conversationsUpdated', conversation);
 		});
 	});
 
@@ -223,13 +200,7 @@ function onConnect(socket, io) {
 				}
 			}
 		}).exec(function (err, conversation) {
-			User.findByIdAndUpdate(id, {
-				$pull: {
-					conversations: conversation._id
-				}
-			}, function (err) {
-				socket.emit('conversationsUpdated', conversation, 'delete');
-			})
+			socket.emit('conversationsUpdated', conversation, 'delete');
 		});
 	});
 
