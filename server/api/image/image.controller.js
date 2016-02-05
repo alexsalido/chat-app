@@ -4,6 +4,7 @@ var _ = require('lodash');
 var Image = require('./image.model');
 
 var User = require('../user/user.model');
+var Group = require('../group/group.model');
 
 //AWS
 var AWS = require('aws-sdk');
@@ -50,13 +51,13 @@ exports.create = function (req, res) {
 	});
 };
 
-// Updates an existing image in the DB.
-exports.update = function (req, res) {
-	var userId = req.params.userid;
+// returns group Image if it exists, creates it if it doesn't
+exports.userUpload = function (req, res) {
+	var userId = req.params.id;
 	Image.findOne({
 		'info': userId
 	}, function (err, image) {
-		if (err) console.log(err);
+		if (err) return handleError(res, err);
 		if (image) {
 			return res.status(200).json(image);
 		} else {
@@ -65,11 +66,43 @@ exports.update = function (req, res) {
 				info: userId
 			}).then(function (image) {
 				User.findById(userId, function (err, user) {
-					user.img = image.url;
-					user.save(function (err) {
-						if (err) return handleError(res, err);
-						return res.status(200).json(image);
-					});
+					if (err) return handleError(res, err);
+					if (user) {
+						user.img = image.url;
+						user.save(function (err) {
+							if (err) return handleError(res, err);
+							return res.status(200).json(image);
+						});
+					}
+				});
+			});
+		}
+	});
+};
+
+// returns group Image if it exists, creates it if it doesn't
+exports.groupUpload = function (req, res) {
+	var groupId = req.params.id;
+	Image.findOne({
+		'info': groupId
+	}, function (err, image) {
+		if (err) return handleError(res, err);
+		if (image) {
+			return res.status(200).json(image);
+		} else {
+			Image.create({
+				url: process.env.BUCKET_URL_UPLOADS + groupId + req.body.ext,
+				info: groupId
+			}).then(function (image) {
+				Group.findById(groupId, function (err, group) {
+					if (err) return handleError(res, err);
+					if (group) {
+						group.img = image.url;
+						group.save(function (err) {
+							if (err) return handleError(res, err);
+							return res.status(200).json(image);
+						});
+					}
 				});
 			});
 		}

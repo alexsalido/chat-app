@@ -1,13 +1,17 @@
 <md-content flex class="contact-info" layout="column" layout-padding>
 	<div class="no-padding">
 		<div layout-align="center center" class="chat-photo">
-			<div class="image-overlay" ng-click="" ng-show="activeChat.members">
+			<div id="group-image-overlay" class="image-overlay" ng-click="changeGroupImage()" ng-show="activeChat.members">
 				<md-icon md-svg-icon="camera" class="s48"></md-icon>
 				<p>
 					Click here to change photo
 				</p>
 			</div>
+			<div id="group-progress-overlay" class="progress-overlay display-none" layout="column" layout-align="center center">
+				<md-progress-circular md-mode="indeterminate"></md-progress-circular>
+			</div>
 			<img ng-src="{{ activeChat.img }}" alt="{{ activeChat.img }}">
+			<input type="file" id="group-upload" nv-file-select uploader="uploader" accept="image/*" class="display-none" />
 		</div>
 	</div>
 	<div ng-show="!activeChat.members">

@@ -59,30 +59,42 @@ function onConnect(socket, io) {
 	});
 
 	socket.on('user:img', function () {
-		User.findById(id, insensitiveFields, function (err, user) {
+		User.findById(id, insensitiveFields + ' contacts', function (err, user) {
 			if (err) return console.info('Couldn\'t notify [%s]\'s contacts of img change.', id);
-			user.img = user.img + '?' + Date.now(); //attach a dummy querystring to force browser to download image as the url never changes
-			user.contacts.forEach(function (contact) {
-				socket.to(contact).emit('contactsUpdated', user);
-			});
+			if (user) {
+				user.img = user.img + '?' + Date.now(); //attach a dummy querystring to force browser to download image as the url never changes
+				var contacts = user.contacts;
+				delete user.contacts; //delete contacts from user object
+				contacts.forEach(function (contact) {
+					socket.to(contact).emit('contactsUpdated', user);
+				});
+			}
 		});
 	});
 
 	socket.on('user:status', function () {
-		User.findById(id, insensitiveFields, function (err, user) {
+		User.findById(id, insensitiveFields + ' contacts', function (err, user) {
 			if (err) return console.info('Couldn\'t notify [%s]\'s contacts of status change.', id);
-			user.contacts.forEach(function (contact) {
-				socket.to(contact).emit('contactsUpdated', user);
-			});
+			if (user) {
+				var contacts = user.contacts;
+				delete user.contacts; //delete contacts from user object
+				contacts.forEach(function (contact) {
+					socket.to(contact).emit('contactsUpdated', user);
+				});
+			}
 		});
 	});
 
 	socket.on('user:email', function () {
-		User.findById(id, insensitiveFields, function (err, user) {
+		User.findById(id, insensitiveFields + ' contacts', function (err, user) {
 			if (err) return console.info('Couldn\'t notify [%s]\'s contacts of email change.', id);
-			user.contacts.forEach(function (contact) {
-				socket.to(contact).emit('contactsUpdated', user);
-			});
+			if (user) {
+				var contacts = user.contacts;
+				delete user.contacts; //delete contacts from user object
+				contacts.forEach(function (contact) {
+					socket.to(contact).emit('contactsUpdated', user);
+				});
+			}
 		});
 	});
 
@@ -238,11 +250,24 @@ function onConnect(socket, io) {
 		socket.join(id);
 	});
 
+	socket.on('group:img', function (groupId) {
+		Group.findById(groupId).populate('members', insensitiveFields).exec(function (err, group) {
+			if (err) return console.info('Coulnd\'t notify group [%s] members of image change.', groupId);
+			if (group) {
+				group.img = group.img + '?' + Date.now(); //attach a dummy querystring to force browser to download image as the url never changes
+				socket.to(groupId).emit('groupsUpdated', group);
+				socket.to(groupId).emit('message:received', null, 'Group\'s image changed', groupId);
+			}
+		});
+	});
+
 	socket.on('group:name', function (groupId) {
 		Group.findById(groupId).populate('members', insensitiveFields).exec(function (err, group) {
-			if (err) return console.info('Error occured');
-			socket.to(groupId).emit('groupsUpdated', group);
-			socket.to(groupId).emit('message:received', null, 'Group\'s name changed', groupId);
+			if (err) return console.info('Coulnd\'t notify group [%s] members of name change.', groupId);
+			if (group){
+				socket.to(groupId).emit('groupsUpdated', group);
+				socket.to(groupId).emit('message:received', null, 'Group\'s name changed', groupId);
+			}
 		});
 	});
 

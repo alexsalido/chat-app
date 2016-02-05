@@ -13,7 +13,7 @@ angular.module('chatApp')
 				$scope.dummyStatus = $scope.me.status;
 
 				$scope.uploader = new FileUploader({
-					url: 'api/image/' + $scope.me._id,
+					url: 'api/image/' + $scope.me._id + '/user',
 					method: 'PUT',
 					withCredentials: 'true',
 					headers: {
@@ -50,7 +50,7 @@ angular.module('chatApp')
 				};
 
 				$scope.uploader.onSuccessItem = function (item, response) {
-					$scope.me.img = response.url + '?Date=' + Date.now();
+					$scope.me.img = response.url + '?' + Date.now();
 					var img = new Image();
 					img.src = $scope.me.img;
 					img.onload = function () {

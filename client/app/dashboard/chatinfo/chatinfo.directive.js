@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('chatApp')
-	.directive('chatInfo', function (Auth, Group, socket, $mdDialog, $mdSidenav, $mdToast) {
+	.directive('chatInfo', function (Auth, Group, socket, FileUploader, $cookieStore, $mdDialog, $mdSidenav, $mdToast) {
 		return {
 			templateUrl: 'app/dashboard/chatinfo/chatinfo.html',
 			restrict: 'EA',
@@ -34,6 +34,64 @@ angular.module('chatApp')
 						});
 				};
 
+				//|**	             **|//
+				//| Change Group Image |//
+				//|**	   	         **|//
+
+				var imageOverlay = angular.element(document.getElementById('group-image-overlay'));
+				var progressOverlay = angular.element(document.getElementById('group-progress-overlay'));
+				var groupUpload = document.getElementById('group-upload');
+
+				$scope.uploader = new FileUploader({
+					// url: 'api/image/' + $scope.activeChat._id + '/group',
+					method: 'PUT',
+					withCredentials: 'true',
+					headers: {
+						'Authorization': 'Bearer ' + $cookieStore.get('token')
+					},
+					autoUpload: true,
+					removeAfterUpload: true,
+					filters: [{
+						name: 'checkSize',
+						fn: function (item) {
+							if (item.size > (5 * 1024 * 1024)) {
+								$mdToast.show($mdToast.simple().position('top right').textContent('Sorry, group images cannot be greater than 5Mb.'));
+								return false;
+							}
+							return true;
+						}
+					}]
+				});
+
+				$scope.uploader.onBeforeUploadItem = function () {
+					imageOverlay.toggleClass('display-none');
+					progressOverlay.toggleClass('display-none');
+				};
+
+				$scope.uploader.onErrorItem = function () {
+					imageOverlay.toggleClass('display-none');
+					progressOverlay.toggleClass('display-none');
+					$mdToast.show($mdToast.simple().position('top right').textContent('Oh no! There was a problem updating your profile picture. Please try again.').action('OK'));
+					groupUpload.value = '';
+				};
+
+				$scope.uploader.onSuccessItem = function (item, response) {
+					$scope.activeChat.img = response.url + '?Date=' + Date.now();
+					var img = new Image();
+					img.src = $scope.activeChat.img;
+					img.onload = function () {
+						imageOverlay.toggleClass('display-none');
+						progressOverlay.toggleClass('display-none');
+						$mdToast.show($mdToast.simple().position('top right').textContent('Your profile image was changed successfully.').action('OK'));
+						socket.groupUpdate('img', $scope.activeChat._id);
+					};
+				};
+
+				$scope.changeGroupImage = function () {
+					$scope.uploader.url = 'api/image/' + $scope.activeChat._id + '/group';
+					groupUpload.click();
+				};
+
 				//|**	   **|//
 				//| Watchers |//
 				//|**	   **|//
@@ -60,6 +118,7 @@ angular.module('chatApp')
 				$scope.$watch('activeChat', function (newVal) {
 					if (newVal) {
 						$scope.dummyName = newVal.name;
+
 					}
 				}, true);
 
