@@ -126,9 +126,6 @@ angular.module('chatApp')
 				//| Adding participants |//
 				//|**	   	          **|//
 
-				$scope.selected = [];
-				$scope.contactsClone = $scope.contacts.slice();
-
 				$scope.addParticipants = function () {
 					var current = $scope.activeChat;
 					var newParticipants = [];
@@ -173,13 +170,23 @@ angular.module('chatApp')
 					return !!!member;
 				};
 
-				$scope.showContactList = function (ev) {
+				$scope.showContactList = function (event) {
+					$scope.selected = [];
+					$scope.contactsClone = $scope.contacts.slice();
+
+					//add lowercase names to contacts
+					(function (contacts) {
+						contacts.forEach(function (element) {
+							element._lowername = element.name.toLowerCase();
+						});
+					})($scope.contactsClone);
+
 					$mdDialog.show({
 						templateUrl: 'app/dashboard/views/addparticipant.html',
 						scope: $scope,
 						preserveScope: true,
 						parent: angular.element(document.body),
-						targetEvent: ev,
+						targetEvent: event,
 						clickOutsideToClose: true
 					});
 				};
@@ -190,13 +197,6 @@ angular.module('chatApp')
 						return (contact._lowername.indexOf(lowercaseQuery) !== -1);
 					};
 				}
-
-				//add lowercase names to contacts
-				(function (contacts) {
-					contacts.forEach(function (element) {
-						element._lowername = element.name.toLowerCase();
-					});
-				})($scope.contactsClone);
 			}
 		};
 	});

@@ -117,12 +117,16 @@ angular.module('chatApp')
 			$scope.$broadcast('convList:update', user);
 		});
 
-		// $scope.$on('contactList:deleted', function (event, user) {
-		// 	$scope.$broadcast('convList:deleted', user);
-		// });
+		$scope.$on('convList:deleted', function (event, conversation) {
+			$scope.$broadcast('convWindow:deleted', conversation);
+		});
 
 		$scope.$on('convSelected', function (event, user, conversation) {
 			$scope.$broadcast('openConv', user, conversation);
+		});
+
+		$scope.$on('convWindow:change', function (event) {
+			$scope.$broadcast('convList:select');
 		});
 
 		// $scope.showScribbleDialog = function (ev) {

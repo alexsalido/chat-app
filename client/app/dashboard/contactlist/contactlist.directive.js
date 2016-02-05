@@ -50,6 +50,8 @@ angular.module('chatApp')
 					$mdDialog.show(confirm).then(function () {
 						Auth.deleteContact(contact._id).then(function () {
 							socket.deleteContact(contact._id);
+						}).catch(function (err) {
+							$mdToast.show($mdToast.simple().position('top right').textContent(data.err).action('OK'));
 						});
 					}, function () {});
 				};

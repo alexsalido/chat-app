@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('chatApp')
-	.directive('chatList', function (Conversation, Auth, socket) {
+	.directive('chatList', function (Conversation, Auth, socket, $mdToast) {
 		return {
 			templateUrl: 'app/dashboard/chatlist/chatlist.html',
 			restrict: 'E',
@@ -10,11 +10,19 @@ angular.module('chatApp')
 			controller: function ($scope) {
 				$scope.me = Auth.getCurrentUser();
 
+				//flag that indicates if the conversation should be opened upon creation
+				$scope.open = false;
+
 				$scope.conversations = $scope.me.conversations;
 				socket.syncConversations($scope.conversations, function conversationsUpdated(event, conversation) {
 					if (event === 'created') {
 						$scope.activeConvs.unshift(conversation.members[0]);
-						$scope.convSelected(conversation.members[0]);
+
+						if ($scope.open || $scope.conversations.length === 1) {
+							$scope.convSelected(conversation.members[0]);
+						}
+
+						$scope.open = false;
 					} else if (event === 'deleted') {
 						//delete conversation from activeConvs
 						var target = _.find($scope.activeConvs, {
@@ -24,10 +32,7 @@ angular.module('chatApp')
 						if (target) {
 							var index = $scope.activeConvs.indexOf(target);
 							$scope.activeConvs.splice(index, 1);
-						}
-
-						if ($scope.activeConvs.length > 0) {
-							$scope.convSelected($scope.activeConvs[0]);
+							$scope.$emit('convList:deleted', conversation.members[0]);
 						}
 					}
 				});
@@ -36,9 +41,11 @@ angular.module('chatApp')
 				socket.syncGroups($scope.groups, function groupsUpdated(event, group) {
 					if (event === 'created') {
 						$scope.activeConvs.unshift(group);
-						$scope.$emit('convSelected', group, group);
+						if ($scope.open) {
+							$scope.convSelected(group);
+						}
+						$scope.open = false;
 					} else if (event === 'deleted') {
-						console.log(event, group);
 						//delete group from activeConvs
 						var target = _.find($scope.activeConvs, {
 							_id: group._id
@@ -48,15 +55,16 @@ angular.module('chatApp')
 							var index = $scope.activeConvs.indexOf(target);
 							$scope.activeConvs.splice(index, 1);
 						}
-
-						if ($scope.activeConvs.length > 0) {
-							$scope.convSelected($scope.activeConvs[0]);
-						}
+						$scope.$emit('convList:deleted', group);
 					} else if (event === 'updated') {
 						$scope.activeConvs.splice($scope.activeConvs.indexOf(_.find($scope.activeConvs, {
 							_id: group._id
 						})), 1, group);
-						$scope.$emit('convSelected', group, group);
+
+						if ($scope.open) {
+							$scope.convSelected(group);
+						}
+						$scope.open = false;
 					}
 				});
 
@@ -67,11 +75,12 @@ angular.module('chatApp')
 					$scope.activeConvs.unshift(conversation.members[0]);
 				});
 
-				$scope.convSelected = function (user) {
-					if (!user.members) {
+				$scope.convSelected = function (item) {
+					$scope.activeConv = item;
+					if (!item.members) {
 						//is a user
 						var conversation = _.find($scope.conversations, function (conversation) {
-							if (conversation.members[0]._id === user._id) {
+							if (conversation.members[0]._id === item._id) {
 								return true;
 							}
 						});
@@ -80,27 +89,28 @@ angular.module('chatApp')
 							Conversation.addToUser({
 								id: $scope.me._id
 							}, {
-								users: [$scope.me._id, user._id]
+								users: [$scope.me._id, item._id]
 							}, function () {
-								socket.createConversation(user._id);
+								socket.createConversation(item._id);
 							}, function (err) {
-								console.log(err);
+								$mdToast.show($mdToast.simple().position('top right').textContent(err.data).action('OK'));
 							});
 
 						} else {
-							$scope.$emit('convSelected', user, conversation);
+							$scope.$emit('convSelected', item, conversation);
 						}
 					} else {
 						//is a group
-						$scope.$emit('convSelected', user, user);
+						$scope.$emit('convSelected', item, item);
 					}
 				};
 
 				//**	 **//
 				// Events  //
 				//**	 **//
-				$scope.$on('convList:new', function (event, user) {
-					$scope.convSelected(user);
+				$scope.$on('convList:new', function (event, item) {
+					$scope.convSelected(item);
+					$scope.open = true;
 				});
 
 				$scope.$on('convList:newGroup', function (event, group) {
@@ -110,27 +120,22 @@ angular.module('chatApp')
 				});
 
 
-				$scope.$on('convList:update', function (event, user) {
+				$scope.$on('convList:update', function (event, item) {
 					var target = _.find($scope.activeConvs, {
-						_id: user._id
+						_id: item._id
 					});
 
 					if (target) {
 						var index = $scope.activeConvs.indexOf(target);
-						$scope.activeConvs.splice(index, 1, user);
+						$scope.activeConvs[index] = item;
 					}
 				});
 
-				// $scope.$on('convList:deleted', function (event, user) {
-				// 	var target = _.find($scope.activeConvs, {
-				// 		_id: user._id
-				// 	});
-				//
-				// 	if (target) {
-				// 		var index = $scope.activeConvs.indexOf(target);
-				// 		$scope.activeConvs.splice(index, 1);
-				// 	}
-				// });
+				$scope.$on('convList:select', function (event) {
+					if ($scope.activeConvs.length > 0) {
+						$scope.convSelected($scope.activeConvs[0]);
+					}
+				});
 
 				//trigger default state
 				if ($scope.activeConvs.length > 0) {

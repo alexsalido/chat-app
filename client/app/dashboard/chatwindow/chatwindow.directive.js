@@ -73,7 +73,7 @@ angular.module('chatApp')
 						}, function (res) {
 							socket.deleteConversation($scope.activeConv._id);
 						}, function (err) {
-
+							$mdToast.show($mdToast.simple().position('top right').textContent(err.data).action('OK'));
 						});
 					}
 				};
@@ -95,7 +95,7 @@ angular.module('chatApp')
 					$mdSidenav(id).toggle();
 				};
 
-				$scope.showEmojis = function (ev) {
+				$scope.showEmojis = function (event) {
 					var element = document.getElementById('chat-box');
 					$mdBottomSheet.show({
 						templateUrl: 'app/dashboard/views/emojis.html',
@@ -103,17 +103,17 @@ angular.module('chatApp')
 						scope: $scope,
 						preserveScope: true,
 						clickOutsideToClose: true,
-						targetEvent: ev
+						targetEvent: event
 					});
 				};
 
-				$scope.showScribbleDialog = function (ev) {
+				$scope.showScribbleDialog = function (event) {
 					$mdDialog.show({
 						scope: $scope,
 						preserveScope: true,
 						templateUrl: 'app/dashboard/views/scribble.html',
 						parent: angular.element(document.body),
-						targetEvent: ev,
+						targetEvent: event,
 						clickOutsideToClose: true,
 					});
 				};
@@ -129,8 +129,14 @@ angular.module('chatApp')
 				});
 
 				$scope.$on('convWindow:update', function (event, user) {
-					if (!!$scope.activeConv && user._id === $scope.activeConv._id) {
+					if (!!$scope.activeConv && (user._id === $scope.activeConv._id)) {
 						$scope.activeConv = user;
+					}
+				});
+
+				$scope.$on('convWindow:deleted', function (event, item) {
+					if ($scope.activeConv._id === item._id) {
+						$scope.$emit('convWindow:change');
 					}
 				});
 			}
