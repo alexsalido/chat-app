@@ -9,7 +9,7 @@ var ConversationSchema = new Schema({
 		ref: 'User'
 	}],
 	messages: [{
-		text: String,
+		text: Schema.Types.Mixed,
 		scribble: {
 			type: Boolean,
 			default: false

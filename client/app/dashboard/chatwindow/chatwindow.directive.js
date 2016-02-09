@@ -8,6 +8,7 @@ angular.module('chatApp')
 			replace: true,
 			scope: {},
 			controller: function ($scope) {
+				var lzwCompress = window.lzwCompress; //compression
 				$scope.me = Auth.getCurrentUser();
 				$scope.showDialog = false;
 
@@ -118,7 +119,7 @@ angular.module('chatApp')
 					$mdDialog.show({
 						scope: $scope,
 						preserveScope: true,
-						templateUrl: 'app/dashboard/views/scribble.html',
+						templateUrl: 'app/dashboard/views/newScribble.html',
 						parent: angular.element(document.body),
 						targetEvent: event,
 						clickOutsideToClose: true,
@@ -164,10 +165,13 @@ angular.module('chatApp')
 				});
 
 				$scope.sendScribble = function () {
-					$scope.message = scribble.getCanvas().toDataURL();
-					$scope.sendMessage($scope.activeConv._id, true);
-					scribble.clearCanvas();
-					$mdDialog.hide();
+					if ($scope.activeConv.online || !!$scope.activeConv.members) {
+						$scope.message = scribble.getCanvas().toDataURL();
+						// $scope.message = lzwCompress.pack(scribble.getCanvas().toDataURL());
+						$scope.sendMessage($scope.activeConv._id, true);
+						scribble.clearCanvas();
+						$mdDialog.hide();
+					}
 				};
 
 				$scope.cancel = function () {

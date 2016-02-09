@@ -1,0 +1,15 @@
+<div ng-show="showDialog">
+	<md-dialog aria-label="View Scribble" ng-cloak="ng-cloak" flex="100">
+		<md-toolbar>
+			<div class="md-toolbar-tools">
+				<h2>Scribble</h2>
+				<span flex="flex"></span>
+				<md-button ng-click="cancel()" class="md-icon-button">
+					<md-icon md-svg-src="assets/svg/close.svg" aria-label="Close dialog"></md-icon>
+				</md-button>
+			</div>
+		</md-toolbar>
+		<md-content id="scribble-viewer">
+		</md-content>
+	</md-dialog>
+</div>
