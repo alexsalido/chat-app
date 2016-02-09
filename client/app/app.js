@@ -10,7 +10,8 @@ angular.module('chatApp', [
 		'ngMessages',
 		'ngAnimate',
 		'vTabs',
-		'angularFileUpload'
+		'angularFileUpload',
+		'ngjsColorPicker'
 	])
 	.config(function ($routeProvider, $locationProvider, $httpProvider, $mdIconProvider, emojifyProvider) {
 		$routeProvider

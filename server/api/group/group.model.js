@@ -16,6 +16,10 @@ var GroupSchema = new Schema({
 	}],
 	messages: [{
 		text: String,
+		scribble: {
+			type: Boolean,
+			default: false
+		},
 		sentBy: {
 			type: Schema.Types.ObjectId,
 			ref: 'User'

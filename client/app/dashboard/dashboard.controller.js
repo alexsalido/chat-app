@@ -128,29 +128,4 @@ angular.module('chatApp')
 		$scope.$on('convWindow:change', function (event) {
 			$scope.$broadcast('convList:select');
 		});
-
-		// $scope.showScribbleDialog = function (ev) {
-		// 	$mdDialog.show({
-		// 		scope: $scope,
-		// 		preserveScope: true,
-		// 		templateUrl: 'app/dashboard/views/scribble.html',
-		// 		parent: angular.element(document.body),
-		// 		targetEvent: ev,
-		// 		clickOutsideToClose: true,
-		// 	});
-		// };
-		//
-		//
-		// $scope.showEmojis = function (ev) {
-		// 	var element = document.getElementById('chat-box');
-		// 	$mdBottomSheet.show({
-		// 		templateUrl: 'app/dashboard/views/emojis.html',
-		// 		parent: element,
-		// 		scope: $scope,
-		// 		preserveScope: true,
-		// 		clickOutsideToClose: true,
-		// 		targetEvent: ev
-		// 	});
-		// };
-		//
 	});

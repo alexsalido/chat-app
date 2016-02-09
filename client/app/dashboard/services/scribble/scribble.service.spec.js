@@ -1,14 +1,14 @@
 'use strict';
 
-describe('Service: messages', function () {
+describe('Service: scribble', function () {
 
   // load the service's module
   beforeEach(module('chatApp'));
 
   // instantiate service
-  var messages;
-  beforeEach(inject(function (_messages_) {
-    messages = _messages_;
+  var scribble;
+  beforeEach(inject(function (_scribble_) {
+    scribble = _scribble_;
   }));
 
   it('should do something', function () {

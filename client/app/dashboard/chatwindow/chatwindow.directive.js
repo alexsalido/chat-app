@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('chatApp')
-	.directive('chatWindow', function (Auth, socket, Group, Conversation, $mdSidenav, $mdBottomSheet, $mdToast, $mdDialog) {
+	.directive('chatWindow', function (scribble, socket, Auth, Group, Conversation, $mdSidenav, $mdBottomSheet, $mdToast, $mdDialog) {
 		return {
 			templateUrl: 'app/dashboard/chatwindow/chatwindow.html',
 			restrict: 'E',
@@ -9,6 +9,7 @@ angular.module('chatApp')
 			scope: {},
 			controller: function ($scope) {
 				$scope.me = Auth.getCurrentUser();
+				$scope.showDialog = false;
 
 				$scope.keyPressed = function (roomId, event) {
 					if (event.which === 13 && !event.shiftKey) {
@@ -17,14 +18,16 @@ angular.module('chatApp')
 					}
 				};
 
-				$scope.sendMessage = function (roomId) {
+				$scope.sendMessage = function (roomId, isScribble) {
 					if (!!$scope.message && ($scope.activeConv.online || !!$scope.activeConv.members)) {
-						socket.sendMessage(roomId, $scope.message, !!$scope.activeConv.members);
 
 						var message = {
 							text: $scope.message,
+							scribble: !!isScribble,
 							sentBy: $scope.me._id
 						};
+
+						socket.sendMessage(roomId, message, !!$scope.activeConv.members);
 
 						$scope.conversation.messages.push(message);
 
@@ -107,6 +110,10 @@ angular.module('chatApp')
 					});
 				};
 
+				//|**	          **|//
+				//| Scribble Dialog |//
+				//|**	          **|//
+
 				$scope.showScribbleDialog = function (event) {
 					$mdDialog.show({
 						scope: $scope,
@@ -115,7 +122,57 @@ angular.module('chatApp')
 						parent: angular.element(document.body),
 						targetEvent: event,
 						clickOutsideToClose: true,
+						onComplete: function () {
+							$scope.showDialog = true;
+							scribble.setCanvas('scribble-container');
+						}
+					}).then(function () {
+						$scope.showDialog = false;
+					}, function () {
+						$scope.showDialog = false;
 					});
+				};
+
+				$scope.colors = [
+					'#000000',
+					'#808080',
+					'#C0C0C0',
+					'#FFFFFF',
+					'#800000',
+					'#FF0000',
+					'#808000',
+					'#FFFF00',
+					'#008000',
+					'#00FF00',
+					'#008080',
+					'#00FFFF',
+					'#000080',
+					'#0000FF',
+					'#800080',
+					'#FF00FF'
+				];
+
+				$scope.customOptions = {
+					size: 30,
+					roundCorners: false,
+					total: 16,
+					randomColors: 16
+				};
+
+				$scope.$watch('selectedColor', function (newVal) {
+					scribble.setColor(newVal);
+				});
+
+				$scope.sendScribble = function () {
+					$scope.message = scribble.getCanvas().toDataURL();
+					$scope.sendMessage($scope.activeConv._id, true);
+					scribble.clearCanvas();
+					$mdDialog.hide();
+				};
+
+				$scope.cancel = function () {
+					scribble.clearCanvas();
+					$mdDialog.cancel();
 				};
 
 				//|**	 **|//

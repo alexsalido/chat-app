@@ -30,10 +30,7 @@ angular.module('chatApp')
 					});
 
 					if (group) {
-						group.messages.push({
-							text: msg,
-							sentBy: from
-						});
+						group.messages.push(msg);
 					}
 				} else {
 					var conversation = _.find(Auth.getCurrentUser().conversations, function (conversation) {
@@ -43,10 +40,7 @@ angular.module('chatApp')
 						});
 
 						if (hasUser) {
-							conversation.messages.push({
-								text: msg,
-								sentBy: from
-							});
+							conversation.messages.push(msg);
 							return true;
 						}
 					});

@@ -151,7 +151,8 @@ exports.message = function (req, res) {
 		$push: {
 			messages: {
 				text: msg.text,
-				sentBy: msg.sentBy
+				sentBy: msg.sentBy,
+				scribble: msg.scribble
 			}
 		}
 	}, function (err) {

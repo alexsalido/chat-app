@@ -101,6 +101,7 @@ message {
 
 .message-wrapper .text-wrapper .text {
     padding: 1em;
+	word-break: break-all;
 }
 
 .message-wrapper.server {
@@ -120,4 +121,12 @@ message {
 
 .message-wrapper.server .text-wrapper .text {
     padding: 0.5em;
+}
+
+scribble {
+	margin: 1em;
+}
+scribble.scribble img {
+	background-color: white;
+	border-radius: 0%;
 }
