@@ -18,7 +18,7 @@ angular.module('chatApp')
 					if (event === 'created') {
 						$scope.activeConvs.unshift(conversation.members[0]);
 
-						if ($scope.open || $scope.conversations.length === 1) {
+						if ($scope.open || $scope.activeConvs.length === 1) {
 							$scope.convSelected(conversation.members[0]);
 						}
 
@@ -40,8 +40,10 @@ angular.module('chatApp')
 				$scope.groups = $scope.me.groups;
 				socket.syncGroups($scope.groups, function groupsUpdated(event, group) {
 					if (event === 'created') {
+
 						$scope.activeConvs.unshift(group);
-						if ($scope.open) {
+
+						if ($scope.open || $scope.activeConvs.length === 1) {
 							$scope.convSelected(group);
 						}
 						$scope.open = false;
@@ -114,9 +116,7 @@ angular.module('chatApp')
 				});
 
 				$scope.$on('convList:newGroup', function (event, group) {
-					$scope.$emit('convSelected', group, group);
-					$scope.activeConvs.unshift(group);
-					$scope.me.groups.push(group);
+					$scope.open = true;
 				});
 
 

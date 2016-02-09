@@ -21,6 +21,7 @@ angular.module('chatApp')
 					$scope.submitted = false;
 					$scope.newGroupName = '';
 					socket.addedParticipants(res.group._id, [$scope.me._id]);
+					$scope.$broadcast('convList:newGroup');
 				}, function (err) {
 					$mdToast.show($mdToast.simple().position('top right').textContent(err.data).action('OK'));
 				});
