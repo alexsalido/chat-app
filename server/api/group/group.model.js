@@ -26,7 +26,9 @@ var GroupSchema = new Schema({
 		},
 		date: {
 			type: Date,
-			default: new Date().toUTCString()
+			default: function () {
+				return new Date();
+			}
 		}
 	}]
 });

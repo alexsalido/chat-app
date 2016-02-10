@@ -7,6 +7,7 @@ angular.module('chatApp')
 		$scope.errors = {};
 		$scope.contactListUpdate = false;
 		$scope.contactListSearch = '';
+		$scope.chatListSearch = '';
 
 		$scope.createGroup = function (form) {
 			$scope.submitted = true;

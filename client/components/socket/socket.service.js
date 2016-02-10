@@ -2,7 +2,7 @@
 'use strict';
 
 angular.module('chatApp')
-	.factory('socket', function (socketFactory, Auth, Conversation) {
+	.factory('socket', function (socketFactory, Auth, Conversation, $mdToast) {
 
 		var socket;
 
@@ -31,6 +31,8 @@ angular.module('chatApp')
 
 					if (group) {
 						group.messages.push(msg);
+						group.lastUpdated = Date.now();
+						group.notification = true;
 					}
 				} else {
 					var conversation = _.find(Auth.getCurrentUser().conversations, function (conversation) {
@@ -41,6 +43,8 @@ angular.module('chatApp')
 
 						if (hasUser) {
 							conversation.messages.push(msg);
+							conversation.members[0].lastUpdated = Date.now();
+							conversation.members[0].notification = true;
 							return true;
 						}
 					});

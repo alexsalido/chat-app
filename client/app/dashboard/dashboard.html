@@ -56,10 +56,10 @@
 				</md-menu>
 			</div>
 		</md-toolbar>
-		<search-box placeholder="Search for chat"></search-box>
+		<search-box placeholder="Search for chat" bind="chatListSearch"></search-box>
 		<md-divider></md-divider>
 		<md-content flex>
-			<chat-list requests="true"></chat-list>
+			<chat-list filter="chatListSearch"></chat-list>
 		</md-content>
 	</md-sidenav>
 	<md-content flex-gt-sm="70" flex="100" class="right-toolbar" layout="column" ng-cloak>

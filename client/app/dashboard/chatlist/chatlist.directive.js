@@ -6,7 +6,9 @@ angular.module('chatApp')
 			templateUrl: 'app/dashboard/chatlist/chatlist.html',
 			restrict: 'E',
 			replace: true,
-			scope: {},
+			scope: {
+				filter: '='
+			},
 			controller: function ($scope) {
 				$scope.me = Auth.getCurrentUser();
 
@@ -16,9 +18,13 @@ angular.module('chatApp')
 				$scope.conversations = $scope.me.conversations;
 				socket.syncConversations($scope.conversations, function conversationsUpdated(event, conversation) {
 					if (event === 'created') {
+
+						conversation.members[0].lastUpdated = Date.now();
+
 						$scope.activeConvs.unshift(conversation.members[0]);
 
 						if ($scope.open || $scope.activeConvs.length === 1) {
+							conversation.members[0].notification = false;
 							$scope.convSelected(conversation.members[0]);
 						}
 
@@ -41,6 +47,8 @@ angular.module('chatApp')
 				socket.syncGroups($scope.groups, function groupsUpdated(event, group) {
 					if (event === 'created') {
 
+						group.lastUpdated = Date.now();
+
 						$scope.activeConvs.unshift(group);
 
 						if ($scope.open || $scope.activeConvs.length === 1) {
@@ -59,25 +67,49 @@ angular.module('chatApp')
 						}
 						$scope.$emit('convList:deleted', group);
 					} else if (event === 'updated') {
+
+						group.lastUpdated = Date.now();
+						group.notification = true;
+
 						$scope.activeConvs.splice($scope.activeConvs.indexOf(_.find($scope.activeConvs, {
 							_id: group._id
 						})), 1, group);
 
-						if ($scope.open) {
+						if ($scope.activeConv._id === group._id) {
 							$scope.convSelected(group);
 						}
-						$scope.open = false;
 					}
 				});
 
-				$scope.activeConvs = [].concat($scope.me.groups);
+				$scope.activeConvs = [];
 
 				// //populate activeConvs
 				$scope.conversations.forEach(function (conversation) {
+					var length = conversation.messages.length;
+					var lastMessage = conversation.messages[length - 1];
+
+					if (length > 0) {
+						var date = new Date(lastMessage.date).getTime();
+					}
+
+					conversation.members[0].lastUpdated = date || Date.now();
 					$scope.activeConvs.unshift(conversation.members[0]);
 				});
 
+				$scope.groups.forEach(function (group) {
+					var length = group.messages.length;
+					var lastMessage = group.messages[length - 1];
+
+					if (length > 0) {
+						var date = new Date(lastMessage.date).getTime();
+					}
+
+					group.lastUpdated = date || Date.now();
+					$scope.activeConvs.unshift(group);
+				});
+
 				$scope.convSelected = function (item) {
+					item.notification = false;
 					$scope.activeConv = item;
 					if (!item.members) {
 						//is a user
@@ -121,13 +153,19 @@ angular.module('chatApp')
 
 
 				$scope.$on('convList:update', function (event, item) {
-					var target = _.find($scope.activeConvs, {
+					var conversation = _.find($scope.activeConvs, {
 						_id: item._id
 					});
 
-					if (target) {
+					if (conversation) {
 						var index = $scope.activeConvs.indexOf(target);
-						$scope.activeConvs[index] = item;
+						// $scope.activeConvs[index] = item;
+						//instead of replacing copy properties to avoid loosing the object's reference
+						var target = $scope.activeConvs[index];
+
+						for (var prop in target) {
+							target[prop] = item[prop];
+						}
 					}
 				});
 
