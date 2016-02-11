@@ -77,9 +77,9 @@
 	</md-content>
 	<md-toolbar id="message-toolbar">
 		<div class="md-toolbar-tools">
-			<md-button class="md-icon-button" aria-label="Send Attachment" ng-click="showEmojis($event)">
+			<!-- <md-button class="md-icon-button" aria-label="Send Attachment" ng-click="showEmojis($event)">
 				<md-icon md-svg-icon="insert_emoticon"></md-icon>
-			</md-button>
+			</md-button> -->
 			<textarea id="message-box" type="text" placeholder="Type a message" ng-model="message" ng-keypress="keyPressed(activeConv._id, $event)"></textarea>
 			<span flex></span>
 			<md-button class="md-icon-button" aria-label="Send" ng-click="sendMessage(activeConv._id)" ng-disabled="!message">
