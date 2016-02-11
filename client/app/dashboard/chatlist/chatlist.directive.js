@@ -175,6 +175,14 @@ angular.module('chatApp')
 					}
 				});
 
+				//checks if conv is active, if it is notification is gone
+				$scope.isActive = function (conv) {
+					if ($scope.activeConv._id == conv._id) {
+						conv.notification = false;
+					}
+					return $scope.activeConv._id !== conv._id;
+				};
+
 				//trigger default state
 				if ($scope.activeConvs.length > 0) {
 					var lastUpdated = Math.max.apply(Math, $scope.activeConvs.map(function (conversation) {
