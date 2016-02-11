@@ -56,10 +56,10 @@
 				</md-menu>
 			</div>
 		</md-toolbar>
-		<search-box placeholder="Search for chat" bind="chatListSearch"></search-box>
+		<search-box placeholder="Search for conversation" bind="convListSearch"></search-box>
 		<md-divider></md-divider>
 		<md-content flex>
-			<chat-list filter="chatListSearch"></chat-list>
+			<conv-list filter="convListSearch"></conv-list>
 		</md-content>
 	</md-sidenav>
 	<md-content flex-gt-sm="70" flex="100" class="right-toolbar" layout="column" ng-cloak>
@@ -69,6 +69,6 @@
 			</div>
 		</md-toolbar>
 		<md-content ng-show="!me.conversations.length > 0 && !me.groups.length > 0" ng-include="'app/dashboard/views/welcome.html'" flex layout-padding></md-content>
-		<chat-window ng-show="me.conversations.length > 0 || me.groups.length > 0"></chat-window>
+		<conv-window ng-show="me.conversations.length > 0 || me.groups.length > 0"></conv-window>
 	</md-content>
 </div>

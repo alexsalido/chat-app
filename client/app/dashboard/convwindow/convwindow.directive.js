@@ -1,9 +1,9 @@
 'use strict';
 
 angular.module('chatApp')
-	.directive('chatWindow', function (scribble, socket, Auth, Group, Conversation, $mdSidenav, $mdBottomSheet, $mdToast, $mdDialog) {
+	.directive('convWindow', function (scribble, socket, Auth, Group, Conversation, $mdSidenav, $mdBottomSheet, $mdToast, $mdDialog) {
 		return {
-			templateUrl: 'app/dashboard/chatwindow/chatwindow.html',
+			templateUrl: 'app/dashboard/convwindow/convwindow.html',
 			restrict: 'E',
 			replace: true,
 			scope: {},
@@ -105,7 +105,7 @@ angular.module('chatApp')
 				};
 
 				$scope.showEmojis = function (event) {
-					var element = document.getElementById('chat-box');
+					var element = document.getElementById('conv-box');
 					$mdBottomSheet.show({
 						templateUrl: 'app/dashboard/views/emojis.html',
 						parent: element,

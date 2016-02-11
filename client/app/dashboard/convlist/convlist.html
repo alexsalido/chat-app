@@ -1,0 +1,9 @@
+<md-content flex class="conv-list">
+	<md-list ng-cloak>
+		<md-list-item ng-repeat="conv in activeConvs | filter: { name: filter } | orderBy: '-lastUpdated'" ng-click="convSelected(conv)" ng-class="{ 'active': conv.active }">
+			<img alt="{{ conv.name }}" ng-src="{{ conv.img }}" class="md-avatar object-fit-cover" />
+			<p>{{ conv.name}}</p>
+			<md-icon md-svg-icon="chat_bubble" ng-click="convSelected(conv)" aria-label="Unread Message" class="md-secondary gray" ng-class="{ 'new-message': conv.notification && isActive(conv)}"></md-icon>
+		</md-list-item>
+	</md-list>
+</md-content>

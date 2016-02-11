@@ -1,4 +1,4 @@
-.chat-photo {
+.conv-photo {
     position: relative;
     margin: 1em auto;
     padding: 0;
@@ -8,11 +8,11 @@
     height: 160px;
 }
 
-.chat-photo:hover .image-overlay {
+.conv-photo:hover .image-overlay {
     opacity: 0.8;
 }
 
-.chat-photo img {
+.conv-photo img {
     min-width: 160px;
     min-height: 160px;
     object-fit: cover;

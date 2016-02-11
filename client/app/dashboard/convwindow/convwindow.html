@@ -1,4 +1,4 @@
-<md-content flex layout="column" id="chat-box">
+<md-content flex layout="column" id="conv-box">
 	<md-toolbar>
 		<div class="md-toolbar-tools">
 			<md-button class="md-icon-button" aria-label="Show Sidenav" ng-click="toggleSidenav('left-toolbar')" hide-gt-sm>
@@ -70,7 +70,7 @@
 				<h1 ng-if="activeConv.members" class="md-toolbar-tools">Group info</h1>
 			</div>
 		</md-toolbar>
-		<chat-info src="activeConv" delete="deleteConv('contact-info')" kick="kick(user)"></chat-info>
+		<conv-info src="activeConv" delete="deleteConv('contact-info')" kick="kick(user)"></conv-info>
 	</md-sidenav>
 	<md-content flex id="conversation-box" scroll-to-bottom="conversation.messages">
 		<message class="message-wrapper" ng-repeat="message in conversation.messages" sender="message.sentBy" receiver="me" server="message.update" text="message.text" scribble="message.scribble" avatar="!!activeConv.members && message.sentBy._id != me._id"></message>

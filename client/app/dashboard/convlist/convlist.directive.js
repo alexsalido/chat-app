@@ -1,9 +1,9 @@
 'use strict';
 
 angular.module('chatApp')
-	.directive('chatList', function (Conversation, Auth, socket, $mdToast) {
+	.directive('convList', function (Conversation, Auth, socket, $mdToast) {
 		return {
-			templateUrl: 'app/dashboard/chatlist/chatlist.html',
+			templateUrl: 'app/dashboard/convlist/convlist.html',
 			restrict: 'E',
 			replace: true,
 			scope: {

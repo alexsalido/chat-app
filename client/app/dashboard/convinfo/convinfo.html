@@ -1,7 +1,7 @@
 <md-content flex class="contact-info" layout="column" layout-padding>
 	<div class="no-padding">
-		<div layout-align="center center" class="chat-photo">
-			<div id="group-image-overlay" class="image-overlay" ng-click="changeGroupImage()" ng-show="activeChat.members">
+		<div layout-align="center center" class="conv-photo">
+			<div id="group-image-overlay" class="image-overlay" ng-click="changeGroupImage()" ng-show="activeConv.members">
 				<md-icon md-svg-icon="camera" class="s48"></md-icon>
 				<p>
 					Click here to change photo
@@ -10,18 +10,18 @@
 			<div id="group-progress-overlay" class="progress-overlay display-none" layout="column" layout-align="center center">
 				<md-progress-circular md-mode="indeterminate"></md-progress-circular>
 			</div>
-			<img ng-src="{{ activeChat.img }}" alt="{{ activeChat.img }}">
+			<img ng-src="{{ activeConv.img }}" alt="{{ activeConv.img }}">
 			<input type="file" id="group-upload" nv-file-select uploader="uploader" accept="image/*" class="display-none" />
 		</div>
 	</div>
-	<div ng-show="!activeChat.members">
+	<div ng-show="!activeConv.members">
 		<h4>Status</h4>
-		<h5>{{ activeChat.status }}</h5>
+		<h5>{{ activeConv.status }}</h5>
 		<h4>Email</h4>
-		<h5>{{ activeChat.email }}</h5>
+		<h5>{{ activeConv.email }}</h5>
 	</div>
-	<!-- shown if active chat is a group-->
-	<form name="groupNameForm" class="group-name no-padding" ng-show="activeChat.members">
+	<!-- shown if activeConv is a group-->
+	<form name="groupNameForm" class="group-name no-padding" ng-show="activeConv.members">
 		<md-input-container class="md-block">
 			<label>Name</label>
 			<input md-maxlength="30" name="name" ng-model="dummyName" maxlength="30">
@@ -31,40 +31,40 @@
 			</div>
 		</md-input-container>
 	</form>
-	<md-list ng-show="activeChat.members">
+	<md-list ng-show="activeConv.members">
 		<md-subheader>Members
-			<md-icon md-svg-icon="person_add" aria-label="Add Participant" class="md-primary gray clickable" ng-click="showContactList($event)" ng-show=" activeChat.admin == me._id" hide-gt-xs></md-icon>
+			<md-icon md-svg-icon="person_add" aria-label="Add Participant" class="md-primary gray clickable" ng-click="showContactList($event)" ng-show=" activeConv.admin == me._id" hide-gt-xs></md-icon>
 		</md-subheader>
-		<md-list-item ng-click="showContactList($event)" class="no-padding" ng-show="activeChat.admin == me._id" hide-xs>
+		<md-list-item ng-click="showContactList($event)" class="no-padding" ng-show="activeConv.admin == me._id" hide-xs>
 			<md-icon md-svg-icon="person_add" aria-label="Add Participant" class="md-primary gray"></md-icon>
 			<p>
 				Add participant
 			</p>
 		</md-list-item>
 	</md-list>
-	<md-divider class="no-padding" ng-show="activeChat.members"></md-divider>
-	<md-content flex ng-show="activeChat.members">
+	<md-divider class="no-padding" ng-show="activeConv.members"></md-divider>
+	<md-content flex ng-show="activeConv.members">
 		<md-list ng-cloak>
-			<md-list-item ng-repeat="member in activeChat.members" class="md-3-line no-padding">
+			<md-list-item ng-repeat="member in activeConv.members" class="md-3-line no-padding">
 				<img alt="{{ member.name }}" ng-src="{{ member.img }}" class="md-avatar object-fit-cover" />
 				<div class="md-list-item-text">
 					<h3>{{member.name}}</h3>
 					<p>
 						{{member.email}}
 					</p>
-					<md-icon md-svg-icon="admin" aria-label="Add" class="md-primary gray" ng-show="activeChat.admin == member._id"></md-icon>
+					<md-icon md-svg-icon="admin" aria-label="Add" class="md-primary gray" ng-show="activeConv.admin == member._id"></md-icon>
 				</div>
 				<md-button class="md-icon-button md-exclude" ng-show="me._id != member._id && notAContact(member)">
 					<md-icon md-svg-icon="add" ng-click="sendFriendRequest(member)" aria-label="Add" class="md-primary gray"></md-icon>
 				</md-button>
-				<md-button class="md-icon-button md-exclude" ng-show="activeChat.admin == me._id && me._id != member._id">
+				<md-button class="md-icon-button md-exclude" ng-show="activeConv.admin == me._id && me._id != member._id">
 					<md-icon md-svg-icon="close" ng-click="kick({user:member})" aria-label="Remove" class="md-primary red"></md-icon>
 				</md-button>
 			</md-list-item>
 		</md-list>
 	</md-content>
-	<md-button ng-click="deleteChat()" class="md-raised md-warn" aria-label="Delete Chat" hide-xs>
-		<span ng-show="activeChat.members">EXIT GROUP</span>
-		<span ng-show="!activeChat.members">DELETE CONVERSATION</span>
+	<md-button ng-click="deleteConv()" class="md-raised md-warn" aria-label="Delete Conversation" hide-xs>
+		<span ng-show="activeConv.members">EXIT GROUP</span>
+		<span ng-show="!activeConv.members">DELETE CONVERSATION</span>
 	</md-button>
 </md-content>

@@ -1,14 +1,14 @@
 'use strict';
 
 angular.module('chatApp')
-	.directive('chatInfo', function (Auth, Group, socket, FileUploader, $cookieStore, $mdDialog, $mdSidenav, $mdToast) {
+	.directive('convInfo', function (Auth, Group, socket, FileUploader, $cookieStore, $mdDialog, $mdSidenav, $mdToast) {
 		return {
-			templateUrl: 'app/dashboard/chatinfo/chatinfo.html',
+			templateUrl: 'app/dashboard/convinfo/convinfo.html',
 			restrict: 'EA',
 			replace: true,
 			scope: {
-				activeChat: '=src',
-				deleteChat: '&delete',
+				activeConv: '=src',
+				deleteConv: '&delete',
 				kick: '&kick'
 			},
 			controller: function ($scope) {
@@ -43,7 +43,7 @@ angular.module('chatApp')
 				var groupUpload = document.getElementById('group-upload');
 
 				$scope.uploader = new FileUploader({
-					// url: 'api/image/' + $scope.activeChat._id + '/group',
+					// url: 'api/image/' + $scope.activeConv._id + '/group',
 					method: 'PUT',
 					withCredentials: 'true',
 					headers: {
@@ -76,19 +76,19 @@ angular.module('chatApp')
 				};
 
 				$scope.uploader.onSuccessItem = function (item, response) {
-					$scope.activeChat.img = response.url + '?Date=' + Date.now();
+					$scope.activeConv.img = response.url + '?Date=' + Date.now();
 					var img = new Image();
-					img.src = $scope.activeChat.img;
+					img.src = $scope.activeConv.img;
 					img.onload = function () {
 						imageOverlay.toggleClass('display-none');
 						progressOverlay.toggleClass('display-none');
 						$mdToast.show($mdToast.simple().position('top right').textContent('Your profile image was changed successfully.').action('OK'));
-						socket.groupUpdate('img', $scope.activeChat._id);
+						socket.groupUpdate('img', $scope.activeConv._id);
 					};
 				};
 
 				$scope.changeGroupImage = function () {
-					$scope.uploader.url = 'api/image/' + $scope.activeChat._id + '/group';
+					$scope.uploader.url = 'api/image/' + $scope.activeConv._id + '/group';
 					groupUpload.click();
 				};
 
@@ -99,8 +99,8 @@ angular.module('chatApp')
 				$scope.$watch(function () {
 					return $mdSidenav('contact-info').isOpen();
 				}, function () {
-					if ($scope.groupNameForm.$valid && $scope.groupNameForm.$dirty && $scope.activeChat.name !== $scope.dummyName) {
-						var current = $scope.activeChat;
+					if ($scope.groupNameForm.$valid && $scope.groupNameForm.$dirty && $scope.activeConv.name !== $scope.dummyName) {
+						var current = $scope.activeConv;
 						Group.changeName({
 							id: current._id
 						}, {
@@ -115,7 +115,7 @@ angular.module('chatApp')
 					}
 				});
 
-				$scope.$watch('activeChat', function (newVal) {
+				$scope.$watch('activeConv', function (newVal) {
 					if (newVal) {
 						$scope.dummyName = newVal.name;
 
@@ -127,7 +127,7 @@ angular.module('chatApp')
 				//|**	   	          **|//
 
 				$scope.addParticipants = function () {
-					var current = $scope.activeChat;
+					var current = $scope.activeConv;
 					var newParticipants = [];
 					var newParticipantsEmails = [];
 
@@ -167,7 +167,7 @@ angular.module('chatApp')
 				};
 
 				$scope.notAMember = function (user) {
-					var member = _.find($scope.activeChat.members, {
+					var member = _.find($scope.activeConv.members, {
 						_id: user._id
 					});
 					return !!!member;
