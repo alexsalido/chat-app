@@ -87,9 +87,10 @@ angular.module('chatApp')
 				$scope.conversations.forEach(function (conversation) {
 					var length = conversation.messages.length;
 					var lastMessage = conversation.messages[length - 1];
+					var date;
 
 					if (length > 0) {
-						var date = new Date(lastMessage.date).getTime();
+						date = new Date(lastMessage.date).getTime();
 					}
 
 					conversation.members[0].lastUpdated = date || Date.now();
@@ -99,9 +100,10 @@ angular.module('chatApp')
 				$scope.groups.forEach(function (group) {
 					var length = group.messages.length;
 					var lastMessage = group.messages[length - 1];
+					var date;
 
 					if (length > 0) {
-						var date = new Date(lastMessage.date).getTime();
+						date = new Date(lastMessage.date).getTime();
 					}
 
 					group.lastUpdated = date || Date.now();
@@ -131,11 +133,11 @@ angular.module('chatApp')
 							});
 
 						} else {
-							$scope.$emit('convSelected', item, conversation);
+							$scope.$emit('convList:selected', item, conversation);
 						}
 					} else {
 						//is a group
-						$scope.$emit('convSelected', item, item);
+						$scope.$emit('convList:selected', item, item);
 					}
 				};
 
@@ -147,19 +149,13 @@ angular.module('chatApp')
 					$scope.open = true;
 				});
 
-				$scope.$on('convList:newGroup', function (event, group) {
-					$scope.open = true;
-				});
-
-
 				$scope.$on('convList:update', function (event, item) {
 					var conversation = _.find($scope.activeConvs, {
 						_id: item._id
 					});
 
 					if (conversation) {
-						var index = $scope.activeConvs.indexOf(target);
-						// $scope.activeConvs[index] = item;
+						var index = $scope.activeConvs.indexOf(conversation);
 						//instead of replacing copy properties to avoid loosing the object's reference
 						var target = $scope.activeConvs[index];
 
@@ -169,7 +165,7 @@ angular.module('chatApp')
 					}
 				});
 
-				$scope.$on('convList:select', function (event) {
+				$scope.$on('convList:select', function () {
 					if ($scope.activeConvs.length > 0) {
 						$scope.convSelected($scope.activeConvs[0]);
 					}
@@ -177,7 +173,7 @@ angular.module('chatApp')
 
 				//checks if conv is active, if it is notification is gone
 				$scope.isActive = function (conv) {
-					if ($scope.activeConv._id == conv._id) {
+					if ($scope.activeConv._id === conv._id) {
 						conv.notification = false;
 					}
 					return $scope.activeConv._id !== conv._id;

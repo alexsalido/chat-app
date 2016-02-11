@@ -21,6 +21,9 @@ angular.module('chatApp')
 				$scope.sendMessage = function (roomId, isScribble) {
 					if (!!$scope.message && ($scope.activeConv.online || !!$scope.activeConv.members)) {
 
+						//update lastUpdated property
+						$scope.activeConv.lastUpdated = Date.now();
+
 						var message = {
 							text: $scope.message,
 							scribble: !!isScribble,
@@ -78,7 +81,7 @@ angular.module('chatApp')
 							id: $scope.me._id
 						}, {
 							users: [$scope.me._id, $scope.activeConv._id]
-						}, function (res) {
+						}, function () {
 							socket.deleteConversation($scope.activeConv._id);
 						}, function (err) {
 							$mdToast.show($mdToast.simple().position('top right').textContent(err.data).action('OK'));
@@ -139,25 +142,6 @@ angular.module('chatApp')
 					});
 				};
 
-				$scope.colors = [
-					'#000000',
-					'#808080',
-					'#C0C0C0',
-					'#FFFFFF',
-					'#800000',
-					'#FF0000',
-					'#808000',
-					'#FFFF00',
-					'#008000',
-					'#00FF00',
-					'#008080',
-					'#00FFFF',
-					'#000080',
-					'#0000FF',
-					'#800080',
-					'#FF00FF'
-				];
-
 				$scope.customOptions = {
 					size: 30,
 					roundCorners: false,
@@ -188,7 +172,7 @@ angular.module('chatApp')
 				//| Events |//
 				//|**	 **|//
 
-				$scope.$on('openConv', function (event, user, conversation) {
+				$scope.$on('convWindow:open', function (event, user, conversation) {
 					$scope.activeConv = user;
 					$scope.conversation = conversation;
 					$scope.toggleSidenav('left-toolbar'); //only executed if displayed in small window

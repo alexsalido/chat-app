@@ -43,7 +43,6 @@ angular.module('chatApp')
 				var groupUpload = document.getElementById('group-upload');
 
 				$scope.uploader = new FileUploader({
-					// url: 'api/image/' + $scope.activeConv._id + '/group',
 					method: 'PUT',
 					withCredentials: 'true',
 					headers: {
