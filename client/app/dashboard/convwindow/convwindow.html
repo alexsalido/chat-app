@@ -26,9 +26,9 @@
 			<md-button class="md-icon-button" aria-label="Send Scribble" ng-click="showScribbleDialog($event)" hide-xs>
 				<md-icon md-svg-icon="scribble"></md-icon>
 			</md-button>
-			<md-button class="md-icon-button" aria-label="Send Attachment" hide-xs>
+			<!-- <md-button class="md-icon-button" aria-label="Send Attachment" hide-xs>
 				<md-icon md-svg-icon="attachment"></md-icon>
-			</md-button>
+			</md-button> -->
 			<md-menu md-position-mode="target target">
 				<md-button class="md-icon-button" aria-label="Options" ng-click="$mdOpenMenu()">
 					<md-icon md-svg-icon="more_vert"></md-icon>
@@ -39,11 +39,11 @@
 							Send scribble
 						</md-button>
 					</md-menu-item>
-					<md-menu-item hide-gt-xs>
+					<!-- <md-menu-item hide-gt-xs>
 						<md-button ng-click="" aria-label="Send Attachment">
 							Send attachment
 						</md-button>
-					</md-menu-item>
+					</md-menu-item> -->
 					<md-menu-item>
 						<md-button ng-click="toggleSidenav('contact-info')" aria-label="Information">
 							<span ng-if="activeConv.members">Group info</span>
