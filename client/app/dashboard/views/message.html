@@ -1,12 +1,11 @@
-<div class="circle-wrapper " ng-show="isGroup">
+<div class="circle-wrapper" ng-show="showAvatar && !server">
 	<img class="no-outline" alt="{{sender.name}}" ng-src="{{ sender.img }}" />
 </div>
 <div class="text-wrapper">
-	<sender class="sender">
+	<sender class="sender" ng-hide="server">
 		{{sender.name}}
 	</sender>
 	<text class="text">
 		{{text}}
 	</text>
-
 </div>

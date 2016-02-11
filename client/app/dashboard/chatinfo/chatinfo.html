@@ -58,7 +58,7 @@
 					<md-icon md-svg-icon="add" ng-click="sendFriendRequest(member)" aria-label="Add" class="md-primary gray"></md-icon>
 				</md-button>
 				<md-button class="md-icon-button md-exclude" ng-show="activeChat.admin == me._id && me._id != member._id">
-					<md-icon md-svg-icon="close" ng-click="kick({id:member._id})" aria-label="Remove" class="md-primary red"></md-icon>
+					<md-icon md-svg-icon="close" ng-click="kick({user:member})" aria-label="Remove" class="md-primary red"></md-icon>
 				</md-button>
 			</md-list-item>
 		</md-list>

@@ -24,6 +24,10 @@ var GroupSchema = new Schema({
 			type: Schema.Types.ObjectId,
 			ref: 'User'
 		},
+		update: {
+			type: Boolean,
+			default: false
+		},
 		date: {
 			type: Date,
 			default: function () {

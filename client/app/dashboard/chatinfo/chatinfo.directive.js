@@ -101,10 +101,10 @@ angular.module('chatApp')
 				}, function () {
 					if ($scope.groupNameForm.$valid && $scope.groupNameForm.$dirty && $scope.activeChat.name !== $scope.dummyName) {
 						var current = $scope.activeChat;
-						Group.update({
+						Group.changeName({
 							id: current._id
 						}, {
-							name: $scope.dummyName
+							name: $scope.dummyName,
 						}, function () { //success
 							current.name = $scope.dummyName;
 							socket.groupUpdate('name', current._id);
@@ -129,15 +129,18 @@ angular.module('chatApp')
 				$scope.addParticipants = function () {
 					var current = $scope.activeChat;
 					var newParticipants = [];
+					var newParticipantsEmails = [];
 
 					$scope.selected.forEach(function (value) {
 						newParticipants.push(value._id);
+						newParticipantsEmails.push(value.email);
 					});
 
 					Group.addParticipants({
 						id: current._id
 					}, {
-						users: newParticipants
+						users: newParticipants,
+						emails: newParticipantsEmails
 					}, function (res) { //success
 						socket.addedParticipants(current._id, newParticipants);
 						current.members = current.members.concat($scope.selected);

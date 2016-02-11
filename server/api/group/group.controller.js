@@ -9,7 +9,7 @@ var insensitiveFields = 'name email img status online admin members messages';
 
 // Get list of groups
 exports.index = function (req, res) {
-	Group.find({}).populate('members', insensitiveFields).exec(function (err, groups) {
+	Group.find({}).populate('members messages.sentBy', insensitiveFields).exec(function (err, groups) {
 		if (err) {
 			return handleError(res, err);
 		}
@@ -69,59 +69,66 @@ exports.create = function (req, res) {
 	});
 };
 
-// Updates an existing group in the DB.
-exports.update = function (req, res) {
-	if (req.body._id) {
-		delete req.body._id;
-	}
-	Group.findById(req.params.id, function (err, group) {
-		if (err) {
-			return handleError(res, err);
-		}
-		if (!group) {
-			return res.status(404).send('Not Found');
-		}
-		var updated = _.merge(group, req.body);
-		updated.save(function (err) {
+// Updates group's name
+exports.name = function (req, res) {
+	Group.findOneAndUpdate({
+			_id: req.params.id,
+			admin: req.user._id
+		}, {
+			name: req.body.name,
+			$push: {
+				messages: {
+					text: 'Group\'s name changed.',
+					sentBy: req.user._id,
+					update: true
+				}
+			}
+		}, {
+			new: true
+		},
+		function (err, group) {
 			if (err) {
 				return handleError(res, err);
+			}
+			if (!group) {
+				return res.status(404).send('Not Found');
 			}
 			return res.status(200).json(group);
 		});
-	});
-};
-
-// Deletes a group from the DB.
-exports.destroy = function (req, res) {
-	Group.findById(req.params.id, function (err, group) {
-		if (err) {
-			return handleError(res, err);
-		}
-		if (!group) {
-			return res.status(404).send('Not Found');
-		}
-		group.remove(function (err) {
-			if (err) {
-				return handleError(res, err);
-			}
-			return res.status(204).send('No Content');
-		});
-	});
 };
 
 //Add participant(s) to group
 exports.addParticipants = function (req, res) {
 	var groupId = req.params.id;
 	var userIds = req.body.users;
+	var userEmails = req.body.emails;
+	var message = '';
 
-	var p1 = Group.findByIdAndUpdate(groupId, {
+	userEmails.forEach(function (email, index, emails) {
+		message += email;
+		if (index == emails.length - 1) {
+			message += ' '
+		} else {
+			message += ', '
+		}
+	});
+
+	var p1 = Group.findOneAndUpdate({
+		_id: groupId,
+		admin: req.user._id
+	}, {
 		$addToSet: {
 			members: {
 				$each: userIds
 			}
+		},
+		$push: {
+			messages: {
+				text: message + ' added to group.',
+				sentBy: req.user._id,
+				update: true,
+			}
 		}
-	}, {
-		new: true
 	}).exec();
 
 	var promises = [p1];
@@ -140,6 +147,25 @@ exports.addParticipants = function (req, res) {
 			message: 'Participants added successfully.',
 		});
 	}).catch(function (err) {
+		Group.findByIdAndUpdate(groupId, {
+			$pull: {
+				members: {
+					$each: userIds
+				}
+			},
+			$pop: {
+				messages: 1
+			}
+		}).exec();
+
+		userIds.forEach(function (userId) {
+			User.findByIdAndUpdate(userId, {
+				$pull: {
+					groups: groupId
+				}
+			}).exec();
+		});
+
 		if (err) {
 			return handleError(res, err);
 		}
@@ -150,10 +176,27 @@ exports.addParticipants = function (req, res) {
 exports.removeParticipant = function (req, res) {
 	var groupId = req.params.id;
 	var userId = req.body.user;
+	var userEmail = req.body.email;
 
-	var p1 = Group.findByIdAndUpdate(groupId, {
+	var message = userEmail + ' left the group.';
+
+	if (req.user.id !== userId) {
+		message = userEmail + ' kicked from group.'
+	}
+
+	var p1 = Group.findOneAndUpdate({
+		_id: groupId,
+		admin: req.user._id
+	}, {
 		$pull: {
 			members: userId
+		},
+		$push: {
+			messages: {
+				text: message,
+				sentBy: req.user._id,
+				update: true,
+			}
 		}
 	}, {
 		new: true
@@ -183,6 +226,22 @@ exports.removeParticipant = function (req, res) {
 			});
 		}
 	}).catch(function (err) {
+		Group.findByIdAndUpdate(groupId, {
+			$addToSet: {
+				members: userId
+			},
+			$pop: {
+				messages: 1
+			}
+		}).exec();
+
+		User.findByIdAndUpdate(userId, {
+			$addToSet: {
+				groups: groupId
+			}
+		}).exec();
+
+
 		if (err) {
 			return handleError(res, err);
 		}

@@ -4,9 +4,11 @@ var _ = require('lodash');
 var Conversation = require('./conversation.model');
 var User = require('../user/user.model');
 
+var insensitiveFields = 'name email img status online members messages';
+
 // Get list of conversations
 exports.index = function (req, res) {
-	Conversation.find(function (err, conversations) {
+	Conversation.find({}).populate('members messages.sentBy', insensitiveFields).exec(function (err, conversations) {
 		if (err) {
 			return handleError(res, err);
 		}
@@ -16,7 +18,7 @@ exports.index = function (req, res) {
 
 // Get a single conversation
 exports.show = function (req, res) {
-	Conversation.findById(req.params.id, function (err, conversation) {
+	Conversation.findById(req.params.id).populate('members', insensitiveFields).exec(function (err, conversation) {
 		if (err) {
 			return handleError(res, err);
 		}

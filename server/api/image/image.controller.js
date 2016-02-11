@@ -98,6 +98,11 @@ exports.groupUpload = function (req, res) {
 					if (err) return handleError(res, err);
 					if (group) {
 						group.img = image.url;
+						group.messages.push({
+							text: 'Group\'s image changed.',
+							sentBy: req.user._id,
+							update: true
+						});
 						group.save(function (err) {
 							if (err) return handleError(res, err);
 							return res.status(200).json(image);
@@ -129,7 +134,6 @@ exports.destroy = function (req, res) {
 
 // Get random image for new user
 exports.random = function (req, res) {
-
 	var filter = {
 		info: 'default/' + req.params.type
 	};

@@ -8,7 +8,6 @@ angular.module('chatApp')
 			replace: true,
 			scope: {},
 			controller: function ($scope) {
-				var lzwCompress = window.lzwCompress; //compression
 				$scope.me = Auth.getCurrentUser();
 				$scope.showDialog = false;
 
@@ -25,7 +24,11 @@ angular.module('chatApp')
 						var message = {
 							text: $scope.message,
 							scribble: !!isScribble,
-							sentBy: $scope.me._id
+							sentBy: {
+								_id: $scope.me._id,
+								name: $scope.me.name,
+								img: $scope.me.img
+							}
 						};
 
 						socket.sendMessage(roomId, message, !!$scope.activeConv.members);
@@ -62,7 +65,8 @@ angular.module('chatApp')
 						Group.removeParticipant({
 							id: $scope.activeConv._id
 						}, {
-							user: $scope.me._id
+							user: $scope.me._id,
+							email: $scope.me.email
 						}, function (res) {
 							socket.exitGroup($scope.activeConv._id);
 							$mdToast.show($mdToast.simple().position('top right').textContent(res.message).action('OK'));
@@ -82,14 +86,15 @@ angular.module('chatApp')
 					}
 				};
 
-				$scope.kick = function (id) {
+				$scope.kick = function (user) {
 					Group.removeParticipant({
 						id: $scope.activeConv._id
 					}, {
-						user: id
+						user: user._id,
+						email: user.email
 					}, function (res) {
 						$mdToast.show($mdToast.simple().position('top right').textContent(res.message).action('OK'));
-						socket.kick($scope.activeConv._id, id);
+						socket.kick($scope.activeConv._id, user._id);
 					}, function (err) {
 						$mdToast.show($mdToast.simple().position('top right').textContent(err.data).action('OK'));
 					});

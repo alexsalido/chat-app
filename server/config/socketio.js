@@ -161,7 +161,7 @@ function onConnect(socket, io) {
 				$all: [id, user]
 			}
 		}).populate({
-			path: 'members',
+			path: 'members messages.sentBy',
 			select: insensitiveFields,
 			match: {
 				_id: {
@@ -174,7 +174,7 @@ function onConnect(socket, io) {
 				$all: [id, user]
 			}
 		}).populate({
-			path: 'members',
+			path: 'members messages.sentBy',
 			select: insensitiveFields,
 			match: {
 				_id: {
@@ -214,7 +214,7 @@ function onConnect(socket, io) {
 				$all: [user, id]
 			}
 		}).populate({
-			path: 'members',
+			path: 'members messages.sentBy',
 			select: insensitiveFields,
 			match: {
 				_id: {
@@ -232,7 +232,7 @@ function onConnect(socket, io) {
 				$all: [user, id]
 			}
 		}).populate({
-			path: 'members',
+			path: 'members messages.sentBy',
 			select: insensitiveFields,
 			match: {
 				_id: {
@@ -251,29 +251,30 @@ function onConnect(socket, io) {
 	});
 
 	socket.on('group:img', function (groupId) {
-		Group.findById(groupId).populate('members', insensitiveFields).exec(function (err, group) {
+		Group.findById(groupId).populate('members messages.sentBy', insensitiveFields).exec(function (err, group) {
 			if (err) return console.info('Coulnd\'t notify group [%s] members of image change.', groupId);
 			if (group) {
 				group.img = group.img + '?' + Date.now(); //attach a dummy querystring to force browser to download image as the url never changes
-				socket.to(groupId).emit('groupsUpdated', group);
-				socket.to(groupId).emit('message:received', null, 'Group\'s image changed', groupId);
+				io.in(groupId).emit('groupsUpdated', group);
 			}
 		});
 	});
 
 	socket.on('group:name', function (groupId) {
-		Group.findById(groupId).populate('members', insensitiveFields).exec(function (err, group) {
+		Group.findById(groupId).populate('members messages.sentBy', insensitiveFields).exec(function (err, group) {
 			if (err) return console.info('Coulnd\'t notify group [%s] members of name change.', groupId);
-			if (group){
-				socket.to(groupId).emit('groupsUpdated', group);
-				socket.to(groupId).emit('message:received', null, 'Group\'s name changed', groupId);
+			if (group) {
+				io.in(groupId).emit('groupsUpdated', group);
+				// io.in(groupId).emit('message:received', process.env.SERVER_USERID, {
+				// 	text: 'Group\'s name changed'
+				// }, groupId);
 			}
 		});
 	});
 
-	socket.on('group:added', function (id, participant) {
-		console.info('[%s] ADDED TO GROUP [%s]', participant, id);
-		var p1 = Group.findById(id).populate('members', insensitiveFields).exec();
+	socket.on('group:added', function (groupId, participant) {
+		console.info('[%s] ADDED TO GROUP [%s]', participant, groupId);
+		var p1 = Group.findById(groupId).populate('members messages.sentBy', insensitiveFields).exec();
 		var p2 = User.findById(participant).exec();
 
 		Promise.all([p1, p2]).then(function (values) {
@@ -281,14 +282,13 @@ function onConnect(socket, io) {
 			var user = values[1];
 
 			if (group && user) {
-				io.in(id).emit('groupsUpdated', group);
-				io.in(id).emit('message:received', null, user.email + ' has been added.', group._id);
+				io.in(groupId).emit('groupsUpdated', group);
 
 				//if user is online, notify them they've been added
 				if (user.online) {
 					for (var socketId in io.nsps['/'].adapter.rooms[participant].sockets) {
 						var _socket = io.sockets.connected[socketId];
-						_socket.join(id);
+						_socket.join(groupId);
 					}
 					io.sockets.to(participant).emit('groupsUpdated', group);
 				}
@@ -299,7 +299,7 @@ function onConnect(socket, io) {
 	socket.on('group:exit', function (groupId) {
 		console.info('User [%s] has left group [%s].', id, groupId);
 
-		var p1 = Group.findById(groupId).populate('members', insensitiveFields).exec();
+		var p1 = Group.findById(groupId).populate('members messages.sentBy', insensitiveFields).exec();
 		var p2 = User.findById(id).exec();
 
 		Promise.all([p1, p2]).then(function (values) {
@@ -308,26 +308,20 @@ function onConnect(socket, io) {
 
 			if (group && user) {
 				socket.emit('groupsUpdated', group, 'delete');
-				socket.to(groupId).emit('groupsUpdated', group);
-				socket.to(groupId).emit('message:received', null, user.email + ' left the group.', groupId);
 				socket.leave(groupId);
+				io.in(groupId).emit('groupsUpdated', group);
 			} else if (!group && user) { //if group was removed from DB
 				socket.emit('groupsUpdated', {
 					_id: groupId
 				}, 'delete');
 			}
-		}).catch(function (err) {
-			console.log(err);
 		});
 	});
 
 	socket.on('group:kicked', function (groupId, participant) {
 		console.info('User [%s] has been kicked out of group [%s].', participant, groupId);
 
-		var p1 = Group.findOne({
-			_id: groupId,
-			admin: id
-		}).populate('members', insensitiveFields).exec();
+		var p1 = Group.findById(groupId).populate('members messages.sentBy', insensitiveFields).exec();
 		var p2 = User.findById(participant).exec();
 
 		Promise.all([p1, p2]).then(function (values) {
@@ -343,8 +337,8 @@ function onConnect(socket, io) {
 						_socket.leave(groupId);
 					}
 				}
-				io.in(groupId).emit('groupsUpdated', group); //notify everyone in the group
-				io.in(groupId).emit('message:received', null, user.email + ' was kicked from the group.', groupId);
+
+				io.in(groupId).emit('groupsUpdated', group);
 			}
 		});
 	});

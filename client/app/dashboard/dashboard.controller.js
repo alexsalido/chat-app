@@ -5,7 +5,6 @@ angular.module('chatApp')
 		$scope.me = Auth.getCurrentUser();
 
 		$scope.errors = {};
-		$scope.contactListUpdate = false;
 		$scope.contactListSearch = '';
 		$scope.chatListSearch = '';
 
@@ -106,9 +105,7 @@ angular.module('chatApp')
 		//| Events |//
 		//|**	 **|//
 
-		$scope.$on('contactListUpdate', function () {
-			$scope.contactListUpdate = true;
-		});
+		$scope.$on('contactListUpdate', function () {});
 
 		$scope.$on('contactList:selected', function (event, user) {
 			$scope.$broadcast('convList:new', user);

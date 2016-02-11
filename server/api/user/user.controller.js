@@ -428,9 +428,10 @@ exports.me = function (req, res, next) {
 
 		var p1 = new Promise(function (resolve, reject) {
 			Group.populate(user.groups, {
-				path: 'members',
+				path: 'members messages.sentBy',
 				select: insensitiveFields
 			}, function (err, user) {
+
 				if (err) {
 					return reject(err);
 				}
@@ -454,7 +455,19 @@ exports.me = function (req, res, next) {
 			});
 		});
 
-		Promise.all([p1, p2]).then(function (values) {
+		var p3 = new Promise(function (resolve, reject) {
+			Conversation.populate(user.conversations, {
+				path: 'messages.sentBy',
+				select: insensitiveFields
+			}, function (err, messages) {
+				if (err) {
+					return reject(err);
+				}
+				resolve(messages);
+			});
+		});
+
+		Promise.all([p1, p2, p3]).then(function (values) {
 			res.json(user);
 		}).catch(function (err) {
 			if (err) return next(err);

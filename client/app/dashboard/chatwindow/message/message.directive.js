@@ -6,16 +6,16 @@ angular.module('chatApp')
 			templateUrl: 'app/dashboard/views/message.html',
 			restrict: 'E',
 			scope: {
-				members: '='
-				// data: '=text'
+				showAvatar: '=avatar',
+				isScribble: '=scribble',
+				server: '=',
+				sender: '=',
+				receiver: '=',
+				text: '='
 			},
 			link: function (scope, element, attrs) {
-				var sender = attrs.sender;
-				var me = attrs.receiver;
-				var isScribble = (attrs.scribble === 'true');
-				var lzwCompress = window.lzwCompress;
 
-				if (isScribble) {
+				if (scope.isScribble) {
 					var canvas = document.createElement('canvas');
 					var scribble = angular.element(document.createElement('scribble'));
 					var context = canvas.getContext('2d');
@@ -30,8 +30,7 @@ angular.module('chatApp')
 						context.drawImage(this, 0, 0);
 					};
 
-					imageObj.src = attrs.data;
-					// imageObj.src = lzwCompress.unpack(scope.data);
+					imageObj.src = scope.text;
 					imageObj.width = 80;
 					imageObj.height = 80;
 
@@ -58,24 +57,16 @@ angular.module('chatApp')
 						});
 					});
 
-				} else {
-					scope.text = attrs.data;
+					//clean scope.text
+					scope.text = '';
 				}
-
-				if (!!!sender) {
+				
+				if (scope.server) {
 					element.addClass('server');
-				} else if (sender === me) {
+				} else if (scope.sender._id === scope.receiver._id) {
 					element.addClass('me');
 				} else {
 					element.addClass('them');
-					//if conversation is a group
-					if (!!scope.members && (sender !== me)) {
-						scope.isGroup = true;
-						scope.sender = _.find(scope.members, {
-							_id: sender
-						});
-					}
-
 				}
 			}
 		};

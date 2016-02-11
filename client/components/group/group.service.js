@@ -8,6 +8,12 @@ angular.module('chatApp')
 			update: {
 				method: 'PUT'
 			},
+			changeName: {
+				method: 'PUT',
+				params: {
+					controller: 'name'
+				}
+			},
 			message: {
 				method: 'PUT',
 				params: {
