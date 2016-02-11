@@ -21,7 +21,7 @@ angular.module('chatApp')
 
 						conversation.members[0].lastUpdated = Date.now();
 
-						$scope.activeConvs.unshift(conversation.members[0]);
+						$scope.activeConvs.push(conversation.members[0]);
 
 						if ($scope.open || $scope.activeConvs.length === 1) {
 							conversation.members[0].notification = false;
@@ -49,7 +49,7 @@ angular.module('chatApp')
 
 						group.lastUpdated = Date.now();
 
-						$scope.activeConvs.unshift(group);
+						$scope.activeConvs.push(group);
 
 						if ($scope.open || $scope.activeConvs.length === 1) {
 							$scope.convSelected(group);
@@ -93,7 +93,7 @@ angular.module('chatApp')
 					}
 
 					conversation.members[0].lastUpdated = date || Date.now();
-					$scope.activeConvs.unshift(conversation.members[0]);
+					$scope.activeConvs.push(conversation.members[0]);
 				});
 
 				$scope.groups.forEach(function (group) {
@@ -105,7 +105,7 @@ angular.module('chatApp')
 					}
 
 					group.lastUpdated = date || Date.now();
-					$scope.activeConvs.unshift(group);
+					$scope.activeConvs.push(group);
 				});
 
 				$scope.convSelected = function (item) {
@@ -177,7 +177,14 @@ angular.module('chatApp')
 
 				//trigger default state
 				if ($scope.activeConvs.length > 0) {
-					setTimeout($scope.convSelected, 0, $scope.activeConvs[0]);
+					var lastUpdated = Math.max.apply(Math, $scope.activeConvs.map(function (conversation) {
+						return conversation.lastUpdated;
+					}));
+
+					var target = _.find($scope.activeConvs, {
+						lastUpdated: lastUpdated
+					});
+					setTimeout($scope.convSelected, 0, target);
 				}
 
 			}

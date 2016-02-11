@@ -9,7 +9,6 @@ var User = require('../api/user/user.model');
 var Img = require('../api/image/image.model');
 var Group = require('../api/group/group.model');
 var Conversation = require('../api/conversation/conversation.model');
-var localEnv = require('./local.env.js');
 
 //AWS
 var AWS = require('aws-sdk');
@@ -84,16 +83,8 @@ User.find({}).remove(function () {
 			name: 'Alex',
 			email: 'alexsalidoa@gmail.com',
 			password: '123456'
-		}, {
-			provider: 'local',
-			role: 'server',
-			name: 'Server',
-			email: 'server@chatapp.com',
-			password: 'server'
 		},
-		function (err, test, admin, alex, server) {
-
-			localEnv.SERVER_USERID = server._id;
+		function (err, test, admin, alex) {
 
 			admin.contacts.addToSet(test._id, alex._id);
 
