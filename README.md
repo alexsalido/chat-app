@@ -14,3 +14,4 @@ Simple chat application built using angular-fullstack. Design based on Whatsapp 
 - Emojis
 - Notification when added to new group.
 - Notification when message is received from new conversation.
+- Filter group messages for users that just joined a group. 
