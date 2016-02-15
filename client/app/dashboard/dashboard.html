@@ -65,6 +65,9 @@
 	<md-content flex-gt-sm="70" flex="100" class="right-toolbar" layout="column" ng-cloak>
 		<md-toolbar ng-show="!me.conversations.length > 0 && !me.groups.length > 0">
 			<div class="md-toolbar-tools">
+				<md-button class="md-icon-button" aria-label="Show Sidenav" ng-click="toggleSidenav('left-toolbar')" hide-gt-sm>
+					<md-icon md-svg-icon="more_horiz"></md-icon>
+				</md-button>
 				<h2 class="md-flex">Welcome</h2>
 			</div>
 		</md-toolbar>
