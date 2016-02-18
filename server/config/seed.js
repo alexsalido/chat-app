@@ -83,10 +83,67 @@ User.find({}).remove(function () {
 			name: 'Alex',
 			email: 'alexsalidoa@gmail.com',
 			password: '123456'
+		}, {
+			provider: 'local',
+			name: 'Test1',
+			email: 'test1@test.com',
+			password: 'test'
+		}, {
+			provider: 'local',
+			name: 'Test2',
+			email: 'test2@test.com',
+			password: 'test'
+		}, {
+			provider: 'local',
+			name: 'Test3',
+			email: 'test3@test.com',
+			password: 'test'
+		}, {
+			provider: 'local',
+			name: 'Test4',
+			email: 'test4@test.com',
+			password: 'test'
+		}, {
+			provider: 'local',
+			name: 'Test5',
+			email: 'test5@test.com',
+			password: 'test'
+		}, {
+			provider: 'local',
+			name: 'Test6',
+			email: 'test6@test.com',
+			password: 'test'
+		}, {
+			provider: 'local',
+			name: 'Test7',
+			email: 'test7@test.com',
+			password: 'test'
+		}, {
+			provider: 'local',
+			name: 'Test8',
+			email: 'test8@test.com',
+			password: 'test'
+		}, {
+			provider: 'local',
+			name: 'Test9',
+			email: 'test9@test.com',
+			password: 'test'
+		}, {
+			provider: 'local',
+			name: 'Test10',
+			email: 'test10@test.com',
+			password: 'test'
+		}, {
+			provider: 'local',
+			name: 'Test11',
+			email: 'test11@test.com',
+			password: 'test'
 		},
-		function (err, test, admin, alex) {
+		function (err, test, admin, alex, test1, test2, test3, test4, test5, test6, test7, test8, test9, test10, test11) {
 
-			admin.contacts.addToSet(test._id, alex._id);
+			admin.contacts.addToSet(test._id, alex._id, test1._id, test2._id, test3._id, test4._id, test5._id, test6._id, test7._id, test8._id, test9._id, test10._id);
+
+			admin.pendingRequests.addToSet(test11._id);
 
 			test.contacts.addToSet(admin._id);
 
