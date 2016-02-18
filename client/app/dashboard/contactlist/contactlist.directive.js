@@ -5,7 +5,6 @@ angular.module('chatApp')
 		return {
 			templateUrl: 'app/dashboard/contactlist/contactlist.html',
 			restrict: 'E',
-			replace: true,
 			scope: {
 				filter: '='
 			},
@@ -40,6 +39,21 @@ angular.module('chatApp')
 					$scope.$emit('contactList:selected', user);
 				};
 
+				$scope.toggleSidenav = function (id) {
+					$mdSidenav(id).toggle();
+				};
+
+				$scope.showNewContactDialog = function (ev) {
+					$mdDialog.show({
+						scope: $scope,
+						preserveScope: true,
+						templateUrl: 'app/dashboard/views/newcontact.html',
+						parent: angular.element(document.body),
+						targetEvent: ev,
+						clickOutsideToClose: true
+					});
+				};
+
 				$scope.deleteContact = function (event, contact) {
 					var confirm = $mdDialog.confirm()
 						.title('Please confirm action')
@@ -59,8 +73,7 @@ angular.module('chatApp')
 				function contactsUpdated(event, item) {
 					if (event === 'created') {
 						$mdToast.show($mdToast.simple().position('top right').textContent(item.email + ' is now your friend.').action('OK'));
-					}
-					 else if (event === 'updated') {
+					} else if (event === 'updated') {
 						$scope.$emit('contactList:updated', item);
 					} else if (event === 'deleted') {
 						// $scope.$emit('contactList:deleted', item);

@@ -1,59 +1,73 @@
-<md-content flex>
-	<md-list ng-cloak ng-show="pending.length > 0">
-		<md-subheader class="md-primary">Pending requests</md-subheader>
-		<md-list-item ng-repeat="request in pending" ng-click="" class="md-3-line">
-			<img alt="{{ request.name }}" ng-src="{{request.img}}" class="md-avatar object-fit-cover" />
-			<div class="md-list-item-text">
-				<h3>{{ request.name }}</h3>
-				<h4>
-					{{ request.email }}
-				</h4>
-			</div>
-			<md-button class="md-icon-button md-exclude">
-				<md-icon md-svg-icon="done" ng-click="friendRequestAccepted(request._id)" aria-label="Accept Request" class="md-primary green"></md-icon>
+<md-sidenav flex-gt-sm="30" flex-sm="100" class="md-sidenav-left contact-list width-30" md-component-id="contact-list" layout="column" ng-cloak>
+	<md-toolbar>
+		<div class="md-toolbar-tools">
+			<md-button class="md-icon-button" aria-label="Close Contact List" ng-click="toggleSidenav('contact-list')">
+				<md-icon md-svg-icon="back"></md-icon>
 			</md-button>
-			<md-button class="md-icon-button md-exclude">
-				<md-icon md-svg-icon="close" ng-click="friendRequestRejected(request._id)" aria-label="Reject Request" class="md-primary red"></md-icon>
+			<h1>Contacts</h1>
+			<span flex></span>
+			<md-button class="md-icon-button" aria-label="New Contact" ng-click="showNewContactDialog($event)">
+				<md-icon md-svg-icon="person_add"></md-icon>
 			</md-button>
-		</md-list-item>
-	</md-list>
-	<md-divider ng-show="pending.length > 0"></md-divider>
-	<md-list ng-cloak>
-		<md-list-item ng-repeat="contact in (contacts | filter:{ online: 'true' }) | filter: { name: filter } | orderBy:'name' track by $index" ng-click="contactSelected(contact)" class="md-2-line" aria-label="Contact">
-			<img alt="{{ contact.name }}" ng-src="{{contact.img}}" class="md-avatar object-fit-cover" />
-			<div class="md-list-item-text">
-				<h3>{{ contact.name }}</h3>
-				<h4>
-					{{ contact.status }}
-				</h4>
-				<p class="online">
-					online
-				</p>
-			</div>
-			<md-icon md-svg-icon="close" ng-click="deleteContact($event, contact)" aria-label="Delete Contact" class="md-secondary red md-primary"></md-icon>
-		</md-list-item>
-		<md-list-item ng-repeat="contact in (contacts | filter:{ online: 'false' }) | filter: { name: filter } | orderBy:'name' track by $index" class="md-2-line disabled">
-			<img alt="{{ contact.name }}" ng-src="{{contact.img}}" class="md-avatar object-fit-cover" />
-			<div class="md-list-item-text">
-				<h3>{{ contact.name }}</h3>
-				<h4>
-					{{ contact.status }}
-				</h4>
-				<p class="offline">
-					offline
-				</p>
+		</div>
+	</md-toolbar>
+	<search-box placeholder="Search for contacts" bind="filter"></search-box>
+	<md-divider></md-divider>
+	<md-content flex>
+		<md-list ng-cloak>
+			<md-subheader class="md-primary" ng-show="pending.length > 0">Pending requests</md-subheader>
+			<md-list-item ng-repeat="request in pending" class="md-2-line" ng-show="pending.length > 0">
+				<img alt="{{ request.name }}" ng-src="{{request.img}}" class="md-avatar object-fit-cover" />
+				<div class="md-list-item-text" layout="column">
+					<h3>{{ request.name }}</h3>
+					<h4>
+						{{ request.email }}
+					</h4>
+				</div>
+				<md-button class="md-icon-button md-exclude">
+					<md-icon md-svg-icon="done" ng-click="friendRequestAccepted(request._id)" aria-label="Accept Request" class="green"></md-icon>
+				</md-button>
+				<md-button class="md-icon-button md-exclude">
+					<md-icon md-svg-icon="close" ng-click="friendRequestRejected(request._id)" aria-label="Reject Request" class="red"></md-icon>
+				</md-button>
+			</md-list-item>
+			<md-divider ng-show="pending.length > 0"></md-divider>
+			<md-list-item ng-repeat="contact in (contacts | filter:{ online: 'true' }) | filter: { name: filter } | orderBy:'name' track by $index" ng-click="contactSelected(contact)" class="md-3-line" aria-label="Contact">
+				<img alt="{{ contact.name }}" ng-src="{{contact.img}}" class="md-avatar object-fit-cover" />
+				<div class="md-list-item-text" layout="column">
+					<h3>{{ contact.name }}</h3>
+					<h4>
+						{{ contact.status }}
+					</h4>
+					<p class="online">
+						online
+					</p>
+				</div>
 				<md-icon md-svg-icon="close" ng-click="deleteContact($event, contact)" aria-label="Delete Contact" class="md-secondary red md-primary"></md-icon>
-			</div>
-		</md-list-item>
-		<md-list-item ng-repeat="request in sent | filter: { name: filter } | orderBy:'name' track by $index" class="md-2-line disabled">
-			<img alt="{{ request.name }}" ng-src="{{request.img}}" class="md-avatar object-fit-cover" />
-			<div class="md-list-item-text">
-				<h3>{{ request.name }}</h3>
-				<h4>
-					{{ request.email }}
-				</h4>
-				<md-icon md-svg-icon="schedule" aria-label="Awaiting Response" class="md-secondary md-primary gray"></md-icon>
-			</div>
-		</md-list-item>
-	</md-list>
-</md-content>
+			</md-list-item>
+			<md-list-item ng-repeat="contact in (contacts | filter:{ online: 'false' }) | filter: { name: filter } | orderBy:'name' track by $index" class="md-2-line disabled">
+				<img alt="{{ contact.name }}" ng-src="{{contact.img}}" class="md-avatar object-fit-cover" />
+				<div class="md-list-item-text" layout="column">
+					<h3>{{ contact.name }}</h3>
+					<h4>
+						{{ contact.status }}
+					</h4>
+					<p class="offline">
+						offline
+					</p>
+					<md-icon md-svg-icon="close" ng-click="deleteContact($event, contact)" aria-label="Delete Contact" class="md-secondary red md-primary"></md-icon>
+				</div>
+			</md-list-item>
+			<md-list-item ng-repeat="request in sent | filter: { name: filter } | orderBy:'name' track by $index" class="md-3-line disabled">
+				<img alt="{{ request.name }}" ng-src="{{request.img}}" class="md-avatar object-fit-cover" />
+				<div class="md-list-item-text" layout="column">
+					<h3>{{ request.name }}</h3>
+					<h4>
+						{{ request.email }}
+					</h4>
+					<md-icon md-svg-icon="schedule" aria-label="Awaiting Response" class="md-secondary md-primary gray"></md-icon>
+				</div>
+			</md-list-item>
+		</md-list>
+	</md-content>
+</md-sidenav>

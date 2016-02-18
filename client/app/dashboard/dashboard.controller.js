@@ -5,8 +5,8 @@ angular.module('chatApp')
 		$scope.me = Auth.getCurrentUser();
 
 		$scope.errors = {};
-		$scope.contactListSearch = '';
 		$scope.convListSearch = '';
+		$scope.contactListSearch = '';
 
 		$scope.createGroup = function (form) {
 			$scope.submitted = true;
@@ -74,17 +74,6 @@ angular.module('chatApp')
 			});
 		};
 
-		$scope.showNewContactDialog = function (ev) {
-			$mdDialog.show({
-				scope: $scope,
-				preserveScope: true,
-				templateUrl: 'app/dashboard/views/newcontact.html',
-				parent: angular.element(document.body),
-				targetEvent: ev,
-				clickOutsideToClose: true
-			});
-		};
-
 		$scope.toggleSidenav = function (id) {
 			$mdSidenav(id).toggle();
 		};
@@ -125,4 +114,17 @@ angular.module('chatApp')
 		$scope.$on('convWindow:change', function () {
 			$scope.$broadcast('convList:select');
 		});
+
+		//|**	   **|//
+		//| Watchers |//
+		//|**	   **|//
+		// $scope.$watch(function () {
+		// 	return $mdSidenav('left-toolbar').isOpen();
+		// }, function (newVal, oldVal) {
+		// 	var contactList = $mdSidenav('contact-list');
+		//
+		// 	if (!newVal && contactList.isOpen()) {
+		// 		contactList.toggle();
+		// 	}
+		// });
 	});

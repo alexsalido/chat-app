@@ -1,23 +1,5 @@
 <div id="dashboard" flex-sm="100" flex-md="100" flex-gt-md="80" class="md-whiteframe-z2" layout>
-	<md-sidenav flex-gt-sm="30" class="md-sidenav-left left-toolbar" md-component-id="left-toolbar" layout="column" ng-cloak md-is-locked-open="$mdMedia('gt-sm')">
-		<profile></profile>
-		<md-sidenav flex="100" class="md-sidenav-left contact-list width-100" md-component-id="contact-list" layout="column">
-			<md-toolbar>
-				<div class="md-toolbar-tools">
-					<md-button class="md-icon-button" aria-label="Close Contact List" ng-click="toggleSidenav('contact-list')">
-						<md-icon md-svg-icon="back"></md-icon>
-					</md-button>
-					<h1>Contacts</h1>
-					<span flex></span>
-					<md-button class="md-icon-button" aria-label="New Contact" ng-click="showNewContactDialog($event)">
-						<md-icon md-svg-icon="person_add"></md-icon>
-					</md-button>
-				</div>
-			</md-toolbar>
-			<search-box placeholder="Search for contacts" bind="contactListSearch"></search-box>
-			<md-divider></md-divider>
-			<contact-list requests="true" filter="contactListSearch"></contact-list>
-		</md-sidenav>
+	<md-sidenav flex-gt-sm="30" flex-sm="100" class="md-sidenav-left left-toolbar" md-component-id="left-toolbar" layout="column" ng-cloak md-is-locked-open="$mdMedia('gt-sm')">
 		<md-toolbar>
 			<div class="md-toolbar-tools">
 				<div class="round-img-container">
@@ -62,6 +44,10 @@
 			<conv-list filter="convListSearch"></conv-list>
 		</md-content>
 	</md-sidenav>
+	<!-- CONTACT LIST START -->
+	<contact-list requests="true" filter="contactListSearch"></contact-list>
+	<!-- CONTACT LIST END -->
+	<profile></profile>
 	<md-content flex-gt-sm="70" flex="100" class="right-toolbar" layout="column" ng-cloak>
 		<md-toolbar ng-show="!me.conversations.length > 0 && !me.groups.length > 0">
 			<div class="md-toolbar-tools">
