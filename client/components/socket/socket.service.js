@@ -2,7 +2,7 @@
 'use strict';
 
 angular.module('chatApp')
-	.factory('socket', function (socketFactory, Auth, Conversation, $mdToast) {
+	.factory('socket', function (socketFactory, Auth, Conversation, $mdDialog, $location) {
 
 		var socket;
 
@@ -18,6 +18,21 @@ angular.module('chatApp')
 
 			socket = socketFactory({
 				ioSocket: ioSocket
+			});
+
+
+			socket.on('force:disconnect', function () {
+				$mdDialog.show(
+					$mdDialog.alert()
+					.parent(angular.element(document.body))
+					.title('You\'ve been logged out.')
+					.textContent('Your account logged in from another machine.')
+					.ariaLabel('Logout dialog')
+					.ok('Got it!')
+				);
+				socket.disconnect(true);
+				Auth.logout();
+				$location.path('/');
 			});
 
 			socket.emit('room', id);
@@ -104,8 +119,8 @@ angular.module('chatApp')
 				socket.emit('group:kicked', group, userId);
 			},
 
-			disconnect: function () {
-				socket.disconnect();
+			disconnect: function (forced) {
+				socket.disconnect(forced);
 			},
 
 			friendRequest: function (to) {

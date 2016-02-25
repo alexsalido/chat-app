@@ -379,12 +379,14 @@ module.exports = function (socketio) {
 		//Create room
 		socket.on('room', function (id) {
 			console.info('ROOM [%s] CREATED', id);
+			socketio.in(id).emit('force:disconnect');
 			socket.join(id);
+
 		});
 
 		// Call onDisconnect.
-		socket.on('disconnect', function () {
-			onDisconnect(socket);
+		socket.on('disconnect', function (forced) {
+			if (!forced) onDisconnect(socket);
 			console.info('[%s] DISCONNECTED', socket.address);
 		});
 

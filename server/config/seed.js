@@ -141,9 +141,9 @@ User.find({}).remove(function () {
 		},
 		function (err, test, admin, alex, test1, test2, test3, test4, test5, test6, test7, test8, test9, test10, test11) {
 
-			admin.contacts.addToSet(test._id, alex._id, test1._id, test2._id, test3._id, test4._id, test5._id, test6._id, test7._id, test8._id, test9._id, test10._id);
+			admin.contacts.addToSet(test._id, alex._id, test1._id, test2._id, test3._id, test4._id);
 
-			admin.pendingRequests.addToSet(test11._id);
+			admin.pendingRequests.addToSet(test5._id, test6._id, test7._id, test8._id, test9._id, test10._id, test11._id);
 
 			test.contacts.addToSet(admin._id);
 
