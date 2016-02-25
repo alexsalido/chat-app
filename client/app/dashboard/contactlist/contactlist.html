@@ -16,7 +16,7 @@
 	<md-content flex>
 		<md-list ng-cloak>
 			<md-subheader class="md-primary" ng-show="pending.length > 0">Pending requests</md-subheader>
-			<md-list-item ng-repeat="request in pending" class="md-2-line" ng-show="pending.length > 0">
+			<md-list-item ng-repeat="request in pending | filter: { name: filter } | orderBy:'name' track by $index" class="md-2-line" ng-show="pending.length > 0">
 				<img alt="{{ request.name }}" ng-src="{{request.img}}" class="md-avatar object-fit-cover" />
 				<div class="md-list-item-text" layout="column">
 					<h3>{{ request.name }}</h3>

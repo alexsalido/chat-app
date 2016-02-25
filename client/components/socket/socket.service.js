@@ -30,7 +30,7 @@ angular.module('chatApp')
 					.ariaLabel('Logout dialog')
 					.ok('Got it!')
 				);
-				socket.disconnect(true);
+				socket.emit('force:disconnect');
 				Auth.logout();
 				$location.path('/');
 			});
@@ -119,8 +119,8 @@ angular.module('chatApp')
 				socket.emit('group:kicked', group, userId);
 			},
 
-			disconnect: function (forced) {
-				socket.disconnect(forced);
+			disconnect: function () {
+				socket.disconnect();
 			},
 
 			friendRequest: function (to) {

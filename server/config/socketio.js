@@ -385,9 +385,13 @@ module.exports = function (socketio) {
 		});
 
 		// Call onDisconnect.
-		socket.on('disconnect', function (forced) {
-			if (!forced) onDisconnect(socket);
+		socket.on('disconnect', function () {
+			if (arguments[0] === 'client namespace disconnect') onDisconnect(socket);
 			console.info('[%s] DISCONNECTED', socket.address);
+		});
+
+		socket.on('force:disconnect', function () {
+			socket.disconnect();
 		});
 
 		// Call onConnect.
