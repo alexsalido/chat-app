@@ -46,7 +46,7 @@ exports.create = function (req, res) {
 		url: 1
 	}, options, function (err, image) {
 		if (err) return handleError(res, err);
-		req.body.img = image[0].url;
+		if (image[0]) req.body.img = image[0].url;
 		Group.create(req.body, function (err, group) {
 			if (err) {
 				return handleError(res, err, 'Oh no! There was a problem creating the group. Please try again.');

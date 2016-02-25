@@ -47,7 +47,7 @@ exports.create = function (req, res, next) {
 		url: 1
 	}, options, function (err, image) {
 		if (err) return handleError(res, err);
-		newUser.img = image[0].url;
+		if (image[0]) newUser.img = image[0].url;
 		newUser.provider = 'local';
 		newUser.role = 'user';
 		newUser.save(function (err, user) {

@@ -15,7 +15,7 @@ AWS.config.update({
 });
 
 var s3 = new AWS.S3({
-	apiVersion: '2006-03-01'
+	apiVersion: process.env.AWS_API_VERSION
 });
 
 // Get list of images

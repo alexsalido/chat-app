@@ -21,7 +21,7 @@ var UserSchema = new Schema({
 	},
 	img: {
 		type: String,
-		default: process.env.BUCKET_URL + process.env.BUCKET_DEFAULT_IMAGE
+		default: process.env.BUCKET_URL + process.env.BUCKET_DEFAULT_USER_IMAGE
 	},
 	hashedPassword: String,
 	provider: String,

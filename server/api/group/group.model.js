@@ -5,7 +5,10 @@ var mongoose = require('mongoose'),
 
 var GroupSchema = new Schema({
 	name: String,
-	img: String,
+	img: {
+		type: String,
+		default: process.env.BUCKET_URL + process.env.BUCKET_DEFAULT_GROUP_IMAGE
+	},
 	admin: {
 		type: Schema.Types.ObjectId,
 		ref: 'User'
