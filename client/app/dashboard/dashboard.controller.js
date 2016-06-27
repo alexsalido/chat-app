@@ -28,28 +28,6 @@ angular.module('chatApp')
 			}
 		};
 
-		$scope.sendFriendRequest = function (form) {
-			$scope.submitted = true;
-			if (form.$valid) {
-				Auth.isRegistered($scope.newContactEmail)
-					.then(function (data) {
-						Auth.sendFriendRequest(data._id).then(function (res) {
-							$mdToast.show($mdToast.simple().position('top right').textContent(res.message).action('OK'));
-							socket.friendRequest(data._id, $scope.me._id);
-							$mdDialog.cancel();
-							$scope.submitted = false;
-							$scope.newContactEmail = '';
-						}).catch(function (err) {
-							$mdToast.show($mdToast.simple().position('top right').textContent(err.data).action('OK'));
-						});
-					})
-					.catch(function (err) {
-						form[err.field].$setValidity('mongoose', false);
-						$scope.errors.other = err.message;
-					});
-			}
-		};
-
 		$scope.showSettingsDialog = function (type, ev) {
 			$mdDialog.show({
 				controller: 'SettingsCtrl',
@@ -68,6 +46,17 @@ angular.module('chatApp')
 				scope: $scope,
 				preserveScope: true,
 				templateUrl: 'app/dashboard/views/newgroup.html',
+				parent: angular.element(document.body),
+				targetEvent: ev,
+				clickOutsideToClose: true
+			});
+		};
+
+		$scope.showNewContactDialog = function (ev) {
+			$mdDialog.show({
+				scope: $scope,
+				preserveScope: true,
+				templateUrl: 'app/dashboard/views/newcontact.html',
 				parent: angular.element(document.body),
 				targetEvent: ev,
 				clickOutsideToClose: true

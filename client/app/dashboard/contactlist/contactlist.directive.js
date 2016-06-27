@@ -9,6 +9,8 @@ angular.module('chatApp')
 				filter: '='
 			},
 			controller: function ($scope, $element, $attrs) {
+				$scope.errors = {};
+
 				$scope.me = Auth.getCurrentUser();
 
 				$scope.pending = $scope.me.pendingRequests;
@@ -21,6 +23,7 @@ angular.module('chatApp')
 				socket.syncContacts($scope.contacts, contactsUpdated);
 
 				$scope.requests = $attrs.requests || false;
+
 
 				$scope.friendRequestAccepted = function (user) {
 					Auth.acceptFriendRequest(user).then(function () {
@@ -54,6 +57,28 @@ angular.module('chatApp')
 					});
 				};
 
+				$scope.sendFriendRequest = function (form) {
+					$scope.submitted = true;
+					if (form.$valid) {
+						Auth.isRegistered($scope.newContactEmail)
+							.then(function (data) {
+								Auth.sendFriendRequest(data._id).then(function (res) {
+									$mdToast.show($mdToast.simple().position('top right').textContent(res.message).action('OK'));
+									socket.friendRequest(data._id, $scope.me._id);
+									$mdDialog.cancel();
+									$scope.submitted = false;
+									$scope.newContactEmail = '';
+								}).catch(function (err) {
+									$mdToast.show($mdToast.simple().position('top right').textContent(err.data).action('OK'));
+								});
+							})
+							.catch(function (err) {
+								form[err.field].$setValidity('mongoose', false);
+								$scope.errors.other = err.message;
+							});
+					}
+				};
+
 				$scope.deleteContact = function (event, contact) {
 					var confirm = $mdDialog.confirm()
 						.title('Please confirm action')
@@ -68,6 +93,11 @@ angular.module('chatApp')
 							$mdToast.show($mdToast.simple().position('top right').textContent(data.err).action('OK'));
 						});
 					}, function () {});
+				};
+
+				$scope.cancel = function () {
+					$mdDialog.cancel();
+					$scope.submitted = false;
 				};
 
 				function contactsUpdated(event, item) {

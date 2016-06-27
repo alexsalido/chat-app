@@ -51,18 +51,18 @@ exports.create = function (req, res, next) {
 		if (image[0]) newUser.img = image[0].url;
 		newUser.provider = 'local';
 		newUser.role = 'user';
-		// newUser.save(function (err, user) {
-		// 	console.log(user);
-		// 	if (err) return validationError(res, err);
-		// 	var token = jwt.sign({
-		// 		_id: user._id
-		// 	}, config.secrets.session, {
-		// 		expiresInMinutes: 60 * 5
-		// 	});
-		// 	res.json({
-		// 		token: token
-		// 	});
-		// });
+		newUser.save(function (err, user) {
+			console.log(user);
+			if (err) return validationError(res, err);
+			var token = jwt.sign({
+				_id: user._id
+			}, config.secrets.session, {
+				expiresInMinutes: 60 * 5
+			});
+			res.json({
+				token: token
+			});
+		});
 	});
 };
 
