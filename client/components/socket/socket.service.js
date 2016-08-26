@@ -263,6 +263,7 @@ angular.module('chatApp')
 
             syncConversations: function(array, cb) {
                 cb = cb || angular.noop;
+                console.log(socket);
                 socket.on('conversationsUpdated', function(item, event) {
                     var oldItem = _.find(array, {
                         _id: item._id
